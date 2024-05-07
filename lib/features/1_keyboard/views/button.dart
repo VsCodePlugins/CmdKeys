@@ -1,0 +1,277 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_icon_shadow/flutter_icon_shadow.dart';
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:vibration/vibration.dart';
+import 'package:vsckeyboard/common/widgets/toast.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import '../ models/button_properties.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class ButtonFunction extends StatefulWidget {
+  final BtnProperty btnProperty;
+  final PanelDashBoard panelDashBoard;
+  final KeyboardSettingController keyboardSettingCtrl;
+
+  const ButtonFunction(
+      {super.key, required this.btnProperty, required this.panelDashBoard, required this.keyboardSettingCtrl});
+
+  @override
+  State<ButtonFunction> createState() => _ButtonFunctionState();
+}
+
+class _ButtonFunctionState extends State<ButtonFunction> {
+  bool isNotPressed = false;
+  late FToast fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    fToast.init(context);
+
+    showToast(Widget toast) {
+      fToast.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        toastDuration: const Duration(seconds: 3),
+      );
+    }
+
+    bool isTheLastPressed = widget.btnProperty.isLastPressed;
+    int counter = widget.btnProperty.counter;
+    Offset distance = isNotPressed ? const Offset(3, 3) : const Offset(3, 3);
+    double blur = isNotPressed ? 10.0 : 12.0;
+    return GestureDetector(
+      onTapUp: (details) async {
+        print("on tapUp");
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        setState(() {
+          isNotPressed = false;
+        });
+      },
+      onTapDown: (s) async {
+        print("on tapDown");
+
+        widget.panelDashBoard
+            .sentRequest(widget.btnProperty.functionCommand)
+            .then((value) {
+              if (widget.panelDashBoard.showResponses()) {
+                showToast(MessageToast(
+                  message: value.toString(),
+                  iconToast: const Icon(Icons.check, color: Colors.green,),
+                  isDarkMode: widget.keyboardSettingCtrl.darkMode,
+                ));
+              }
+            }, onError: (e) {
+          if (widget.panelDashBoard.showExceptions()) {
+            showToast(MessageToast(
+              message: e.toString(),
+              iconToast: const Icon(Icons.error, color: Colors.orange,),
+              isDarkMode: widget.keyboardSettingCtrl.darkMode,
+            ));
+          }
+        });
+
+        setState(() {
+          isNotPressed = true;
+          widget.panelDashBoard.setLastPressed(widget.btnProperty.index);
+          widget.panelDashBoard.updateCounter(widget.btnProperty.index);
+
+          Future.doWhile(() async {
+            if (Platform.isAndroid || Platform.isIOS) {
+              Vibration.vibrate(duration: 200);
+            }
+            await Future.delayed(const Duration(milliseconds: 200));
+            return isNotPressed;
+          });
+        });
+      },
+      onLongPressEnd: (d) {
+        setState(() {
+          isNotPressed = false;
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          isNotPressed = false;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        decoration: BoxDecoration(
+          color: widget.keyboardSettingCtrl.darkMode ? Colors.grey[900] : Colors.grey[300],
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: widget.keyboardSettingCtrl.darkMode ? Colors.black : Colors.grey.shade500,
+              offset: distance,
+              blurRadius: blur,
+              spreadRadius: 1,
+              inset: isNotPressed,
+            ),
+            BoxShadow(
+              color: widget.keyboardSettingCtrl.darkMode ? Colors.grey.shade800 : Colors.white,
+              offset: -distance,
+              blurRadius: blur-3,
+              spreadRadius: 3,
+              inset: isNotPressed,
+            ),
+          ],
+        ),
+        child: LastPressedCheck(
+            size: widget.keyboardSettingCtrl.sizeIcon,
+            isDarkMode: widget.keyboardSettingCtrl.darkMode,
+            isLastPressed: isTheLastPressed,
+            widget: widget,
+            isNotPressed: isNotPressed,
+            orientation: MediaQuery.of(context).orientation,
+            counter: counter),
+      ),
+    );
+  }
+}
+
+
+
+class LastPressedCheck extends StatelessWidget {
+  const LastPressedCheck({
+    super.key,
+    required this.isLastPressed,
+    required this.widget,
+    required this.isNotPressed,
+    required this.orientation,
+    required this.counter,
+    required this.isDarkMode,
+    required this.size,
+  });
+
+  final bool isLastPressed;
+  final ButtonFunction widget;
+  final bool isNotPressed;
+  final Orientation orientation;
+  final int counter;
+  final bool isDarkMode;
+  final Size size;
+  @override
+  Widget build(BuildContext context) {
+    return (orientation == Orientation.portrait)
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: IconBtn(widget: widget, isNotPressed: isNotPressed,isDarkMode: isDarkMode, size: size,)),
+              Counter(
+                  counter: counter,
+                  isLastPressed: isLastPressed,
+                  isDarkMode: isDarkMode),
+              isLastPressed
+                  ? const Padding(
+                      padding: EdgeInsets.only(
+                          top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
+                      child: Icon(Icons.circle,
+                          size: 10, color: Colors.deepPurpleAccent),
+                    )
+                  : Container(),
+            ],
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: IconBtn(widget: widget, isNotPressed: isNotPressed,isDarkMode: isDarkMode, size: size,),
+              ),
+              Counter(
+                  counter: counter,
+                  isLastPressed: isLastPressed,
+                  isDarkMode: isDarkMode),
+              isLastPressed
+                  ? const Padding(
+                      padding: EdgeInsets.only(
+                          top: 8.0, left: 8.0, right: 8, bottom: 8.0),
+                      child: Icon(Icons.circle,
+                          size: 10, color: Colors.deepPurpleAccent),
+                    )
+                  : Container(),
+            ],
+          );
+  }
+}
+
+class IconBtn extends StatelessWidget {
+  const IconBtn({
+    super.key,
+    required this.widget,
+    required this.isNotPressed, 
+    required this.isDarkMode, 
+    required this.size,
+
+  });
+
+  final ButtonFunction widget;
+  final bool isNotPressed;
+  final bool isDarkMode;
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconShadow(
+        Icon(MdiIcons.fromString(widget.btnProperty.iconName),
+          size: size.width,
+          color: isNotPressed
+              ? widget.btnProperty.color.withAlpha(100)
+              : widget.btnProperty.color),
+              shadowColor: isDarkMode? Colors.black: Colors.white,
+      shadowOffset: const Offset(-4, -4),
+    );
+  }
+}
+
+class Counter extends StatelessWidget {
+  const Counter({
+    super.key,
+    required this.counter,
+    required this.isLastPressed,
+    required this.isDarkMode,
+  });
+
+  final int counter;
+  final bool isLastPressed;
+  final bool isDarkMode;
+
+  @override
+  Widget build(BuildContext context) {
+    late TextStyle styleText;
+
+    if (isDarkMode) {
+      styleText = TextStyle(
+          color: isLastPressed
+              ? Colors.deepPurpleAccent
+              : const Color.fromARGB(255, 63, 63, 63),
+          fontSize: 20);
+    } else {
+      styleText = TextStyle(
+          color: isLastPressed
+              ? const Color.fromARGB(255, 0, 0, 0)
+              : const Color.fromARGB(255, 172, 172, 172),
+          fontSize: 20);
+    }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        (counter > 0) ? counter.toString() : " ",
+        style: styleText,
+      ),
+    );
+  }
+}
