@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/features/1_keyboard/views/page_commands.dart';
+import 'package:vsckeyboard/features/1_keyboard/views/page_btn_actions.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
-import '../../2_keyboard_setting/views/page_settings.dart';
+import '../../2_keyboard_setting/views/page_keyboard_settings.dart';
 
 class PageViewCustom extends StatefulWidget {
   final KeyboardSettingController keyboardSettingCtrl;
@@ -25,8 +25,11 @@ class _PageViewCustomState extends State<PageViewCustom> {
         scrollDirection: Axis.horizontal, 
         physics: const NeverScrollableScrollPhysics(),
         children: [
+          Container(color: Colors.green,),
           ConsumerListCommand(keyboardSettingController: widget.keyboardSettingCtrl,),
-          CommandsSettings(keyBoardName:widget.keyBoardName),],
+          CommandsSettings(keyBoardName:widget.keyBoardName),
+          ],
+       
       ),
     );
   }

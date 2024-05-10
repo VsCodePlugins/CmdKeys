@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vsckeyboard/common/class_functions/dropdown_controllers.dart';
 import 'package:vsckeyboard/common/class_functions/ip_address_input.dart';
+import 'package:vsckeyboard/common/widgets/buttom_ws.dart';
 import 'package:vsckeyboard/common/widgets/number_picker.dart';
 import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
 import 'package:vsckeyboard/common/widgets/slider_setting.dart';
@@ -33,7 +34,7 @@ class _CommandsSettingsState extends State<CommandsSettings> {
             create: (_) => DropDownPrefixCtrl(
               focusNode,
               "TYPE",
-              ['http://', 'https://'],
+              ['ws://', 'wss://', 'http://', 'https://'],
             ),
           ),
           ChangeNotifierProvider<DropDownSuffixCtrl>(
@@ -57,10 +58,12 @@ class _CommandsSettingsState extends State<CommandsSettings> {
           if (dropdownCtrlS.changeValue) {
             settingController.ctrlAddress.clear();
             dropdownCtrlS.changeValue = false;
+            settingController.disconnectWebsocket();
+
           }
           if (dropdownCtrlP.changeValue) {
             WidgetsBinding.instance.addPostFrameCallback((_) =>
-                settingController.saveAddress(dropdownCtrlP.selectedValue!));
+                settingController.saveAddress(dropdownCtrlP.selectedValue));
           }
 
           return SingleChildScrollView(
@@ -127,8 +130,8 @@ class _CommandsSettingsState extends State<CommandsSettings> {
                       height: 85,
                       child: TextField(
                         onChanged: (value) {
-                          settingController
-                              .saveAddress(dropdownCtrlP.selectedValue!);
+                          settingController.saveAddress(dropdownCtrlP.selectedValue);
+                          settingController.stopWebsocketConnection();
                         },
                         key: const Key('host_text_field'),
                         controller: settingController.ctrlAddress,
@@ -139,14 +142,17 @@ class _CommandsSettingsState extends State<CommandsSettings> {
                             InputValid.ipAddressInputFilter(),
                           if (dropdownCtrlS.selectedValue == 'IP:PORT')
                             InputValid.ipAddressInputFilterWithPort(),
-                          if (dropdownCtrlS.selectedValue!.contains("IP"))
+                          if (dropdownCtrlS.selectedValue.contains("IP"))
                             IpAddressInputFormatter(),
-                          if (dropdownCtrlS.selectedValue!.contains("IP"))
+                          if (dropdownCtrlS.selectedValue.contains("IP"))
                             LengthLimitingTextInputFormatter(21),
                           if (dropdownCtrlS.selectedValue == 'URL')
                             InputValid.urlInputFilter(),
                         ],
+                        minLines: 1,
+                        maxLines: 3,
                         style: TextStyle(
+                          
                             color: settingController.darkMode
                                 ? Colors.white
                                 : Colors.black), //<-- HERE
@@ -160,13 +166,25 @@ class _CommandsSettingsState extends State<CommandsSettings> {
                             prefix: DropDownPrefix(
                               isDarkMode: settingController.darkMode,
                             ),
-                            suffix: DropDownSuffix(
-                              isDarkMode: settingController.darkMode,
+                            suffix: Padding(
+                              padding: const EdgeInsets.only(left:8.0),
+                              child: DropDownSuffix(
+                                isDarkMode: settingController.darkMode,
+                              ),
                             )),
                       ),
                     ),
                   ),
                 ),
+                dropdownCtrlP.selectedValue.contains("ws") &&
+                        settingController.address != ""
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 16.0, left: 16, right: 16),
+                        child: WsConnectButton(
+                            settingController: settingController),
+                      )
+                    : const SizedBox.shrink(),
                 PickerNumber(
                   value: settingController.visibleAmountBtn,
                   minValue: 1,

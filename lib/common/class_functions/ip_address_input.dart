@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class InputValid {
@@ -10,7 +9,7 @@ class InputValid {
     return FilteringTextInputFormatter.allow(RegExp("[:0-9.]"));
   }
   static TextInputFormatter urlInputFilter() {
-    return FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9./:]"));
+    return FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9./:-]"));
   }
 }
 

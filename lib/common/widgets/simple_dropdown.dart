@@ -15,6 +15,7 @@ class DropDownPrefix extends StatelessWidget {
         return SizedBox(
           height: 30,
           child: DropdownButton<String>(
+            isDense: true,
             value: dropdownCtrl.selectedValue,
             dropdownColor:isDarkMode? Colors.black54: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -22,7 +23,7 @@ class DropDownPrefix extends StatelessWidget {
             
             onChanged: (String? newValue) {
               newValue ??= dropdownCtrl.selectedValue;
-              dropdownCtrl.saveSelectedOption(newValue!);
+              dropdownCtrl.saveSelectedOption(newValue);
             },
             items: dropdownCtrl.values.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
@@ -62,7 +63,7 @@ class DropDownSuffix extends StatelessWidget {
             
             onChanged: (String? newValue) {
               newValue ??= dropdownCtrl.selectedValue;
-              dropdownCtrl.saveSelectedOption(newValue!);
+              dropdownCtrl.saveSelectedOption(newValue);
             },
             items: dropdownCtrl.values.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(

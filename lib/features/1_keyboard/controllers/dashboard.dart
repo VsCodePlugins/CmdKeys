@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/services/commands_request.dart';
+import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import 'command.dart';
 import 'vscodekeyboard.dart';
 
-class PanelDashBoard with ChangeNotifier, CommandsRequest {
-
+class PanelDashBoard with ChangeNotifier, HttpRequest {
   KeyBoardCommand currentKeyBoard = VsCodeKeyBoard();
   Map<String, KeyBoardCommand> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
-  final PageController pageController =  PageController();
-  
+  final PageController pageController = PageController(initialPage: 1);
+
   PanelDashBoard() {
     Future.sync(() => null).then((_) async {
       preferencesInstance = await SharedPreferences.getInstance();
@@ -26,13 +27,25 @@ class PanelDashBoard with ChangeNotifier, CommandsRequest {
     });
   }
 
-  Future<String> sentRequest(Map<String, String> command) async {
+  Future<String?> sentCommand(
+      dynamic command, KeyboardSettingController keyboardSettingCtrl) async {
     String routeAddress = preferencesInstance
             .getString('${currentKeyBoard.keyBoardName} routeAddress') ??
         "";
 
     try {
-      String message = await sendCommand(command, routeAddress).timeout(const Duration(seconds: 4));
+      if (keyboardSettingCtrl.connectionState is Connected ||
+          keyboardSettingCtrl.connectionState is Reconnected) {
+        keyboardSettingCtrl.sendCommandWs(command: command);
+        return null;
+      }
+      
+      if (keyboardSettingCtrl.routeAddress.contains("ws")) {
+        throw Exception(
+            "WebSocket Disconnected: Please review and update your connection settings.");
+      }
+      String message = await sendCommandHttp(command, routeAddress)
+          .timeout(const Duration(seconds: 4));
       return message;
     } catch (e) {
       rethrow;
@@ -76,7 +89,7 @@ class PanelDashBoard with ChangeNotifier, CommandsRequest {
     return showExceptions;
   }
 
-  bool showResponses(){
+  bool showResponses() {
     bool showResponses = preferencesInstance
             .getBool('${currentKeyBoard.keyBoardName} showResponses') ??
         false;

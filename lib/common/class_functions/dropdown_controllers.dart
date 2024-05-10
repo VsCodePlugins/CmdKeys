@@ -15,7 +15,7 @@ class DropDownController with ChangeNotifier {
     loadSavedData();
   }
 
-  String? get selectedValue => _selectedValue;
+  String get selectedValue => _selectedValue;
 
   List<String> get values => _values;
 

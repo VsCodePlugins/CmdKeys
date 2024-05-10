@@ -11,14 +11,13 @@ class VsCodeKeyBoard extends KeyBoardCommand {
   static const JsonCodec json = JsonCodec();
 
   List<BtnProperty> createDebugVsCodeKeyboard() {
-    String keyValue = "command";
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
         index: 0,
         iconName: "bug",
-        functionName: "continue",
-        functionLabel: "Continue",
-        functionCommand:   {keyValue:"continue"},
+        functionName: "start",
+        functionLabel: "Start",
+        command:   "startDebug",
         color: Colors.green));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -26,7 +25,7 @@ class VsCodeKeyBoard extends KeyBoardCommand {
         iconName: "debugStepOver",
         functionName: "debugStepOver",
         functionLabel: "Step Over",
-        functionCommand: {keyValue:"debugStepOver"},
+        command: "stepOverDebug",
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -34,7 +33,7 @@ class VsCodeKeyBoard extends KeyBoardCommand {
         iconName: "debugStepInto",
         functionName: "debugStepInto",
         functionLabel: "Step Into",
-        functionCommand:  {keyValue:"debugStepInto"},
+        command:  "stepIntoDebug",
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -42,40 +41,23 @@ class VsCodeKeyBoard extends KeyBoardCommand {
         iconName: "debugStepOut",
         functionName: "debugStepOut",
         functionLabel: "Step Out",
-        functionCommand:{keyValue:"debugStepOut"},
+        command:"stepOutDebug",
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
         index: 4,
-        iconName: "lightningBolt",
-        functionName: "hotReload",
-        functionLabel: "Hot Reload",
-        functionCommand:   {keyValue:"hotReload"},
-        color: Colors.orange));
-    listBtnProperties.add(BtnProperty(
-        sizeIcon: const Size(50, 50),
-        index: 5,
         iconName: "restart",
         functionName: "restart",
         functionLabel: "Restart",
-        functionCommand:  {keyValue:"restart"},
+        command: "restartDebug",
         color: Colors.green));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
-        index: 6,
+        index: 5,
         iconName: "stop",
         functionName: "stop",
         functionLabel: "Stop",
-        functionCommand:  {keyValue:"stop"},
+        command: "stopDebug",
         color: Colors.red));
-    listBtnProperties.add(BtnProperty(
-        sizeIcon: const Size(50, 50),
-        index: 7,
-        iconName: "toolbox",
-        functionName: "devTools",
-        functionLabel: "Dev Tools",
-        functionCommand: {keyValue:"devTools"},
-        color: Colors.blue[900]!));
-
     return listBtnProperties;
   } }

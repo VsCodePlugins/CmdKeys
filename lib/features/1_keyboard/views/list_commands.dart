@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import '../controllers/dashboard.dart';
-import 'slidable_command.dart';
+import 'slidable_btn_action.dart';
 
 class ListCommands extends StatefulWidget {
   const ListCommands({
@@ -24,7 +24,7 @@ class ListCommands extends StatefulWidget {
 }
 
 class _ListCommandsState extends State<ListCommands> {
-  Offset distance = Offset(6, 6);
+  Offset distance = const Offset(6, 6);
   double blur = 16.0;
 
   @override

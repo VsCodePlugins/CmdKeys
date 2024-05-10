@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class BtnProperty  {
    
    Size sizeIcon;
@@ -11,12 +9,14 @@ class BtnProperty  {
    String iconName;
    String functionName;
    String functionLabel;
-   Map<String,String> functionCommand;
+   Map<String,dynamic> ? mapCommand; 
+   String ? command;
    Color color;
    bool isLastPressed ;
-  int counter ;
+   int counter ;
+   bool isEnable;
 
-   
+
 
 
   BtnProperty(
@@ -25,12 +25,12 @@ class BtnProperty  {
       required this.iconName,
       required this.functionName,
       required this.functionLabel,
-      required this.functionCommand,
+      this.mapCommand,
+      required this.command,
       required this.color,
       this.isLastPressed = false,
       this.counter = 0,
-
-      
+      this.isEnable = true,
       });
 
 
@@ -42,10 +42,12 @@ class BtnProperty  {
       'icon': iconName,
       'functionName': functionName,
       'functionLabel': functionLabel,
-      'functionCommand': functionCommand["command"],
+      'mapCommand': mapCommand,
+      'command': command,
       'color': color.value,
       'isLastPressed': isLastPressed,
       'counter': counter,
+      'isEnable':isEnable,
     });
   }
 
@@ -56,6 +58,18 @@ class BtnProperty  {
 
 void clearCounter() {
     counter = 0;
+  }
+
+  dynamic commandSelector(){
+
+    if (command != null){
+      return command;
+    }else{
+      if (mapCommand == null){
+        throw Exception("This button has no command assigned");
+      }
+      return mapCommand;
+    }
   }
 
   void saveConfig(String nameList) async {
@@ -83,10 +97,12 @@ void clearCounter() {
           iconName: data['icon'],
           functionName: data['functionName'],
           functionLabel: data['functionLabel'],
-          functionCommand:{"command": data['functionCommand']},
+          mapCommand:data['functionCommand'],
+          command:data['command'],
           color: Color(data['color']),
           isLastPressed: data['isLastPressed'],
-          counter: data['counter']);
+          counter: data['counter'],
+          isEnable: data['isEnable']??false);
           
           
 
@@ -97,10 +113,12 @@ void clearCounter() {
           iconName: "newBox",
           functionName: "default",
           functionLabel: "Default",
-          functionCommand: {"command":"default"},
+          mapCommand: {"showMessage":"Hello Word"},
+          command: null,
           color: Colors.grey,
           isLastPressed: false,
-          counter: 0);
+          counter: 0,
+          isEnable: false);
           }
     
   }

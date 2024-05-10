@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsckeyboard/common/services/ws_connection.dart';
 
-class KeyboardSettingController extends ChangeNotifier {
+class KeyboardSettingController extends ChangeNotifier with WsConnection {
   String keyBoardName;
   TextEditingController ctrlVisibleAmountBtn = TextEditingController();
   TextEditingController ctrlAddress = TextEditingController();
 
-  int visibleAmountBtn =3;
+  int visibleAmountBtn = 3;
   late Size sizeIcon;
   late String prefix;
   String address = "";
@@ -16,6 +15,7 @@ class KeyboardSettingController extends ChangeNotifier {
   late String currentSettingName;
   bool showExceptions = false;
   bool showResponses = false;
+  bool lockKeyboard = false;
   late bool darkMode;
   late bool osDarkMode;
   late SharedPreferences preferencesInstance;
@@ -26,14 +26,28 @@ class KeyboardSettingController extends ChangeNotifier {
     var brightness = MediaQuery.of(buildContext).platformBrightness;
     osDarkMode = brightness == Brightness.dark;
     darkMode = osDarkMode;
-    
+
     SharedPreferences.getInstance().then((instance) {
       preferencesInstance = instance;
       loadConfig(keyBoardName);
+      tryWebsocketConnection();
     });
   }
 
-    void saveConfig() async {
+  void tryWebsocketConnection() {
+   
+    if (address != "" && routeAddress.contains("ws")) {
+      connectToWebsocket(routeAddress, notifyListeners);
+      notifyListeners();
+    }
+  }
+
+  void stopWebsocketConnection() {
+    disconnectWebsocket();
+    notifyListeners();
+  }
+
+  void saveConfig() async {
     preferencesInstance.setString('currentSettingName', currentSettingName);
     preferencesInstance.setInt(
         '$currentSettingName visibleAmountBtn', visibleAmountBtn);
@@ -50,11 +64,12 @@ class KeyboardSettingController extends ChangeNotifier {
     preferencesInstance.setBool(
         '$currentSettingName showResponses', showResponses);
     preferencesInstance.setBool('$currentSettingName darkMode', darkMode);
+    preferencesInstance.setBool('$currentSettingName lockKeyboard', lockKeyboard);
 
     notifyListeners();
   }
 
-    loadConfig(String? settingName) {
+  loadConfig(String? settingName) {
     if (settingName != null) {
       currentSettingName = settingName;
     } else {
@@ -81,13 +96,12 @@ class KeyboardSettingController extends ChangeNotifier {
             false;
     darkMode = preferencesInstance.getBool('$currentSettingName darkMode') ??
         osDarkMode;
+    lockKeyboard = preferencesInstance.getBool('$currentSettingName lockKeyboard') ??
+        lockKeyboard;
 
     setTextInputAddress();
     notifyListeners();
   }
-
-
-
 
   void setTextInputAddress() {
     ctrlAddress.text = address;
@@ -115,7 +129,6 @@ class KeyboardSettingController extends ChangeNotifier {
     showResponses = newValue;
     preferencesInstance.setBool(
         '$currentSettingName showResponses', showResponses);
-
     notifyListeners();
   }
 
@@ -124,8 +137,6 @@ class KeyboardSettingController extends ChangeNotifier {
     preferencesInstance.setBool('$currentSettingName darkMode', newValue);
     notifyListeners();
   }
-
-
 
   void updateVisibleAmountBtn() {
     visibleAmountBtn = int.parse(ctrlVisibleAmountBtn.text);
@@ -139,15 +150,22 @@ class KeyboardSettingController extends ChangeNotifier {
     sizeIcon = Size(size, size);
   }
 
-  void updateButtonsVisible(int number){
+  void updateButtonsVisible(int number) {
     visibleAmountBtn = number;
-      preferencesInstance.setInt(
+    preferencesInstance.setInt(
         '$currentSettingName visibleAmountBtn', visibleAmountBtn);
   }
-  
+
   void updateAddressServer(String newPrefix) {
     prefix = newPrefix;
     address = ctrlAddress.text;
     routeAddress = "$prefix$address";
+  }
+
+    void updateLockKeyboard(bool isBlocked) {
+    lockKeyboard = isBlocked;
+    preferencesInstance.setBool('$currentSettingName lockKeyboard', lockKeyboard);
+    notifyListeners();
+
   }
 }
