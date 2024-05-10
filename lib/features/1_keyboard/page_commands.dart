@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
 import 'controllers/dashboard.dart';
@@ -12,8 +13,9 @@ double lengthScreen = 1;
 
 class ConsumerListCommand extends StatelessWidget {
   final KeyboardSettingController keyboardSettingController;
+  final HomeController homeController;
   final bool isDarkMode = false;
-  const ConsumerListCommand({super.key, required this.keyboardSettingController,
+  const ConsumerListCommand({super.key, required this.keyboardSettingController, required this.homeController,
     });
 
   @override
@@ -39,6 +41,7 @@ class ConsumerListCommand extends StatelessWidget {
       return Consumer<PanelDashBoard>(
           builder: (context, panelDashBoard, child) {
         return ListCommands(
+          homeController: homeController,
             padding: padding,
             sizeBtn: sizeBtn,
             panelDashBoard: panelDashBoard,

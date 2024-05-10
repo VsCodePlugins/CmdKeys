@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/services/ws_connection.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 
 class KeyboardSettingController extends ChangeNotifier with WsConnection {
-  String keyBoardName;
   TextEditingController ctrlVisibleAmountBtn = TextEditingController();
   TextEditingController ctrlAddress = TextEditingController();
-
+  final PanelDashBoard panelDashBoard;
   int visibleAmountBtn = 3;
   late Size sizeIcon;
   late String prefix;
@@ -18,18 +18,19 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection {
   bool lockKeyboard = false;
   late bool darkMode;
   late bool osDarkMode;
+  
   late SharedPreferences preferencesInstance;
   final BuildContext buildContext;
   double slideValue = 10;
 
-  KeyboardSettingController(this.keyBoardName, this.buildContext) {
+  KeyboardSettingController(this.panelDashBoard, this.buildContext,) {
     var brightness = MediaQuery.of(buildContext).platformBrightness;
     osDarkMode = brightness == Brightness.dark;
     darkMode = osDarkMode;
 
     SharedPreferences.getInstance().then((instance) {
       preferencesInstance = instance;
-      loadConfig(keyBoardName);
+      loadConfig(panelDashBoard.currentKeyBoard.keyBoardName);
       tryWebsocketConnection();
     });
   }
@@ -167,5 +168,35 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection {
     preferencesInstance.setBool('$currentSettingName lockKeyboard', lockKeyboard);
     notifyListeners();
 
+  }
+
+    void setLastPressed(index) {
+    for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
+      panelDashBoard.listBtnProperties[i].isLastPressed = false;
+      panelDashBoard.listBtnProperties[i].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    }
+    panelDashBoard.listBtnProperties[index].isLastPressed = true;
+    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    notifyListeners();
+  }
+
+  void updateCounter(index) {
+    panelDashBoard.listBtnProperties[index].increaseCounter();
+    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    notifyListeners();
+  }
+
+  void resetCounter(index) {
+    panelDashBoard.listBtnProperties[index].clearCounter();
+    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    notifyListeners();
+  }
+
+  void resetAllCounters() {
+    for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
+      panelDashBoard.listBtnProperties[i].clearCounter();
+      panelDashBoard.listBtnProperties[i].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    }
+    notifyListeners();
   }
 }

@@ -3,35 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vibration/vibration.dart';
+import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
-class MenuFab extends StatefulWidget {
+class MenuFab extends StatelessWidget {
   const MenuFab({
     super.key,
-    required this.panelDashBoard,
+    required this.homeController,
     required this.keyboardSettings,
     required this.scaffoldKey,
+    required this.panelDashBoard,
   });
-
   final PanelDashBoard panelDashBoard;
+  final HomeController homeController;
   final KeyboardSettingController keyboardSettings;
   final GlobalKey<ScaffoldMessengerState> scaffoldKey;
-
-  @override
-  State<MenuFab> createState() => _MenuFabState();
-}
-
-class _MenuFabState extends State<MenuFab> {
-  int _currentPage = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.panelDashBoard.pageController.addListener(() {
-      _currentPage = widget.panelDashBoard.pageController.page!.toInt();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +43,7 @@ class _MenuFabState extends State<MenuFab> {
         debugPrint('afterClose');
       },
       children: [
-        if (_currentPage == 1)
+        if (homeController.isHome)
           FloatingActionButton.small(
             // shape: const CircleBorder(),
             heroTag: null,
@@ -67,20 +54,20 @@ class _MenuFabState extends State<MenuFab> {
                 if (Platform.isAndroid || Platform.isIOS) {
                   Vibration.vibrate(duration: 200);
                 }
-                widget.panelDashBoard.resetAllCounters();
+                keyboardSettings.resetAllCounters();
                 state.toggle();
                 const SnackBar snackBar = SnackBar(
                   content: Text("Reset all counters in the current keyboard"),
                 );
-                widget.scaffoldKey.currentState?.showSnackBar(snackBar);
+                scaffoldKey.currentState?.showSnackBar(snackBar);
               }
             },
           ),
-        if (_currentPage == 1)
+        if (homeController.isHome)
           FloatingActionButton.small(
             // shape: const CircleBorder(),
             heroTag: null,
-            child: !widget.keyboardSettings.lockKeyboard
+            child: !keyboardSettings.lockKeyboard
                 ? const Icon(Icons.lock_rounded)
                 : const Icon(Icons.lock_open_rounded),
             onPressed: () {
@@ -89,33 +76,25 @@ class _MenuFabState extends State<MenuFab> {
                 if (Platform.isAndroid || Platform.isIOS) {
                   Vibration.vibrate(duration: 200);
                 }
-                widget.keyboardSettings
-                    .updateLockKeyboard(!widget.keyboardSettings.lockKeyboard);
+                keyboardSettings
+                    .updateLockKeyboard(!keyboardSettings.lockKeyboard);
                 state.toggle();
               }
             },
           ),
         FloatingActionButton.small(
-          // shape: const CircleBorder(),
-          child: _currentPage == 1
+          child: (homeController.isHome)
               ? const Icon(Icons.settings)
               : const Icon(Icons.keyboard),
           onPressed: () {
             final state = key.currentState;
             if (state != null) {
-              widget.panelDashBoard.pageController.animateToPage(
-                  _currentPage == 1 ? 2 : 1,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut);
+              homeController.toggleHomeSettings();
               if (Platform.isAndroid || Platform.isIOS) {
                 Vibration.vibrate(duration: 200);
               }
               state.toggle();
             }
-            WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-                  _currentPage =
-                      widget.panelDashBoard.pageController.page!.toInt();
-                }));
           },
         ),
       ],

@@ -13,7 +13,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   Map<String, KeyBoardCommand> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
-  final PageController pageController = PageController(initialPage: 1);
 
   PanelDashBoard() {
     Future.sync(() => null).then((_) async {
@@ -22,7 +21,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
       if (!isSaved) {
         mapBtnProperties[currentKeyBoard.keyBoardName] = currentKeyBoard;
         currentKeyBoard.saveListBtnProperties();
-        notifyListeners();
       }
     });
   }
@@ -39,7 +37,7 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
         keyboardSettingCtrl.sendCommandWs(command: command);
         return null;
       }
-      
+
       if (keyboardSettingCtrl.routeAddress.contains("ws")) {
         throw Exception(
             "WebSocket Disconnected: Please review and update your connection settings.");
@@ -57,7 +55,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     if (listBtnProperties.isEmpty) {
       return false;
     } else {
-      notifyListeners();
       return true;
     }
   }
@@ -76,8 +73,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
       }
     }
     currentKeyBoard = keyBoardCommand;
-    notifyListeners();
-
     return listBtnProperties;
   }
 
@@ -97,33 +92,5 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     return showResponses;
   }
 
-  void setLastPressed(index) {
-    for (var i = 0; i < listBtnProperties.length; i++) {
-      listBtnProperties[i].isLastPressed = false;
-      listBtnProperties[i].saveConfig(currentKeyBoard.keyBoardName);
-    }
-    listBtnProperties[index].isLastPressed = true;
-    listBtnProperties[index].saveConfig(currentKeyBoard.keyBoardName);
-    notifyListeners();
-  }
 
-  void updateCounter(index) {
-    listBtnProperties[index].increaseCounter();
-    listBtnProperties[index].saveConfig(currentKeyBoard.keyBoardName);
-    notifyListeners();
-  }
-
-  void resetCounter(index) {
-    listBtnProperties[index].clearCounter();
-    listBtnProperties[index].saveConfig(currentKeyBoard.keyBoardName);
-    notifyListeners();
-  }
-
-  void resetAllCounters() {
-    for (var i = 0; i < listBtnProperties.length; i++) {
-      listBtnProperties[i].clearCounter();
-      listBtnProperties[i].saveConfig(currentKeyBoard.keyBoardName);
-    }
-    notifyListeners();
-  }
 }

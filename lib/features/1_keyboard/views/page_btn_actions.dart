@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
-
 import '../controllers/dashboard.dart';
 import 'list_commands.dart';
 
@@ -10,8 +10,8 @@ import 'list_commands.dart';
 
 class ConsumerListCommand extends StatelessWidget {
   final KeyboardSettingController keyboardSettingController;
-
-  const ConsumerListCommand({super.key, required this.keyboardSettingController
+  final HomeController homeController;
+  const ConsumerListCommand({super.key, required this.keyboardSettingController, required this.homeController
     });
 
   @override
@@ -44,6 +44,7 @@ class ConsumerListCommand extends StatelessWidget {
             panelDashBoard: panelDashBoard,
             orientation: orientation,
             keyboardSettingController: keyboardSettingController,
+            homeController: homeController,
             );
       });
     });

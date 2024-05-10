@@ -27,13 +27,14 @@ class ButtonFunction extends StatefulWidget {
 }
 
 class _ButtonFunctionState extends State<ButtonFunction> {
-  bool isNotPressed = false;
+  late bool isNotPressed;
   late FToast fToast;
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
+    isNotPressed = false;
   }
 
   @override
@@ -53,68 +54,77 @@ class _ButtonFunctionState extends State<ButtonFunction> {
     Offset distance = isNotPressed ? const Offset(3, 3) : const Offset(3, 3);
     double blur = isNotPressed ? 10.0 : 12.0;
     return GestureDetector(
-      onTapUp:(widget.keyboardSettingCtrl.lockKeyboard == true)?null : (details) async {
-        print("on tapUp");
-        await Future.delayed(const Duration(milliseconds: 100));
+      onTapUp: (widget.keyboardSettingCtrl.lockKeyboard == true)
+          ? null
+          : (details) async {
+              print("on tapUp");
+              await Future.delayed(const Duration(milliseconds: 100));
+              if (context.mounted) {
+                setState(() {
+                  isNotPressed = false;
+                });
+              }
+            },
+      onTapDown: (widget.keyboardSettingCtrl.lockKeyboard == true)
+          ? null
+          : (s) async {
+              if (!context.mounted) {
+                return;
+              }
+              setState(() {
+                isNotPressed = true;
+              });
+              
+              print("on tapDown");
+              widget.panelDashBoard
+                  .sentCommand(widget.btnProperty.commandSelector(),
+                      widget.keyboardSettingCtrl)
+                  .then((value) {
+                if (widget.panelDashBoard.showResponses() && value != null) {
+                  showToast(MessageToast(
+                    message: value.toString(),
+                    iconToast: const Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    ),
+                    isDarkMode: widget.keyboardSettingCtrl.darkMode,
+                  ));
+                }
+              }, onError: (e) {
+                if (widget.panelDashBoard.showExceptions()) {
+                  showToast(MessageToast(
+                    message: e.toString(),
+                    iconToast: const Icon(
+                      Icons.error,
+                      color: Colors.orange,
+                    ),
+                    isDarkMode: widget.keyboardSettingCtrl.darkMode,
+                  ));
+                }
+              });
 
-        setState(() {
-          isNotPressed = false;
-        });
-      },
-      
-      onTapDown:(widget.keyboardSettingCtrl.lockKeyboard == true)?null :(s) async {
-        print("on tapDown");
-          widget.panelDashBoard
-              .sentCommand(widget.btnProperty.commandSelector(), widget.keyboardSettingCtrl)
-              .then((value) {
-            if (widget.panelDashBoard.showResponses() && value != null) {
-              showToast(MessageToast(
-                message: value.toString(),
-                iconToast: const Icon(
-                  Icons.check,
-                  color: Colors.green,
-                ),
-                isDarkMode: widget.keyboardSettingCtrl.darkMode,
-              ));
-            }
-          }, onError: (e) {
-            if (widget.panelDashBoard.showExceptions()) {
-              showToast(MessageToast(
-                message: e.toString(),
-                iconToast: const Icon(
-                  Icons.error,
-                  color: Colors.orange,
-                ),
-                isDarkMode: widget.keyboardSettingCtrl.darkMode,
-              ));
-            }
-          });
-        
+              if (Platform.isAndroid || Platform.isIOS) {
+                Vibration.vibrate(duration: 200);
+              }
 
-        setState(() {
-          isNotPressed = true;
-          widget.panelDashBoard.setLastPressed(widget.btnProperty.index);
-          widget.panelDashBoard.updateCounter(widget.btnProperty.index);
-
-          Future.doWhile(() async {
-            if (Platform.isAndroid || Platform.isIOS) {
-              Vibration.vibrate(duration: 200);
-            }
-            await Future.delayed(const Duration(milliseconds: 200));
-            return isNotPressed;
-          });
-        });
-      },
-      onLongPressEnd: (widget.keyboardSettingCtrl.lockKeyboard == true)?null :(d) {
-        setState(() {
-          isNotPressed = false;
-        });
-      },
-      onTapCancel: (widget.keyboardSettingCtrl.lockKeyboard == true)?null : () {
-        setState(() {
-          isNotPressed = false;
-        });
-      },
+              await Future.delayed(const Duration(milliseconds: 200));
+              widget.keyboardSettingCtrl.setLastPressed(widget.btnProperty.index);
+              widget.keyboardSettingCtrl.updateCounter(widget.btnProperty.index);
+            },
+      onLongPressEnd: (widget.keyboardSettingCtrl.lockKeyboard == true)
+          ? null
+          : (d) {
+              setState(() {
+                isNotPressed = false;
+              });
+            },
+      onTapCancel: (widget.keyboardSettingCtrl.lockKeyboard == true)
+          ? null
+          : () {
+              setState(() {
+                isNotPressed = false;
+              });
+            },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         decoration: BoxDecoration(
@@ -148,8 +158,7 @@ class _ButtonFunctionState extends State<ButtonFunction> {
             widget: widget,
             isNotPressed: isNotPressed,
             orientation: MediaQuery.of(context).orientation,
-            counter: counter
-            ),
+            counter: counter),
       ),
     );
   }
@@ -176,49 +185,57 @@ class CommandButtonContent extends StatelessWidget {
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: buildButton(true, widget, isNotPressed, isLastPressed, counter)
-          )
+            children:
+                buildButton(true, widget, isNotPressed, isLastPressed, counter))
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: buildButton(false, widget, isNotPressed, isLastPressed,counter ),
+            children: buildButton(
+                false, widget, isNotPressed, isLastPressed, counter),
           );
   }
 }
 
-List<Widget> buildButton( bool isRow, ButtonFunction widget, bool isNotPressed,bool isLastPressed,int counter ){
-
-  return [SizedBox(width: isRow?16:0, height: isRow?0:16, ),
-                if (widget.keyboardSettingCtrl.lockKeyboard) const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.lock_outline),
-                ),
-                isLastPressed
-                  ? const Padding(
-                      padding: EdgeInsets.only(
-                          top: 8.0, left: 8.0, right: 8, bottom: 8.0),
-                      child: Icon(Icons.circle,
-                          size: 10, color: Colors.deepPurpleAccent),
-                    )
-                  : Container(),
-              Center(
-                child: IconBtn(
-                  widget: widget,
-                  isNotPressed: isNotPressed,
-                  isDarkMode: widget.keyboardSettingCtrl.darkMode,
-                  size: widget.keyboardSettingCtrl.sizeIcon,
-                ),
-              ),
-             
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(widget.btnProperty.functionLabel,style: const TextStyle(fontSize: 17), overflow: TextOverflow.fade,),
-              ),
-               Counter(
-                  counter: counter,
-                  isLastPressed: isLastPressed,
-                  isDarkMode: widget.keyboardSettingCtrl.darkMode),
-            ];
+List<Widget> buildButton(bool isRow, ButtonFunction widget, bool isNotPressed,
+    bool isLastPressed, int counter) {
+  return [
+    SizedBox(
+      width: isRow ? 16 : 0,
+      height: isRow ? 0 : 16,
+    ),
+    if (widget.keyboardSettingCtrl.lockKeyboard)
+      const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Icon(Icons.lock_outline),
+      ),
+    isLastPressed
+        ? const Padding(
+            padding:
+                EdgeInsets.only(top: 8.0, left: 8.0, right: 8, bottom: 8.0),
+            child: Icon(Icons.circle, size: 10, color: Colors.deepPurpleAccent),
+          )
+        : Container(),
+    Center(
+      child: IconBtn(
+        widget: widget,
+        isNotPressed: isNotPressed,
+        isDarkMode: widget.keyboardSettingCtrl.darkMode,
+        size: widget.keyboardSettingCtrl.sizeIcon,
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        widget.btnProperty.functionLabel,
+        style: const TextStyle(fontSize: 17),
+        overflow: TextOverflow.fade,
+      ),
+    ),
+    Counter(
+        counter: counter,
+        isLastPressed: isLastPressed,
+        isDarkMode: widget.keyboardSettingCtrl.darkMode),
+  ];
 }
 
 class IconBtn extends StatelessWidget {
