@@ -1,27 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsckeyboard/common/class_functions/commands.dart';
 import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 import 'command.dart';
-import 'vscodekeyboard.dart';
+import '../../../common/class_functions/default_vscodekeyboard.dart';
 
 class PanelDashBoard with ChangeNotifier, HttpRequest {
-  KeyBoardCommand currentKeyBoard = VsCodeKeyBoard();
-  Map<String, KeyBoardCommand> mapBtnProperties = {};
+  KeyBoardButtons currentKeyBoard = VsCodeKeyBoard();
+  Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
-
+   StreamController<Map<String,dynamic>> mainStreamStateCtrl = StreamController<Map<String,dynamic>>.broadcast(); 
+   late Stream<Map<String,dynamic>> mainStreamState; 
   PanelDashBoard() {
+     mainStreamState = mainStreamStateCtrl.stream;
     Future.sync(() => null).then((_) async {
       preferencesInstance = await SharedPreferences.getInstance();
-      bool isSaved = await isDefaultListSaved();
+      bool isSaved = await _isDefaultListSaved();
+
       if (!isSaved) {
+        listBtnProperties = await _loadListBtnProperties();
         mapBtnProperties[currentKeyBoard.keyBoardName] = currentKeyBoard;
         currentKeyBoard.saveListBtnProperties();
       }
+      notifyListeners();
     });
   }
 
@@ -50,8 +58,7 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     }
   }
 
-  Future<bool> isDefaultListSaved() async {
-    listBtnProperties = await loadListBtnProperties();
+  Future<bool> _isDefaultListSaved() async {
     if (listBtnProperties.isEmpty) {
       return false;
     } else {
@@ -59,15 +66,18 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     }
   }
 
-  Future<List<BtnProperty>> loadListBtnProperties(
-      {KeyBoardCommand? keyBoardCommand}) async {
-    keyBoardCommand ??= VsCodeKeyBoard();
-    listBtnProperties = keyBoardCommand.listBtnProperties;
-
+  Future<List<BtnProperty>> _loadListBtnProperties(
+      {KeyBoardButtons? keyBoardCommand}) async {
+    if (keyBoardCommand == null) {
+      VsCodeKeyBoard vsKeyBoardCommand = VsCodeKeyBoard();
+      List<ModelCommand> listCmd = await vsKeyBoardCommand.obtainListCommands();
+      await vsKeyBoardCommand.createDebugVsCodeKeyboard(listCmd);
+      listBtnProperties = vsKeyBoardCommand.listBtnProperties;
+      keyBoardCommand = vsKeyBoardCommand;
+    }
     for (var i = 0; i < keyBoardCommand.listBtnProperties.length; i++) {
-      BtnProperty btnProperty =
-          await BtnProperty.getBtProperty(keyBoardCommand.keyBoardName, i);
-
+      BtnProperty btnProperty = await BtnProperty.getBtProperty(
+          groupName: keyBoardCommand.keyBoardName, index: i);
       if (btnProperty.functionName != "default") {
         listBtnProperties[i] = btnProperty;
       }
@@ -80,7 +90,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     bool showExceptions = preferencesInstance
             .getBool('${currentKeyBoard.keyBoardName} showExceptions') ??
         false;
-
     return showExceptions;
   }
 
@@ -91,6 +100,4 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
 
     return showResponses;
   }
-
-
 }

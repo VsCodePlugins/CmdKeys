@@ -5,6 +5,7 @@ import 'package:flutter_icon_shadow/flutter_icon_shadow.dart';
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vibration/vibration.dart';
+import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
@@ -203,24 +204,26 @@ List<Widget> buildButton(bool isRow, ButtonFunction widget, bool isNotPressed,
       width: isRow ? 16 : 0,
       height: isRow ? 0 : 16,
     ),
+      isLastPressed
+        ? const Padding(
+            padding:
+                EdgeInsets.only(top: 8.0, left: 8.0, right: 8, bottom: 8.0),
+            child: Icon(Icons.circle, size: 10, color: Colors.blueAccent),
+          )
+        : const SizedBox.shrink(),
     if (widget.keyboardSettingCtrl.lockKeyboard)
       const Padding(
         padding: EdgeInsets.all(8.0),
         child: Icon(Icons.lock_outline),
       ),
-    isLastPressed
-        ? const Padding(
-            padding:
-                EdgeInsets.only(top: 8.0, left: 8.0, right: 8, bottom: 8.0),
-            child: Icon(Icons.circle, size: 10, color: Colors.deepPurpleAccent),
-          )
-        : Container(),
+  
     Center(
       child: IconBtn(
-        widget: widget,
         isNotPressed: isNotPressed,
         isDarkMode: widget.keyboardSettingCtrl.darkMode,
         size: widget.keyboardSettingCtrl.sizeIcon,
+        color: widget.btnProperty.color,
+        iconName: widget.btnProperty.iconName,
       ),
     ),
     Padding(
@@ -238,33 +241,6 @@ List<Widget> buildButton(bool isRow, ButtonFunction widget, bool isNotPressed,
   ];
 }
 
-class IconBtn extends StatelessWidget {
-  const IconBtn({
-    super.key,
-    required this.widget,
-    required this.isNotPressed,
-    required this.isDarkMode,
-    required this.size,
-  });
-
-  final ButtonFunction widget;
-  final bool isNotPressed;
-  final bool isDarkMode;
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconShadow(
-      Icon(MdiIcons.fromString(widget.btnProperty.iconName),
-          size: size.width,
-          color: isNotPressed
-              ? widget.btnProperty.color.withAlpha(100)
-              : widget.btnProperty.color),
-      shadowColor: isDarkMode ? Colors.black : Colors.white,
-      shadowOffset: const Offset(-4, -4),
-    );
-  }
-}
 
 class Counter extends StatelessWidget {
   const Counter({
@@ -285,7 +261,7 @@ class Counter extends StatelessWidget {
     if (isDarkMode) {
       styleText = TextStyle(
           color: isLastPressed
-              ? Colors.deepPurpleAccent
+              ? Colors.blueAccent
               : const Color.fromARGB(255, 63, 63, 63),
           fontSize: 20);
     } else {

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/services/ws_connection.dart';
+import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 
-class KeyboardSettingController extends ChangeNotifier with WsConnection {
+import 'session_debug_controller.dart';
+
+class KeyboardSettingController extends ChangeNotifier with WsConnection, SessionDebug {
   TextEditingController ctrlVisibleAmountBtn = TextEditingController();
   TextEditingController ctrlAddress = TextEditingController();
   final PanelDashBoard panelDashBoard;
   int visibleAmountBtn = 3;
+  double spaceDebugSessionSelector = 55;
   late Size sizeIcon;
   late String prefix;
   String address = "";
@@ -18,10 +22,11 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection {
   bool lockKeyboard = false;
   late bool darkMode;
   late bool osDarkMode;
-  
+  late BtnProperty ? currentBtnProperty; 
   late SharedPreferences preferencesInstance;
   final BuildContext buildContext;
   double slideValue = 10;
+  
 
   KeyboardSettingController(this.panelDashBoard, this.buildContext,) {
     var brightness = MediaQuery.of(buildContext).platformBrightness;
@@ -35,12 +40,18 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection {
     });
   }
 
+
   void tryWebsocketConnection() {
    
     if (address != "" && routeAddress.contains("ws")) {
       connectToWebsocket(routeAddress, notifyListeners);
+      startOnMessageWs();
       notifyListeners();
     }
+  }
+   void startOnMessageWs(){
+    onMessageWebsocket(functionCallback: getModelSessionDebug, notifyListeners: notifyListeners);
+
   }
 
   void stopWebsocketConnection() {
@@ -173,29 +184,29 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection {
     void setLastPressed(index) {
     for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
       panelDashBoard.listBtnProperties[i].isLastPressed = false;
-      panelDashBoard.listBtnProperties[i].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+      panelDashBoard.listBtnProperties[i].save();
     }
     panelDashBoard.listBtnProperties[index].isLastPressed = true;
-    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    panelDashBoard.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void updateCounter(index) {
     panelDashBoard.listBtnProperties[index].increaseCounter();
-    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    panelDashBoard.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void resetCounter(index) {
     panelDashBoard.listBtnProperties[index].clearCounter();
-    panelDashBoard.listBtnProperties[index].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+    panelDashBoard.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void resetAllCounters() {
     for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
       panelDashBoard.listBtnProperties[i].clearCounter();
-      panelDashBoard.listBtnProperties[i].saveConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+      panelDashBoard.listBtnProperties[i].save();
     }
     notifyListeners();
   }

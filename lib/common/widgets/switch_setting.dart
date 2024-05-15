@@ -48,7 +48,7 @@ class _SwitchSettingState extends State<SwitchSetting> {
                 const Icon(Icons.close),
                 Icon(
                   Icons.check,
-                  color: widget.isDarkMode? Colors.deepPurpleAccent:Colors.deepPurple,
+                  color: widget.isDarkMode? Colors.blueAccent:Colors.blue,
                 )
               ]),
           Center(

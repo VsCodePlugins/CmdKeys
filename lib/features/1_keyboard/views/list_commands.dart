@@ -33,10 +33,11 @@ class _ListCommandsState extends State<ListCommands> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        shrinkWrap: true,
         scrollDirection: widget.orientation == Orientation.landscape
             ? Axis.horizontal
             : Axis.vertical,
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(left:10, right: 10, bottom: 10),
         itemCount: widget.panelDashBoard.listBtnProperties.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(

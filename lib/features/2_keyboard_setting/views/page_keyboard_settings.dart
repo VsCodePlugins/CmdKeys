@@ -11,18 +11,18 @@ import 'package:vsckeyboard/common/widgets/switch_setting.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
-class CommandsSettings extends StatefulWidget {
+class KeyboardSettings extends StatefulWidget {
   final String keyBoardName;
-  const CommandsSettings({
+  const KeyboardSettings({
     super.key,
     required this.keyBoardName,
   });
 
   @override
-  State<CommandsSettings> createState() => _CommandsSettingsState();
+  State<KeyboardSettings> createState() => _KeyboardSettingsState();
 }
 
-class _CommandsSettingsState extends State<CommandsSettings> {
+class _KeyboardSettingsState extends State<KeyboardSettings> {
   FocusNode focusNode = FocusNode();
   String address = '';
 
@@ -89,7 +89,7 @@ class _CommandsSettingsState extends State<CommandsSettings> {
                     inputDecorationTheme: InputDecorationTheme(
                       focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.deepPurple,
+                            color: Colors.blueAccent,
                             width: 2,
                           ),
                           borderRadius: BorderRadius.all(

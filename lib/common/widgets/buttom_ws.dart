@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class WsConnectButton extends StatelessWidget {
+
   const WsConnectButton({
     super.key,
     required this.settingController,
@@ -48,7 +48,7 @@ class WsConnectButton extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(
                           MdiIcons.lanConnect,
-                          color: Colors.deepPurpleAccent,
+                          color: Colors.blue,
                         ),
                       )
                     : settingController.connectionState is Reconnecting
@@ -65,13 +65,15 @@ class WsConnectButton extends StatelessWidget {
                                 color: Colors.grey),
                           ),
                 Flexible(
-                  child: Text(settingController.connectionState == null ||
+                  child: 
+                  
+                  Text(settingController.connectionState == null ||
                           settingController.connectionState is Disconnected
                       ? 'Connect to : ${settingController.routeAddress}'
                       : settingController.connectionState is! Connected &&
                               settingController.connectionState is! Reconnected
                           ? '${settingController.connectionState.runtimeType.toString()} to ${settingController.routeAddress}\nPress and hold to cancel'
-                          : 'Connected to ${settingController.routeAddress}\nPress and hold to disconnect', overflow: TextOverflow.fade,maxLines: 2,),
+                          : 'Connected to ${settingController.routeAddress} Press and hold to disconnect', overflow: TextOverflow.fade,maxLines: 2,style: TextStyle(color: Colors.blue),),
                 ),
               ],
             ))),
@@ -79,3 +81,6 @@ class WsConnectButton extends StatelessWidget {
     );
   }
 }
+
+
+

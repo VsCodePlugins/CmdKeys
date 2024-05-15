@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,44 +18,39 @@ class SlidableCommand extends StatefulWidget {
     required this.parentWidget,
     required this.listBtnProperty,
     required this.index,
-     required this.keyboardSettingCtrl,
-     required this.homeController,
+    required this.keyboardSettingCtrl,
+    required this.homeController,
   });
 
   final ListCommands parentWidget;
   final List<BtnProperty> listBtnProperty;
   final int index;
   final KeyboardSettingController keyboardSettingCtrl;
-final HomeController homeController;
+  final HomeController homeController;
   @override
   State<SlidableCommand> createState() => _SlidableCommandState();
 }
 
-class _SlidableCommandState extends State<SlidableCommand>{
-
-
+class _SlidableCommandState extends State<SlidableCommand> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
-
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Slidable(
-      key:  ValueKey("${widget.index}_slidable"),
+      key: ValueKey("${widget.index}_slidable"),
       direction: widget.parentWidget.orientation == Orientation.landscape
           ? Axis.vertical
           : Axis.horizontal,
-      startActionPane:
-       ActionPane(
-        key:  ValueKey("${widget.index}_start"),
+      startActionPane: ActionPane(
+        key: ValueKey("${widget.index}_start"),
         motion: const ScrollMotion(),
         children: [
           Padding(
@@ -64,8 +58,10 @@ class _SlidableCommandState extends State<SlidableCommand>{
                 ? const EdgeInsets.only(top: 20.0)
                 : const EdgeInsets.only(left: 20.0),
             child: ElevatedButton(
-              onPressed: (){
-                 widget.homeController.changePage(PagesApp.settingsKey);
+              onPressed: () {
+                widget.keyboardSettingCtrl.currentBtnProperty =
+                    widget.listBtnProperty[widget.index];
+                widget.homeController.changePage(PagesApp.settingsKey);
               },
               style: ElevatedButton.styleFrom(
                   shadowColor: Colors.black,
@@ -76,13 +72,10 @@ class _SlidableCommandState extends State<SlidableCommand>{
                     borderRadius: BorderRadius.circular(10.0),
                   )),
               child: const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.deepPurpleAccent,
-                    size: 30,
-                  ),
+                child: Icon(
+                  Icons.settings,
+                  color: Colors.blueAccent,
+                  size: 30,
                 ),
               ),
             ),
@@ -90,7 +83,7 @@ class _SlidableCommandState extends State<SlidableCommand>{
         ],
       ),
       endActionPane: ActionPane(
-        key:  ValueKey("${widget.index}_end"),
+        key: ValueKey("${widget.index}_end"),
         motion: const ScrollMotion(),
         children: [
           Padding(
@@ -102,8 +95,7 @@ class _SlidableCommandState extends State<SlidableCommand>{
                   onPressed: widget.listBtnProperty[widget.index].counter == 0
                       ? null
                       : () {
-                          widget.keyboardSettingCtrl
-                              .resetCounter(widget.index);
+                          widget.keyboardSettingCtrl.resetCounter(widget.index);
                           if (Platform.isAndroid || Platform.isIOS) {
                             Vibration.vibrate(duration: 200, amplitude: 255);
                           }
@@ -116,24 +108,22 @@ class _SlidableCommandState extends State<SlidableCommand>{
                         borderRadius: BorderRadius.circular(10.0),
                       )),
                   child: Center(
-                    child:  Icon(
-                        MdiIcons.counter,
-                        color: widget.listBtnProperty[widget.index].counter == 0
-                            ? Colors.grey
-                            : Colors.deepPurpleAccent,
-                        size: 30,
-                      ),
-                    
+                    child: Icon(
+                      MdiIcons.counter,
+                      color: widget.listBtnProperty[widget.index].counter == 0
+                          ? Colors.grey
+                          : Colors.blueAccent,
+                      size: 30,
+                    ),
                   ),
                 ),
               )),
         ],
       ),
       child: ButtonFunction(
-        btnProperty: widget.listBtnProperty[widget.index],
-        panelDashBoard: widget.parentWidget.panelDashBoard,
-        keyboardSettingCtrl: widget.keyboardSettingCtrl
-      ),
+          btnProperty: widget.listBtnProperty[widget.index],
+          panelDashBoard: widget.parentWidget.panelDashBoard,
+          keyboardSettingCtrl: widget.keyboardSettingCtrl),
     );
   }
 }

@@ -34,7 +34,7 @@ class MessageToast extends StatelessWidget {
               child: Text(
                 message,
                 style:  TextStyle(
-                  color:  isDarkMode? Colors.deepPurpleAccent:Colors.black,
+                  color:  isDarkMode? Colors.blueAccent:Colors.black,
                   fontSize: 17,
                 ),
                 overflow: TextOverflow.ellipsis,

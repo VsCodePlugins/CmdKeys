@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
+import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/0_home/views/menu.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'features/0_home/views/page_panel.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // ignore: unused_local_variable
-  // SharedPreferences  sharedPreferences  = await SharedPreferences.getInstance();
-  //sharedPreferences.clear();
-  return runApp(const CustomRemoteKeyboard());
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+//await sharedPreferences.clear();
+  WakelockPlus.enable();
+  return runApp(const VscodeKeyboard());
 }
 
-class CustomRemoteKeyboard extends StatelessWidget {
-  const CustomRemoteKeyboard({super.key});
+class VscodeKeyboard extends StatelessWidget {
+  const VscodeKeyboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const KeyBoard();
+    return const Start();
   }
 }
+
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
-class KeyBoard extends StatelessWidget {
-  const KeyBoard({super.key});
-
+class Start extends StatelessWidget {
+  const Start({super.key});
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
@@ -34,29 +40,32 @@ class KeyBoard extends StatelessWidget {
           create: (_) => PanelDashBoard(),
           builder: (context, child) {
             final panelDashBoard = context.watch<PanelDashBoard>();
-
             return MultiProvider(
-                providers: [
-                  ChangeNotifierProvider<HomeController>(
-                    create: (homeController) => HomeController(),
-                  ),
-                  ChangeNotifierProvider<KeyboardSettingController>(
-                    create: (_) => KeyboardSettingController(
-                        panelDashBoard, context),
-                  ),
-                ],
-                builder: (context, w) {
-                  final homeController = context.watch<HomeController>();
+              providers: [
+                ChangeNotifierProvider<HomeController>(
+                  create: (homeController) => HomeController(),
+                ),
+                ChangeNotifierProvider<KeyboardSettingController>(
+                  create: (_) =>
+                      KeyboardSettingController(panelDashBoard, context),
+                ),
+              ],
+              builder: (context, w) {
+                final homeController = context.watch<HomeController>();
+                  panelDashBoard.mainStreamStateCtrl.sink.add({"isMenuOpen": false});
 
-                  final keyboardSettings =
-                      context.watch<KeyboardSettingController>();
-                  return MaterialApp(
+                final keyboardSettings =
+                    context.watch<KeyboardSettingController>();
+                return MaterialApp(
                     debugShowCheckedModeBanner: false,
                     darkTheme: keyboardSettings.darkMode
                         ? ThemeData.dark()
                         : ThemeData.light(),
                     theme: ThemeData(
-                        primarySwatch: Colors.deepPurple,
+                        primaryColorDark: Colors.blueAccent,
+                        secondaryHeaderColor: Colors.blue,
+                        primaryColor: Colors.blueAccent,
+                        primarySwatch: Colors.blue,
                         colorScheme: keyboardSettings.darkMode
                             ? const ColorScheme.dark()
                             : const ColorScheme.light()),
@@ -64,7 +73,7 @@ class KeyBoard extends StatelessWidget {
                     home: Scaffold(
                         key: scaffoldKey,
                         floatingActionButtonLocation: ExpandableFab.location,
-                        floatingActionButton: MenuFab(
+                        floatingActionButton: MenuFunctions(
                           homeController: homeController,
                           keyboardSettings: keyboardSettings,
                           scaffoldKey: scaffoldKey,
@@ -77,9 +86,10 @@ class KeyBoard extends StatelessWidget {
                           keyBoardName:
                               panelDashBoard.currentKeyBoard.keyBoardName,
                           homeController: homeController,
-                        ))),
-                  );
-                });
+                          panelDashBoard: panelDashBoard,
+                        ))));
+              },
+            );
           });
     });
   }

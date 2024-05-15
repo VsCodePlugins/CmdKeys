@@ -65,6 +65,13 @@ mixin class WsConnection {
     sendCommandWs(command: data);
   }
 
+  void onMessageWebsocket({required Function(String) functionCallback,required Function() notifyListeners})async {
+    wsSocket?.messages.listen((message) async {
+              functionCallback(message.toString());
+              notifyListeners();
+     },);
+  }
+
   void startListenerStateWs(Function notifyListeners) {
     wsSocket?.connection.listen((state) async {
       connectionState = state;

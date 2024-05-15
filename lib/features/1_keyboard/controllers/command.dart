@@ -1,23 +1,25 @@
+import 'package:vsckeyboard/common/class_functions/commands.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 
-class KeyBoardCommand {
+class KeyBoardButtons with Commands  {
   List<BtnProperty> listBtnProperties;
   final String keyBoardName;
 
-  KeyBoardCommand(this.keyBoardName, {required this.listBtnProperties});
+  KeyBoardButtons(this.keyBoardName, {required this.listBtnProperties});
 
   void saveListBtnProperties() {
     for (var i = 0; i < listBtnProperties.length; i++) {
-      listBtnProperties[i].saveConfig(keyBoardName);
+      listBtnProperties[i].saveAs(groupName: keyBoardName);
     }
   }
 
   void loadListBtnProperties() async {
     for (var i = 0; i < listBtnProperties.length; i++) {
-      BtnProperty value = await BtnProperty.getBtProperty(keyBoardName, i);
+      BtnProperty value = await BtnProperty.getBtProperty(groupName: keyBoardName, index: i);
       listBtnProperties.add(value);
     }
   }
+
 }
 
 
