@@ -1,11 +1,15 @@
 {
     "cSpell.words": [
+        "ARGB",
         "countertop",
         "fluttertoast",
         "iconpicker",
+        "spinkit",
         "unfocus",
         "vsckeyboard",
         "vscodekeyboard",
         "Wakelock"
-    ]
+    ],
+    "editor.fontSize": 15,
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/class_functions/commands.dart';
+import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
@@ -16,15 +16,17 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
-   StreamController<Map<String,dynamic>> mainStreamStateCtrl = StreamController<Map<String,dynamic>>.broadcast(); 
-   late Stream<Map<String,dynamic>> mainStreamState; 
+  StreamController<Map<String, dynamic>> mainStreamStateCtrl =
+      StreamController<Map<String, dynamic>>.broadcast();
+  late Stream<Map<String, dynamic>> mainStreamState;
   PanelDashBoard() {
-     mainStreamState = mainStreamStateCtrl.stream;
+    mainStreamState = mainStreamStateCtrl.stream;
     Future.sync(() => null).then((_) async {
       preferencesInstance = await SharedPreferences.getInstance();
       bool isSaved = await _isDefaultListSaved();
 
       if (!isSaved) {
+        await currentKeyBoard.getCommandGroups();
         listBtnProperties = await _loadListBtnProperties();
         mapBtnProperties[currentKeyBoard.keyBoardName] = currentKeyBoard;
         currentKeyBoard.saveListBtnProperties();
@@ -38,7 +40,6 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
     String routeAddress = preferencesInstance
             .getString('${currentKeyBoard.keyBoardName} routeAddress') ??
         "";
-
     try {
       if (keyboardSettingCtrl.connectionState is Connected ||
           keyboardSettingCtrl.connectionState is Reconnected) {
@@ -67,22 +68,22 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   }
 
   Future<List<BtnProperty>> _loadListBtnProperties(
-      {KeyBoardButtons? keyBoardCommand}) async {
-    if (keyBoardCommand == null) {
+      {KeyBoardButtons? keyBoard}) async {
+    if (keyBoard == null) {
       VsCodeKeyBoard vsKeyBoardCommand = VsCodeKeyBoard();
-      List<ModelCommand> listCmd = await vsKeyBoardCommand.obtainListCommands();
-      await vsKeyBoardCommand.createDebugVsCodeKeyboard(listCmd);
+      List<ModelCommand> ? listCmd = await vsKeyBoardCommand.getListCommandsByGroupName(commandGroupName: "debugger_commands");
+      await vsKeyBoardCommand.createDebugVsCodeKeyboard(listCmd!);
       listBtnProperties = vsKeyBoardCommand.listBtnProperties;
-      keyBoardCommand = vsKeyBoardCommand;
+      keyBoard = vsKeyBoardCommand;
     }
-    for (var i = 0; i < keyBoardCommand.listBtnProperties.length; i++) {
+    for (var i = 0; i < keyBoard.listBtnProperties.length; i++) {
       BtnProperty btnProperty = await BtnProperty.getBtProperty(
-          groupName: keyBoardCommand.keyBoardName, index: i);
+          groupName: keyBoard.keyBoardName, index: i);
       if (btnProperty.functionName != "default") {
         listBtnProperties[i] = btnProperty;
       }
     }
-    currentKeyBoard = keyBoardCommand;
+    currentKeyBoard = keyBoard;
     return listBtnProperties;
   }
 

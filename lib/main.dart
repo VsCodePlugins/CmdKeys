@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/0_home/views/menu.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
@@ -52,20 +51,69 @@ class Start extends StatelessWidget {
               ],
               builder: (context, w) {
                 final homeController = context.watch<HomeController>();
-                  panelDashBoard.mainStreamStateCtrl.sink.add({"isMenuOpen": false});
+                panelDashBoard.mainStreamStateCtrl.sink
+                    .add({"isMenuOpen": false});
 
                 final keyboardSettings =
                     context.watch<KeyboardSettingController>();
                 return MaterialApp(
+                  color: const Color.fromRGBO(33, 150, 243, 1),
+                    themeMode: ThemeMode.dark,
                     debugShowCheckedModeBanner: false,
+                    
                     darkTheme: keyboardSettings.darkMode
                         ? ThemeData.dark()
                         : ThemeData.light(),
                     theme: ThemeData(
+                       inputDecorationTheme: InputDecorationTheme(
+                        
+                      focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          )),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                        Radius.circular(16),
+                      )),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 2,
+                        ),
+                      ),
+                      labelStyle: TextStyle(
+                          color: keyboardSettings.darkMode
+                              ? Colors.white
+                              : Colors.black),
+                      prefixStyle: TextStyle(
+                          color: keyboardSettings.darkMode
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal),
+                      hintStyle: TextStyle(
+                          color: keyboardSettings.darkMode
+                              ? const Color.fromARGB(255, 66, 66, 66)
+                              : const Color.fromARGB(255, 201, 201, 201)),
+                    ),
+                        textSelectionTheme: TextSelectionThemeData(
+                          cursorColor: Colors.blue,
+                          selectionColor: Colors.blue[300],
+                          selectionHandleColor: Colors.blueAccent,
+                        ),
                         primaryColorDark: Colors.blueAccent,
                         secondaryHeaderColor: Colors.blue,
                         primaryColor: Colors.blueAccent,
+                        highlightColor: Colors.blueAccent,
                         primarySwatch: Colors.blue,
+                        hintColor: Colors.blueAccent,
                         colorScheme: keyboardSettings.darkMode
                             ? const ColorScheme.dark()
                             : const ColorScheme.light()),

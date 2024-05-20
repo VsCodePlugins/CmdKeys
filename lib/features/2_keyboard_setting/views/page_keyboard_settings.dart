@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vsckeyboard/common/class_functions/dropdown_controllers.dart';
 import 'package:vsckeyboard/common/class_functions/ip_address_input.dart';
-import 'package:vsckeyboard/common/widgets/buttom_ws.dart';
+import 'package:vsckeyboard/common/widgets/button_ws.dart';
 import 'package:vsckeyboard/common/widgets/number_picker.dart';
 import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
 import 'package:vsckeyboard/common/widgets/slider_setting.dart';
@@ -13,9 +13,12 @@ import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_set
 
 class KeyboardSettings extends StatefulWidget {
   final String keyBoardName;
+  final FocusNode focusNode;
+
   const KeyboardSettings({
     super.key,
     required this.keyBoardName,
+    required this.focusNode,
   });
 
   @override
@@ -23,7 +26,6 @@ class KeyboardSettings extends StatefulWidget {
 }
 
 class _KeyboardSettingsState extends State<KeyboardSettings> {
-  FocusNode focusNode = FocusNode();
   String address = '';
 
   @override
@@ -32,14 +34,14 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
         providers: [
           ChangeNotifierProvider<DropDownPrefixCtrl>(
             create: (_) => DropDownPrefixCtrl(
-              focusNode,
+              widget.focusNode,
               "TYPE",
               ['ws://', 'wss://', 'http://', 'https://'],
             ),
           ),
           ChangeNotifierProvider<DropDownSuffixCtrl>(
             create: (_) => DropDownSuffixCtrl(
-              focusNode,
+              widget.focusNode,
               "CONNECT_TO",
               ['IP:PORT', 'URL'],
             ),
@@ -59,11 +61,9 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
             settingController.ctrlAddress.clear();
             dropdownCtrlS.changeValue = false;
             settingController.disconnectWebsocket();
-
           }
           if (dropdownCtrlP.changeValue) {
-            WidgetsBinding.instance.addPostFrameCallback((_) =>
-                settingController.saveAddress(dropdownCtrlP.selectedValue));
+            settingController.saveAddress(dropdownCtrlP.selectedValue);
           }
 
           return SingleChildScrollView(
@@ -86,10 +86,15 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                 ),
                 Theme(
                   data: ThemeData(
+                    textSelectionTheme: TextSelectionThemeData(
+                      cursorColor: Colors.blue,
+                      selectionColor: Colors.blue[300],
+                      selectionHandleColor: Colors.blueAccent,
+                    ),
                     inputDecorationTheme: InputDecorationTheme(
                       focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.blueAccent,
+                            color: Colors.transparent,
                             width: 2,
                           ),
                           borderRadius: BorderRadius.all(
@@ -104,7 +109,7 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                           Radius.circular(16),
                         ),
                         borderSide: BorderSide(
-                          color: Colors.white30,
+                          color: Colors.transparent,
                           width: 2,
                         ),
                       ),
@@ -130,12 +135,13 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                       height: 85,
                       child: TextField(
                         onChanged: (value) {
-                          settingController.saveAddress(dropdownCtrlP.selectedValue);
+                          settingController
+                              .saveAddress(dropdownCtrlP.selectedValue);
                           settingController.stopWebsocketConnection();
                         },
                         key: const Key('host_text_field'),
                         controller: settingController.ctrlAddress,
-                        focusNode: focusNode,
+                        focusNode: widget.focusNode,
                         autofocus: false,
                         inputFormatters: [
                           if (dropdownCtrlS.selectedValue == 'IP')
@@ -152,22 +158,23 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                         minLines: 1,
                         maxLines: 3,
                         style: TextStyle(
-                          
                             color: settingController.darkMode
                                 ? Colors.white
                                 : Colors.black), //<-- HERE
                         decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.blue.withOpacity(.1),
                             hintText: (dropdownCtrlS.selectedValue == 'IP')
                                 ? '192.168.1.1'
                                 : (dropdownCtrlS.selectedValue == 'IP:PORT')
                                     ? '192.168.1.1:3333'
-                                    : 'www.myhost.com',
+                                    : 'www.host.com',
                             labelText: 'HOST',
                             prefix: DropDownPrefix(
                               isDarkMode: settingController.darkMode,
                             ),
                             suffix: Padding(
-                              padding: const EdgeInsets.only(left:8.0),
+                              padding: const EdgeInsets.only(left: 8.0),
                               child: DropDownSuffix(
                                 isDarkMode: settingController.darkMode,
                               ),

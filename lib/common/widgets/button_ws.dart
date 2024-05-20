@@ -5,7 +5,6 @@ import 'package:web_socket_client/web_socket_client.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class WsConnectButton extends StatelessWidget {
-
   const WsConnectButton({
     super.key,
     required this.settingController,
@@ -28,9 +27,11 @@ class WsConnectButton extends StatelessWidget {
         }
       },
       style: ButtonStyle(
-        side: MaterialStateProperty.all(
-            const BorderSide(color: Colors.grey, width: 2)),
-        shape: MaterialStateProperty.all(
+        side: WidgetStateProperty.all(
+            const BorderSide(color: Colors.transparent, width: 2)),
+        backgroundColor:
+            WidgetStatePropertyAll<Color>(Colors.blue.withOpacity(.1)),
+        shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       ),
       child: Padding(
@@ -48,32 +49,36 @@ class WsConnectButton extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(
                           MdiIcons.lanConnect,
-                          color: Colors.blue,
+                          color: Colors.blueAccent,
                         ),
                       )
                     : settingController.connectionState is Reconnecting
                         ? const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: SpinKitRipple(
+                            padding: EdgeInsets.all(8.0),
+                            child: SpinKitRipple(
                               color: Colors.white,
                               size: 30.0,
                             ),
-                        )
+                          )
                         : Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Icon(MdiIcons.lanDisconnect,
                                 color: Colors.grey),
                           ),
                 Flexible(
-                  child: 
-                  
-                  Text(settingController.connectionState == null ||
-                          settingController.connectionState is Disconnected
-                      ? 'Connect to : ${settingController.routeAddress}'
-                      : settingController.connectionState is! Connected &&
-                              settingController.connectionState is! Reconnected
-                          ? '${settingController.connectionState.runtimeType.toString()} to ${settingController.routeAddress}\nPress and hold to cancel'
-                          : 'Connected to ${settingController.routeAddress} Press and hold to disconnect', overflow: TextOverflow.fade,maxLines: 2,style: TextStyle(color: Colors.blue),),
+                  child: Text(
+                    settingController.connectionState == null ||
+                            settingController.connectionState is Disconnected
+                        ? 'Connect to : ${settingController.routeAddress}'
+                        : settingController.connectionState is! Connected &&
+                                settingController.connectionState
+                                    is! Reconnected
+                            ? '${settingController.connectionState.runtimeType.toString()} to ${settingController.routeAddress} Press and hold to cancel'
+                            : 'Connected to ${settingController.routeAddress} Press and hold to disconnect',
+                    overflow: TextOverflow.fade,
+                    maxLines: 2,
+                    style: const TextStyle(color: Colors.blueAccent),
+                  ),
                 ),
               ],
             ))),
@@ -81,6 +86,3 @@ class WsConnectButton extends StatelessWidget {
     );
   }
 }
-
-
-

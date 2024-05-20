@@ -37,6 +37,10 @@ class _PickerNumberState extends State<PickerNumber> {
         Center(
           child: NumberPicker(
             itemHeight: 120,
+            haptics: true,
+            selectedTextStyle: const TextStyle(color: Colors.blue, fontSize: 25),
+            textStyle: const TextStyle(color: Colors.white70, fontSize: 18),
+            zeroPad: true,
             axis: Axis.horizontal,
             value: _currentValue,
             minValue: widget.minValue,

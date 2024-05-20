@@ -3,13 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DropDownController with ChangeNotifier {
   late String _selectedValue;
-  late List<String> _values ;
+  late List<String> _values;
   final FocusNode focusNode;
   late SharedPreferences _pref;
-  String  sharedPreferencesName;
+  String sharedPreferencesName;
   bool changeValue = false;
-  
-  DropDownController(this.focusNode, this.sharedPreferencesName, this._values, ) {
+
+  DropDownController(
+    this.focusNode,
+    this.sharedPreferencesName,
+    this._values,
+  ) {
     _values = values;
     _selectedValue = values.first;
     loadSavedData();
@@ -22,7 +26,7 @@ class DropDownController with ChangeNotifier {
   void _setSelectedValue(String value) {
     if (_selectedValue == value) {
       changeValue = false;
-    }else {
+    } else {
       changeValue = true;
     }
 
@@ -30,29 +34,30 @@ class DropDownController with ChangeNotifier {
     notifyListeners();
   }
 
-
-
   loadSavedData() async {
     _pref = await SharedPreferences.getInstance();
-      _selectedValue = _pref.getString(sharedPreferencesName) ?? values.first;
-      print(_selectedValue);
+    _selectedValue = _pref.getString(sharedPreferencesName) ?? values.first;
     notifyListeners();
-
   }
 
   saveSelectedOption(String option) async {
-      _setSelectedValue(option);
+    _setSelectedValue(option);
+    if (sharedPreferencesName == "CONNECT_TO") {
       focusNode.previousFocus();
+    }
+    if (sharedPreferencesName == "TYPE") {
+      focusNode.nextFocus();
+    }
     await _pref.setString(sharedPreferencesName, option);
   }
-
-
 }
-
 
 class DropDownSuffixCtrl extends DropDownController {
-  DropDownSuffixCtrl(super.focusNode, super.sharedPreferencesName, super.values);
+  DropDownSuffixCtrl(
+      super.focusNode, super.sharedPreferencesName, super.values);
 }
+
 class DropDownPrefixCtrl extends DropDownController {
-  DropDownPrefixCtrl(super.focusNode, super.sharedPreferencesName, super.values);
+  DropDownPrefixCtrl(
+      super.focusNode, super.sharedPreferencesName, super.values);
 }

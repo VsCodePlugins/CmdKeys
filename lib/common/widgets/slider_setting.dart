@@ -40,7 +40,7 @@ class _SliderSettingState extends State<SliderSetting> {
               child: Icon(
             Icons.house_rounded,
             size: iconSize,
-            color: widget.isDarkMode?  Colors.white:Colors.black54,
+            color: widget.isDarkMode?  Colors.blue.withOpacity(0.5):Colors.blue,
           )),
           SfSlider(
             min: 10,
@@ -48,7 +48,7 @@ class _SliderSettingState extends State<SliderSetting> {
             value: iconSize,
             showTicks: true,
             showLabels: true,
-            activeColor: widget.isDarkMode?  Colors.white:Colors.grey[600],
+            activeColor: widget.isDarkMode?  Colors.blue.withOpacity(0.5):Colors.grey[600],
             enableTooltip: true,
             minorTicksPerInterval: 1,
             onChanged: (dynamic value) {

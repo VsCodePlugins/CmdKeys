@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -9,7 +8,6 @@ import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
-
 class MenuFunctions extends StatelessWidget {
   const MenuFunctions({
     super.key,
@@ -136,11 +134,10 @@ class MenuFunctions extends StatelessWidget {
 
 class SubMenu extends StatelessWidget {
   final PanelDashBoard panelDashBoard;
-  const SubMenu({
+   const SubMenu({
     super.key,
     required this.panelDashBoard,
   });
-
   @override
   Widget build(BuildContext context) {
     
@@ -155,13 +152,19 @@ class SubMenu extends StatelessWidget {
                   child: TextButton(
                       style: const ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll<Color>(Colors.black54),
+                            WidgetStatePropertyAll<Color>(Colors.black54),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        homeMenuController.openUrl();
+                      },
                       child:  Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(MdiIcons.microsoftVisualStudioCode, color: Colors.blueAccent),
-                          Text("VscodeKeyboard")
+                          const Padding(
+                            padding: EdgeInsets.only(left:8.0, right: 8),
+                            child: Text("VscodeKeyboard", style: TextStyle(color: Colors.white),),
+                          )
                           
                         ],
                       )))

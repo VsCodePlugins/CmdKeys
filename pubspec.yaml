@@ -55,6 +55,8 @@ dependencies:
   wakelock_plus: ^1.2.5
   uuid: ^4.4.0
   flex_color_picker: ^3.4.1
+  url_launcher: ^6.2.6
+  tab_container: ^3.5.3
 
 dev_dependencies:
   flutter_test:

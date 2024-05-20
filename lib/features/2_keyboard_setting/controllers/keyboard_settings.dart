@@ -6,7 +6,8 @@ import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 
 import 'session_debug_controller.dart';
 
-class KeyboardSettingController extends ChangeNotifier with WsConnection, SessionDebug {
+class KeyboardSettingController extends ChangeNotifier
+    with WsConnection, SessionDebug {
   TextEditingController ctrlVisibleAmountBtn = TextEditingController();
   TextEditingController ctrlAddress = TextEditingController();
   final PanelDashBoard panelDashBoard;
@@ -22,13 +23,15 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
   bool lockKeyboard = false;
   late bool darkMode;
   late bool osDarkMode;
-  late BtnProperty ? currentBtnProperty; 
+  BtnProperty? currentBtnProperty;
   late SharedPreferences preferencesInstance;
   final BuildContext buildContext;
   double slideValue = 10;
-  
 
-  KeyboardSettingController(this.panelDashBoard, this.buildContext,) {
+  KeyboardSettingController(
+    this.panelDashBoard,
+    this.buildContext,
+  ) {
     var brightness = MediaQuery.of(buildContext).platformBrightness;
     osDarkMode = brightness == Brightness.dark;
     darkMode = osDarkMode;
@@ -40,22 +43,25 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
     });
   }
 
-
   void tryWebsocketConnection() {
-   
+        FocusManager.instance.primaryFocus?.unfocus();
+
     if (address != "" && routeAddress.contains("ws")) {
       connectToWebsocket(routeAddress, notifyListeners);
       startOnMessageWs();
       notifyListeners();
     }
   }
-   void startOnMessageWs(){
-    onMessageWebsocket(functionCallback: getModelSessionDebug, notifyListeners: notifyListeners);
 
+  void startOnMessageWs() {
+    onMessageWebsocket(
+        functionCallback: getModelSessionDebug,
+        notifyListeners: notifyListeners);
   }
 
   void stopWebsocketConnection() {
     disconnectWebsocket();
+    clearListSession();
     notifyListeners();
   }
 
@@ -76,7 +82,8 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
     preferencesInstance.setBool(
         '$currentSettingName showResponses', showResponses);
     preferencesInstance.setBool('$currentSettingName darkMode', darkMode);
-    preferencesInstance.setBool('$currentSettingName lockKeyboard', lockKeyboard);
+    preferencesInstance.setBool(
+        '$currentSettingName lockKeyboard', lockKeyboard);
 
     notifyListeners();
   }
@@ -108,8 +115,9 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
             false;
     darkMode = preferencesInstance.getBool('$currentSettingName darkMode') ??
         osDarkMode;
-    lockKeyboard = preferencesInstance.getBool('$currentSettingName lockKeyboard') ??
-        lockKeyboard;
+    lockKeyboard =
+        preferencesInstance.getBool('$currentSettingName lockKeyboard') ??
+            lockKeyboard;
 
     setTextInputAddress();
     notifyListeners();
@@ -126,10 +134,12 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
     preferencesInstance.setString(
         '$currentSettingName routeAddress', routeAddress);
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void updateShowExceptions(bool newValue) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     showExceptions = newValue;
     preferencesInstance.setBool(
         '$currentSettingName showExceptions', showExceptions);
@@ -138,6 +148,8 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
   }
 
   void updateShowResponses(bool newValue) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     showResponses = newValue;
     preferencesInstance.setBool(
         '$currentSettingName showResponses', showResponses);
@@ -145,24 +157,30 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
   }
 
   void updateThemeMode(bool newValue) {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     darkMode = newValue;
     preferencesInstance.setBool('$currentSettingName darkMode', newValue);
     notifyListeners();
   }
 
-  void updateVisibleAmountBtn() {
-    visibleAmountBtn = int.parse(ctrlVisibleAmountBtn.text);
-    preferencesInstance.setInt(
-        '$currentSettingName visibleAmountBtn', visibleAmountBtn);
-  }
+  // void updateVisibleAmountBtn() {
+  //     FocusManager.instance.primaryFocus?.unfocus();
+
+  //   visibleAmountBtn = int.parse(ctrlVisibleAmountBtn.text);
+  //   preferencesInstance.setInt(
+  //       '$currentSettingName visibleAmountBtn', visibleAmountBtn);
+  // }
 
   void updateSizeIcon(double size) {
+    FocusManager.instance.primaryFocus?.unfocus();
     preferencesInstance.setDouble('$currentSettingName size.width', size);
     preferencesInstance.setDouble('$currentSettingName size.height', size);
     sizeIcon = Size(size, size);
   }
 
   void updateButtonsVisible(int number) {
+    FocusManager.instance.primaryFocus?.unfocus();
     visibleAmountBtn = number;
     preferencesInstance.setInt(
         '$currentSettingName visibleAmountBtn', visibleAmountBtn);
@@ -174,14 +192,14 @@ class KeyboardSettingController extends ChangeNotifier with WsConnection, Sessio
     routeAddress = "$prefix$address";
   }
 
-    void updateLockKeyboard(bool isBlocked) {
+  void updateLockKeyboard(bool isBlocked) {
     lockKeyboard = isBlocked;
-    preferencesInstance.setBool('$currentSettingName lockKeyboard', lockKeyboard);
+    preferencesInstance.setBool(
+        '$currentSettingName lockKeyboard', lockKeyboard);
     notifyListeners();
-
   }
 
-    void setLastPressed(index) {
+  void setLastPressed(index) {
     for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
       panelDashBoard.listBtnProperties[i].isLastPressed = false;
       panelDashBoard.listBtnProperties[i].save();

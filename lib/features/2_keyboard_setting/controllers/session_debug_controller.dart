@@ -52,4 +52,10 @@ mixin class SessionDebug {
     listSessionName = listSessionModel.map((e) => e.sessionName).toList();
     return listSessionModel;
   }
+
+  clearListSession(){
+    mapSessionDebug.clear();
+    listSessionName.clear();
+    listSessionModel.clear();
+  }
 }

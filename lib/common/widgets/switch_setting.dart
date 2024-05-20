@@ -35,8 +35,8 @@ class _SwitchSettingState extends State<SwitchSetting> {
     
               style: ToggleStyle(
                   indicatorColor: Colors.grey.withOpacity(.5),
-                  borderColor: widget.isDarkMode? Colors.white30:Colors.black45,
-                  
+                  borderColor: widget.isDarkMode? Colors.transparent:Colors.transparent,
+                  backgroundColor: Colors.blue.withOpacity(.1),
                   borderRadius: const BorderRadius.all(Radius.circular(16))),
               onChanged: (i) => setState(
                     () {

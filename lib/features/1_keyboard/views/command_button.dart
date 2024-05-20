@@ -1,9 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_icon_shadow/flutter_icon_shadow.dart';
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';

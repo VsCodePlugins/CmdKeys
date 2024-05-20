@@ -18,9 +18,10 @@ class StanderButton extends StatelessWidget {
      
       },
       style: ButtonStyle(
-        side: MaterialStateProperty.all(
-            const BorderSide(color: Colors.grey, width: 2)),
-        shape: MaterialStateProperty.all(
+        side: WidgetStateProperty.all(
+            const BorderSide(color: Colors.transparent, width: 2)),
+            backgroundColor:   WidgetStatePropertyAll<Color>(Colors.blue.withOpacity(.1)),
+        shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       ),
       child: Padding(

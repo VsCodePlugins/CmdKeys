@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
-import 'package:vsckeyboard/common/widgets/standar_button.dart';
+import 'package:vsckeyboard/common/widgets/standard_button.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
-import 'package:vsckeyboard/features/3_key_settings/controllers/keysettings_controller.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
-
-IconData getIconDataWithName(String nameIcon) {
-  return MdiIcons.fromString(nameIcon) ?? Icons.close;
-}
+import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
+import 'package:tab_container/tab_container.dart';
 
 class KeySettings extends StatelessWidget {
   final KeyboardSettingController keyboardSettingController;
@@ -27,31 +22,6 @@ class KeySettings extends StatelessWidget {
         KeySettingsController keySettingsCrl =
             context.watch<KeySettingsController>();
 
-        Future<IconData?> openIconsMenu() async {
-          FocusManager.instance.primaryFocus?.previousFocus();
-          FocusManager.instance.primaryFocus?.requestFocus();
-
-          List<String> listNameIcons = MdiIcons.getNames();
-
-          Map<String, IconData> mapIconsName = {
-            for (var nameIcon in listNameIcons)
-              nameIcon: getIconDataWithName(nameIcon)
-          };
-          Map<int, String> mapCodePointIconsName = {
-            for (var nameIcon in listNameIcons)
-              getIconDataWithName(nameIcon).codePoint: nameIcon
-          };
-
-          IconData? iconSelected = await showIconPicker(context,
-              adaptiveDialog: true, customIconPack: mapIconsName);
-          if (iconSelected != null) {
-            String? nameIcon = mapCodePointIconsName[iconSelected.codePoint];
-            keyboardSettingController.currentBtnProperty!.iconName = nameIcon!;
-            
-          }
-          return iconSelected;
-        }
-
         return OrientationBuilder(builder: (context, orientation) {
           late double smallestReftDistance;
           if (orientation == Orientation.portrait) {
@@ -59,65 +29,139 @@ class KeySettings extends StatelessWidget {
           } else {
             smallestReftDistance = MediaQuery.of(context).size.height;
           }
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: smallestReftDistance * .40,
-                        height: smallestReftDistance * .40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey, width: 2)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Center(
-                            child: IconBtn(
-                              isDarkMode: keyboardSettingController.darkMode,
-                              isNotPressed: false,
-                              size: keyboardSettingController.sizeIcon,
-                              color: keyboardSettingController
-                                  .currentBtnProperty!.color,
-                              iconName: keyboardSettingController
-                                  .currentBtnProperty!.iconName,
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20),
+                          clipBehavior: Clip.hardEdge,
+                          child: InkWell(
+                            onTap: () {
+                              keySettingsCrl.openIconsMenu(context);
+                            },
+                            child: Container(
+                              width: smallestReftDistance * .40,
+                              height: smallestReftDistance * .40,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  border: Border.all(
+                                      color: Colors.transparent, width: 2),
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.blue.withOpacity(.1)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Center(
+                                  child: IconBtn(
+                                    isDarkMode:
+                                        keyboardSettingController.darkMode,
+                                    isNotPressed: false,
+                                    size: keyboardSettingController.sizeIcon,
+                                    color: keyboardSettingController
+                                        .currentBtnProperty!.color,
+                                    iconName: keyboardSettingController
+                                        .currentBtnProperty!.iconName,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: smallestReftDistance * .50,
-                      child: Wrap(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16),
-                            child: StanderButton(
-                              text: "Change icon",
-                              functionOnPress: openIconsMenu,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: SizedBox(
+                          width: smallestReftDistance * .50,
+                          child: Wrap(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: StanderButton(
+                                  text: "Change icon",
+                                  functionOnPress: () {
+                                    keySettingsCrl.openIconsMenu(context);
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 16, right: 16),
+                                child: StanderButton(
+                                  text: "Change color",
+                                  functionOnPress: () {
+                                    keySettingsCrl.colorPickerDialog(context);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16, right: 16),
-                            child: StanderButton(
-                              text: "Change color",
-                              functionOnPress: openIconsMenu,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              InputTextLabelName(
-                  keyboardSettingController: keyboardSettingController,
-                  keySettingsCrl: keySettingsCrl),
-              Container(),
-            ],
+                InputTextLabelName(
+                    keyboardSettingController: keyboardSettingController,
+                    keySettingsCrl: keySettingsCrl),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  child: TabContainer(
+                    tabEdge: TabEdge.top,
+                    tabsStart: 0.1,
+                    tabsEnd: 0.9,
+                    tabMaxLength: 200,
+                    borderRadius: BorderRadius.circular(20),
+                    tabBorderRadius: BorderRadius.circular(12),
+                    childPadding: const EdgeInsets.all(16.0),
+                    selectedTextStyle: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 15.0,
+                    ),
+                    unselectedTextStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14.0,
+                    ),
+                    colors: [
+                      Colors.blue.withOpacity(.1),
+                      Colors.blue.withOpacity(.2),
+                      Colors.blue.withOpacity(.3),
+                    ],
+                    tabs: const [
+                      Text('Predefine Functions'),
+                      Text('Visual Code Commands'),
+                      Text('Terminal Commands'),
+                    ],
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: smallestReftDistance,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(""),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: smallestReftDistance,
+                        child: const Text(""),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: smallestReftDistance,
+                        child: const Text(""),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         });
       },
@@ -139,10 +183,15 @@ class InputTextLabelName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.blue,
+          selectionColor: Colors.blue[300],
+          selectionHandleColor: Colors.blueAccent,
+        ),
         inputDecorationTheme: InputDecorationTheme(
           focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.blueAccent,
+                color: Colors.transparent,
                 width: 2,
               ),
               borderRadius: BorderRadius.all(
@@ -157,7 +206,7 @@ class InputTextLabelName extends StatelessWidget {
               Radius.circular(16),
             ),
             borderSide: BorderSide(
-              color: Colors.white30,
+              color: Colors.transparent,
               width: 2,
             ),
           ),
@@ -185,9 +234,7 @@ class InputTextLabelName extends StatelessWidget {
           child: TextField(
               focusNode: keySettingsCrl.focusNode,
               onChanged: (value) {
-                keyboardSettingController.currentBtnProperty!.functionLabel =
-                    value;
-                keyboardSettingController.currentBtnProperty!.save();
+                keySettingsCrl.changeName(value);
               },
               controller: keySettingsCrl.textControllerNameBtn,
               key: const Key('name_btn'),
@@ -196,6 +243,8 @@ class InputTextLabelName extends StatelessWidget {
                       ? Colors.white
                       : Colors.black), //<-- HERE
               decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.blue.withOpacity(.1),
                 hintText: "Name of Button",
                 labelText:
                     "Button: ${keyboardSettingController.currentBtnProperty!.functionLabel}",

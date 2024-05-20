@@ -1,7 +1,7 @@
-import 'package:vsckeyboard/common/class_functions/commands.dart';
+import 'package:vsckeyboard/common/class_functions/command_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 
-class KeyBoardButtons with Commands  {
+class KeyBoardButtons with CommandsController  {
   List<BtnProperty> listBtnProperties;
   final String keyBoardName;
 

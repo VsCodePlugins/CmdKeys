@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/1_keyboard/views/keyboard_view.dart';
@@ -21,7 +22,7 @@ class PageViewCustom extends StatefulWidget {
 }
 
 class _PageViewCustomState extends State<PageViewCustom> {
-
+  FocusNode focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return PageView(
@@ -34,7 +35,7 @@ class _PageViewCustomState extends State<PageViewCustom> {
                    homeController:widget.homeController,
                    panelDashBoard: widget.panelDashBoard,),
 
-          KeyboardSettings(keyBoardName:widget.keyBoardName),
+          FocusScope(child: KeyboardSettings(keyBoardName:widget.keyBoardName, focusNode: focusNode,)),
           ],
        
       
