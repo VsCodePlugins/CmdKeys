@@ -6,7 +6,7 @@ import 'package:vsckeyboard/features/1_keyboard/controllers/command.dart';
 
 class VsCodeKeyBoard extends KeyBoardButtons{
 
-  VsCodeKeyBoard() : super("VsCodeKeyboard", listBtnProperties: []);
+  VsCodeKeyBoard() : super("VsCode Keyboard", listBtnProperties: []);
 
   Future<List<BtnProperty>> createDebugVsCodeKeyboard(List<ModelCommand>listCmd) async {
 

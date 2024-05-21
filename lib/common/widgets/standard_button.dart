@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 class StanderButton extends StatelessWidget {
   final String text;
   final bool autofocus;
+  final Color backgroundColor;
   final Function()? functionOnPress;
   const StanderButton({
-    super.key, required this.text, this.functionOnPress,  this.autofocus = false,
+    super.key, required this.text, this.functionOnPress,  this.autofocus = false, required this.backgroundColor,
   });
 
   @override
@@ -18,9 +19,10 @@ class StanderButton extends StatelessWidget {
      
       },
       style: ButtonStyle(
+
         side: WidgetStateProperty.all(
             const BorderSide(color: Colors.transparent, width: 2)),
-            backgroundColor:   WidgetStatePropertyAll<Color>(Colors.blue.withOpacity(.1)),
+            backgroundColor:   WidgetStatePropertyAll<Color>(Colors.blueAccent.withOpacity(0.1)),
         shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       ),

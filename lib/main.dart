@@ -57,56 +57,57 @@ class Start extends StatelessWidget {
                 final keyboardSettings =
                     context.watch<KeyboardSettingController>();
                 return MaterialApp(
-                  color: const Color.fromRGBO(33, 150, 243, 1),
+                    color: const Color.fromRGBO(33, 150, 243, 1),
                     themeMode: ThemeMode.dark,
                     debugShowCheckedModeBanner: false,
-                    
                     darkTheme: keyboardSettings.darkMode
                         ? ThemeData.dark()
                         : ThemeData.light(),
                     theme: ThemeData(
-                       inputDecorationTheme: InputDecorationTheme(
-                        
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.all(
+                        inputDecorationTheme: InputDecorationTheme(
+                          focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16),
+                              )),
+                          border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
                             Radius.circular(16),
                           )),
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                        Radius.circular(16),
-                      )),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16),
+                            ),
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          labelStyle: TextStyle(
+                              color: keyboardSettings.darkMode
+                                  ? Colors.white
+                                  : Colors.black),
+                          prefixStyle: TextStyle(
+                              color: keyboardSettings.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                          hintStyle: TextStyle(
+                              color: keyboardSettings.darkMode
+                                  ? const Color.fromARGB(255, 66, 66, 66)
+                                  : const Color.fromARGB(255, 201, 201, 201)),
                         ),
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 2,
-                        ),
-                      ),
-                      labelStyle: TextStyle(
-                          color: keyboardSettings.darkMode
-                              ? Colors.white
-                              : Colors.black),
-                      prefixStyle: TextStyle(
-                          color: keyboardSettings.darkMode
-                              ? Colors.white
-                              : Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                      hintStyle: TextStyle(
-                          color: keyboardSettings.darkMode
-                              ? const Color.fromARGB(255, 66, 66, 66)
-                              : const Color.fromARGB(255, 201, 201, 201)),
-                    ),
                         textSelectionTheme: TextSelectionThemeData(
                           cursorColor: Colors.blue,
                           selectionColor: Colors.blue[300],
                           selectionHandleColor: Colors.blueAccent,
+                        ),
+                        buttonTheme: const ButtonThemeData(
+                          buttonColor: Colors.blueAccent,
                         ),
                         primaryColorDark: Colors.blueAccent,
                         secondaryHeaderColor: Colors.blue,
@@ -117,7 +118,7 @@ class Start extends StatelessWidget {
                         colorScheme: keyboardSettings.darkMode
                             ? const ColorScheme.dark()
                             : const ColorScheme.light()),
-                    title: 'VsCodeRemoteKeyboard',
+                    title: 'VsCode Keyboard',
                     home: Scaffold(
                         key: scaffoldKey,
                         floatingActionButtonLocation: ExpandableFab.location,

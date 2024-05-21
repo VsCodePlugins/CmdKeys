@@ -106,7 +106,7 @@ class Keyboard extends StatelessWidget {
                       );
                     }).toList(),
                     isExpanded: false,
-                  ):Text("VsCodeKeyboard",style: TextStyle(
+                  ):Text("VsCode Keyboard",style: TextStyle(
                                 color: keyboardSettingController.darkMode
                                     ? Colors.white70
                                     : Colors.black87)),

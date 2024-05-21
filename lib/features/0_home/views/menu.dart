@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -8,6 +9,7 @@ import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+
 class MenuFunctions extends StatelessWidget {
   const MenuFunctions({
     super.key,
@@ -40,6 +42,7 @@ class MenuFunctions extends StatelessWidget {
             backgroundColor: Colors.black54,
           ),
           key: key,
+          type: ExpandableFabType.fan ,
           overlayStyle: ExpandableFabOverlayStyle(
             // color: Colors.black.withOpacity(0.5),
             blur: 6,
@@ -63,7 +66,6 @@ class MenuFunctions extends StatelessWidget {
             if (homeController.isHome)
               FloatingActionButton.small(
                 // shape: const CircleBorder(),
-                heroTag: null,
                 backgroundColor: Colors.black54,
                 foregroundColor: Colors.blueAccent,
                 child: Icon(MdiIcons.counter),
@@ -126,7 +128,8 @@ class MenuFunctions extends StatelessWidget {
         ),
         SubMenu(
           panelDashBoard: panelDashBoard,
-        )
+        ),
+
       ],
     );
   }
@@ -134,17 +137,17 @@ class MenuFunctions extends StatelessWidget {
 
 class SubMenu extends StatelessWidget {
   final PanelDashBoard panelDashBoard;
-   const SubMenu({
+  const SubMenu({
     super.key,
     required this.panelDashBoard,
   });
   @override
   Widget build(BuildContext context) {
-    
     return ChangeNotifierProvider<HomeMenuController>(
         create: (homeController) =>
             HomeMenuController(mainSteamState: panelDashBoard.mainStreamState),
         builder: (context, w) {
+          const String assetName = 'images/vscode_keyboard.svg';
           final homeMenuController = context.watch<HomeMenuController>();
           return (homeMenuController.isMenuOpen)
               ? Padding(
@@ -157,15 +160,21 @@ class SubMenu extends StatelessWidget {
                       onPressed: () {
                         homeMenuController.openUrl();
                       },
-                      child:  Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(MdiIcons.microsoftVisualStudioCode, color: Colors.blueAccent),
+                          SvgPicture.asset(
+                            width: 25,
+                            assetName,
+                            color: Colors.blueAccent,
+                          ),
                           const Padding(
-                            padding: EdgeInsets.only(left:8.0, right: 8),
-                            child: Text("VscodeKeyboard", style: TextStyle(color: Colors.white),),
+                            padding: EdgeInsets.only(left: 8.0, right: 8),
+                            child: Text(
+                              "www.vscodekeyboard.com",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )
-                          
                         ],
                       )))
               : const SizedBox();

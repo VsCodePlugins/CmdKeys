@@ -111,6 +111,7 @@ class KeySettingsController with ChangeNotifier, CommandsController {
       borderRadius: 4,
       spacing: 5,
       runSpacing: 5,
+   
       wheelDiameter: 155,
       heading: Text(
         'Select color',
@@ -130,9 +131,11 @@ class KeySettingsController with ChangeNotifier, CommandsController {
       copyPasteBehavior: const ColorPickerCopyPasteBehavior(
         longPressMenu: true,
       ),
-      materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
-      colorNameTextStyle: Theme.of(context).textTheme.bodySmall,
-      colorCodeTextStyle: Theme.of(context).textTheme.bodySmall,
+      //materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
+         pickerTypeTextStyle: const TextStyle(color: Colors.blueAccent),
+      materialNameTextStyle: const TextStyle(color: Colors.blueAccent),
+      colorNameTextStyle: const TextStyle(color: Colors.blueAccent),
+      colorCodeTextStyle: const TextStyle(color: Colors.blueAccent),
       pickersEnabled: const <ColorPickerType, bool>{
         ColorPickerType.both: false,
         ColorPickerType.primary: true,

@@ -54,7 +54,7 @@ class KeySettings extends StatelessWidget {
                                   border: Border.all(
                                       color: Colors.transparent, width: 2),
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Colors.blue.withOpacity(.1)),
+                                  color: Colors.blueAccent.withOpacity(.1)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: Center(
@@ -86,7 +86,7 @@ class KeySettings extends StatelessWidget {
                                   text: "Change icon",
                                   functionOnPress: () {
                                     keySettingsCrl.openIconsMenu(context);
-                                  },
+                                  }, backgroundColor: keyboardSettingController.darkMode? Colors.white: Colors.black,
                                 ),
                               ),
                               Padding(
@@ -96,7 +96,7 @@ class KeySettings extends StatelessWidget {
                                   text: "Change color",
                                   functionOnPress: () {
                                     keySettingsCrl.colorPickerDialog(context);
-                                  },
+                                  }, backgroundColor:  keyboardSettingController.darkMode? Colors.white: Colors.black,
                                 ),
                               ),
                             ],
@@ -129,14 +129,24 @@ class KeySettings extends StatelessWidget {
                       fontSize: 14.0,
                     ),
                     colors: [
-                      Colors.blue.withOpacity(.1),
-                      Colors.blue.withOpacity(.2),
-                      Colors.blue.withOpacity(.3),
+                      Colors.blueAccent.withOpacity(.1),
+                      Colors.blueAccent.withOpacity(.1),
+                      Colors.blueAccent.withOpacity(.1),
+
                     ],
                     tabs: const [
-                      Text('Predefine Functions'),
-                      Text('Visual Code Commands'),
-                      Text('Terminal Commands'),
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Text('Debug Functions'),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Text('Visual Code Commands'),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Text('Terminal Commands'),
+                      ),
                     ],
                     children: [
                       SizedBox(
@@ -244,10 +254,11 @@ class InputTextLabelName extends StatelessWidget {
                       : Colors.black), //<-- HERE
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.blue.withOpacity(.1),
-                hintText: "Name of Button",
+                fillColor: Colors.blueAccent.withOpacity(.1),
+                hintText: "Button name",
+                labelStyle: const TextStyle(color: Colors.blueAccent, fontSize: 20, fontWeight: FontWeight.w500) ,
                 labelText:
-                    "Button: ${keyboardSettingController.currentBtnProperty!.functionLabel}",
+                    "Name",
               )),
         ),
       ),
