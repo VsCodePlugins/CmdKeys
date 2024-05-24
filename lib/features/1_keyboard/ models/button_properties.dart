@@ -10,6 +10,7 @@ class BtnProperty {
   String iconName;
   String functionName;
   String functionLabel;
+  String idCommand;
   Map<String, dynamic>? mapCommand;
   String? command;
   Color color;
@@ -24,6 +25,7 @@ class BtnProperty {
     required this.iconName,
     required this.functionName,
     required this.functionLabel,
+    required this.idCommand,
     this.mapCommand,
     required this.command,
     required this.color,
@@ -45,6 +47,7 @@ class BtnProperty {
       'icon': iconName,
       'functionName': functionName,
       'functionLabel': functionLabel,
+      'idCommand': idCommand,
       'mapCommand': mapCommand,
       'command': command,
       'color': color.value,
@@ -121,6 +124,7 @@ class BtnProperty {
           iconName: mapBtnProperty['icon'],
           functionName: mapBtnProperty['functionName'],
           functionLabel: mapBtnProperty['functionLabel'],
+          idCommand: mapBtnProperty['idCommand'],
           mapCommand: mapBtnProperty['functionCommand'],
           command: mapBtnProperty['command'],
           color: Color(mapBtnProperty['color']),
@@ -134,6 +138,7 @@ class BtnProperty {
           iconName: "newBox",
           functionName: "default",
           functionLabel: "Default",
+          idCommand: "default_command",
           mapCommand: {"showMessage": "Hello Word"},
           command: null,
           color: Colors.grey,

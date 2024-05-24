@@ -2,10 +2,9 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:vsckeyboard/common/class_functions/command_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 
-class KeySettingsController with ChangeNotifier, CommandsController {
+class KeySettingsController with ChangeNotifier {
   final textControllerNameBtn = TextEditingController();
   final BtnProperty? currentBtnProperty;
   final FocusNode focusNode = FocusNode();
@@ -20,20 +19,21 @@ class KeySettingsController with ChangeNotifier, CommandsController {
   static const Color guideError = Color(0xFFB00020);
   static const Color guideErrorDark = Color(0xFFCF6679);
   static const Color blueBlues = Color(0xFF174378);
-  
+
   late Color screenPickerColor;
   // Color for the picker in a dialog using onChanged.
   late Color dialogPickerColor;
   // Color for picker using the color select dialog.
   late Color dialogSelectColor;
-  late final Map<ColorSwatch<Object>, String> colorsNameMap ;
-
+  late final Map<ColorSwatch<Object>, String> colorsNameMap;
 
   IconData _getIconDataWithName(String nameIcon) {
     return MdiIcons.fromString(nameIcon) ?? Icons.close;
   }
 
   KeySettingsController({required this.currentBtnProperty}) {
+    
+
     textControllerNameBtn.text = currentBtnProperty!.functionLabel;
 
     mapIconsName = {
@@ -51,17 +51,17 @@ class KeySettingsController with ChangeNotifier, CommandsController {
     dialogSelectColor = const Color(0xFFA239CA); //
 
     // Make a custom ColorSwatch to name map from the above custom colors.
-  colorsNameMap =
-      <ColorSwatch<Object>, String>{
-    ColorTools.createPrimarySwatch(guidePrimary): 'Guide Purple',
-    ColorTools.createPrimarySwatch(guidePrimaryVariant): 'Guide Purple Variant',
-    ColorTools.createAccentSwatch(guideSecondary): 'Guide Teal',
-    ColorTools.createAccentSwatch(guideSecondaryVariant): 'Guide Teal Variant',
-    ColorTools.createPrimarySwatch(guideError): 'Guide Error',
-    ColorTools.createPrimarySwatch(guideErrorDark): 'Guide Error Dark',
-    ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
-  };
-
+    colorsNameMap = <ColorSwatch<Object>, String>{
+      ColorTools.createPrimarySwatch(guidePrimary): 'Guide Purple',
+      ColorTools.createPrimarySwatch(guidePrimaryVariant):
+          'Guide Purple Variant',
+      ColorTools.createAccentSwatch(guideSecondary): 'Guide Teal',
+      ColorTools.createAccentSwatch(guideSecondaryVariant):
+          'Guide Teal Variant',
+      ColorTools.createPrimarySwatch(guideError): 'Guide Error',
+      ColorTools.createPrimarySwatch(guideErrorDark): 'Guide Error Dark',
+      ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
+    };
   }
 
   _setNewIcon(IconData iconSelected) {
@@ -93,10 +93,8 @@ class KeySettingsController with ChangeNotifier, CommandsController {
     currentBtnProperty!.save();
   }
 
-
   Future<bool> colorPickerDialog(BuildContext context) async {
-
-    callbackChangeColor(Color color){
+    callbackChangeColor(Color color) {
       dialogPickerColor = color;
       _changeColor(color);
     }
@@ -111,7 +109,6 @@ class KeySettingsController with ChangeNotifier, CommandsController {
       borderRadius: 4,
       spacing: 5,
       runSpacing: 5,
-   
       wheelDiameter: 155,
       heading: Text(
         'Select color',
@@ -132,7 +129,7 @@ class KeySettingsController with ChangeNotifier, CommandsController {
         longPressMenu: true,
       ),
       //materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
-         pickerTypeTextStyle: const TextStyle(color: Colors.blueAccent),
+      pickerTypeTextStyle: const TextStyle(color: Colors.blueAccent),
       materialNameTextStyle: const TextStyle(color: Colors.blueAccent),
       colorNameTextStyle: const TextStyle(color: Colors.blueAccent),
       colorCodeTextStyle: const TextStyle(color: Colors.blueAccent),
@@ -165,6 +162,4 @@ class KeySettingsController with ChangeNotifier, CommandsController {
           const BoxConstraints(minHeight: 460, minWidth: 300, maxWidth: 320),
     );
   }
-
- 
 }

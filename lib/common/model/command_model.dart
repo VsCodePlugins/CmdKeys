@@ -14,7 +14,6 @@ class ModelCommand {
   final String description;
   final CommandType type;
 
-
   ModelCommand({
     this.id = "",
     required this.index,
@@ -24,20 +23,18 @@ class ModelCommand {
     this.mapCommand,
     required this.functionLabel,
     required this.description,
-  }){
+  }) {
     if (id == "") {
       var uuid = const Uuid();
       id = uuid.v1();
     }
-
-    
   }
 
   String toJson() {
     return jsonEncode({
       "id": id,
       'index': index,
-      'type':type.name,
+      'type': type.name,
       'name': name,
       'command': command,
       'mapCommand': mapCommand,
@@ -60,15 +57,16 @@ class ModelCommand {
     );
   }
 
-  Future<ModelCommand> saveAs({required String commandGroupID}) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  Future<ModelCommand> saveAs(
+      {required String commandGroupID,
+      required SharedPreferences sharedPreferences}) async {
     String data = toJson();
     String idSharePref = "${commandGroupID}_cmd_model_$id";
     await sharedPreferences.setString(idSharePref, data);
     return this;
   }
 
-      Future<ModelCommand> save() async {
+  Future<ModelCommand> save() async {
     final SharedPreferences preferencesInstance =
         await SharedPreferences.getInstance();
     String data = toJson();

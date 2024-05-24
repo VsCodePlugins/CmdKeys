@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vsckeyboard/features/3_key_settings/controllers/grid_controller.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/standard_button.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
-import 'package:tab_container/tab_container.dart';
+import 'package:vsckeyboard/features/3_key_settings/views/tab_container.dart';
 
 class KeySettings extends StatelessWidget {
   final KeyboardSettingController keyboardSettingController;
@@ -29,6 +30,7 @@ class KeySettings extends StatelessWidget {
           } else {
             smallestReftDistance = MediaQuery.of(context).size.height;
           }
+          double width = MediaQuery.of(context).size.width;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -86,7 +88,11 @@ class KeySettings extends StatelessWidget {
                                   text: "Change icon",
                                   functionOnPress: () {
                                     keySettingsCrl.openIconsMenu(context);
-                                  }, backgroundColor: keyboardSettingController.darkMode? Colors.white: Colors.black,
+                                  },
+                                  backgroundColor:
+                                      keyboardSettingController.darkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                 ),
                               ),
                               Padding(
@@ -96,7 +102,11 @@ class KeySettings extends StatelessWidget {
                                   text: "Change color",
                                   functionOnPress: () {
                                     keySettingsCrl.colorPickerDialog(context);
-                                  }, backgroundColor:  keyboardSettingController.darkMode? Colors.white: Colors.black,
+                                  },
+                                  backgroundColor:
+                                      keyboardSettingController.darkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                 ),
                               ),
                             ],
@@ -111,64 +121,23 @@ class KeySettings extends StatelessWidget {
                     keySettingsCrl: keySettingsCrl),
                 Padding(
                   padding:
-                      const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                  child: TabContainer(
-                    tabEdge: TabEdge.top,
-                    tabsStart: 0.1,
-                    tabsEnd: 0.9,
-                    tabMaxLength: 200,
-                    borderRadius: BorderRadius.circular(20),
-                    tabBorderRadius: BorderRadius.circular(12),
-                    childPadding: const EdgeInsets.all(16.0),
-                    selectedTextStyle: const TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 15.0,
-                    ),
-                    unselectedTextStyle: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14.0,
-                    ),
-                    colors: [
-                      Colors.blueAccent.withOpacity(.1),
-                      Colors.blueAccent.withOpacity(.1),
-                      Colors.blueAccent.withOpacity(.1),
+                      const EdgeInsets.only(left: 16, right: 16, bottom: 0),
+                  child: ChangeNotifierProvider(
+                      create: (context) => GridController(
+                          keyboardSettingController.currentBtnProperty!),
+                      builder: (context, child) {
+                        GridController gridController =
+                            context.watch<GridController>();
 
-                    ],
-                    tabs: const [
-                      Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text('Debug Functions'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text('Visual Code Commands'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text('Terminal Commands'),
-                      ),
-                    ],
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: smallestReftDistance,
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(""),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: smallestReftDistance,
-                        child: const Text(""),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: smallestReftDistance,
-                        child: const Text(""),
-                      ),
-                    ],
-                  ),
+                        return (gridController.commandGroups.isNotEmpty)
+                            ? TabCommands(
+                                gridController: gridController,
+                                width: width,
+                                smallestReftDistance: smallestReftDistance,
+                                keyboardSettingController:
+                                    keyboardSettingController)
+                            : const SizedBox.shrink();
+                      }),
                 ),
               ],
             ),
@@ -238,7 +207,7 @@ class InputTextLabelName extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16),
         child: SizedBox(
           height: 85,
           child: TextField(
@@ -256,9 +225,11 @@ class InputTextLabelName extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.blueAccent.withOpacity(.1),
                 hintText: "Button name",
-                labelStyle: const TextStyle(color: Colors.blueAccent, fontSize: 20, fontWeight: FontWeight.w500) ,
-                labelText:
-                    "Name",
+                labelStyle: const TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500),
+                labelText: "Name",
               )),
         ),
       ),

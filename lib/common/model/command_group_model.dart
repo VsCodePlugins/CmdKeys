@@ -35,7 +35,7 @@ class ModelCommandGroup {
       'onlyType': onlyType.name,
       'name': name,
       'description': description,
-      'label':label,
+      'label': label,
       'created': created,
       'updated': updated
     });
@@ -54,20 +54,18 @@ class ModelCommandGroup {
     );
   }
 
-  Future<ModelCommandGroup> save() async {
-    final SharedPreferences preferencesInstance =
-        await SharedPreferences.getInstance();
+  ModelCommandGroup save(SharedPreferences preferencesInstance) {
     String data = toJson();
     preferencesInstance.setString(id, data);
     return this;
   }
 
-  Future<ModelCommandGroup> saveAs({required String keyBaseCommandGroup}) async {
-    final SharedPreferences preferencesInstance =
-        await SharedPreferences.getInstance();
+  ModelCommandGroup saveAs(
+      {required String keyBaseCommandGroup,
+      required SharedPreferences sharedPreferences}) {
     String data = toJson();
     String idSharePref = "${keyBaseCommandGroup}_cmd_group_$id";
-    preferencesInstance.setString(idSharePref, data);
+    sharedPreferences.setString(idSharePref, data);
     return this;
   }
 

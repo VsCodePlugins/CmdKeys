@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ignore: unused_local_variable
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//await sharedPreferences.clear();
+  await sharedPreferences.clear();
   WakelockPlus.enable();
   return runApp(const VscodeKeyboard());
 }
@@ -53,9 +53,9 @@ class Start extends StatelessWidget {
                 final homeController = context.watch<HomeController>();
                 panelDashBoard.mainStreamStateCtrl.sink
                     .add({"isMenuOpen": false});
-
                 final keyboardSettings =
                     context.watch<KeyboardSettingController>();
+
                 return MaterialApp(
                     color: const Color.fromRGBO(33, 150, 243, 1),
                     themeMode: ThemeMode.dark,

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
+import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
@@ -42,7 +43,7 @@ class MenuFunctions extends StatelessWidget {
             backgroundColor: Colors.black54,
           ),
           key: key,
-          type: ExpandableFabType.fan ,
+          type: ExpandableFabType.fan,
           overlayStyle: ExpandableFabOverlayStyle(
             // color: Colors.black.withOpacity(0.5),
             blur: 6,
@@ -107,11 +108,27 @@ class MenuFunctions extends StatelessWidget {
                   }
                 },
               ),
+            if (homeController.currentPage == PagesApp.settingsKey)
+              FloatingActionButton.small(
+                backgroundColor: Colors.black54,
+                foregroundColor: Colors.blueAccent,
+                child: const Icon(Icons.settings_applications),
+                onPressed: () {
+                  final state = key.currentState;
+                  if (state != null) {
+                    homeController.changePage(PagesApp.settingsKeyboard);
+                    if (Platform.isAndroid || Platform.isIOS) {
+                      Vibration.vibrate(duration: 200);
+                    }
+                    state.toggle();
+                  }
+                },
+              ),
             FloatingActionButton.small(
               backgroundColor: Colors.black54,
               foregroundColor: Colors.blueAccent,
               child: (homeController.isHome)
-                  ? const Icon(Icons.settings)
+                  ? const Icon(Icons.settings_applications)
                   : const Icon(Icons.keyboard),
               onPressed: () {
                 final state = key.currentState;
@@ -129,7 +146,6 @@ class MenuFunctions extends StatelessWidget {
         SubMenu(
           panelDashBoard: panelDashBoard,
         ),
-
       ],
     );
   }

@@ -1,13 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsckeyboard/common/constants.dart';
+import 'package:vsckeyboard/common/model/command_group_model.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'package:web_socket_client/web_socket_client.dart';
-
 import 'command.dart';
 import '../../../common/class_functions/default_vscodekeyboard.dart';
 
@@ -21,13 +21,15 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   late Stream<Map<String, dynamic>> mainStreamState;
   PanelDashBoard() {
     mainStreamState = mainStreamStateCtrl.stream;
+
     Future.sync(() => null).then((_) async {
       preferencesInstance = await SharedPreferences.getInstance();
       bool isSaved = await _isDefaultListSaved();
 
       if (!isSaved) {
-        await currentKeyBoard.getCommandGroups();
-        listBtnProperties = await _loadListBtnProperties();
+        await currentKeyBoard.getCommandGroups(preferencesInstance);
+        listBtnProperties = await _loadListBtnProperties(
+            sharedPreferences: preferencesInstance);
         mapBtnProperties[currentKeyBoard.keyBoardName] = currentKeyBoard;
         currentKeyBoard.saveListBtnProperties();
       }
@@ -68,10 +70,19 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   }
 
   Future<List<BtnProperty>> _loadListBtnProperties(
-      {KeyBoardButtons? keyBoard}) async {
+      {KeyBoardButtons? keyBoard,
+      required SharedPreferences sharedPreferences}) async {
     if (keyBoard == null) {
       VsCodeKeyBoard vsKeyBoardCommand = VsCodeKeyBoard();
-      List<ModelCommand> ? listCmd = await vsKeyBoardCommand.getListCommandsByGroupName(commandGroupName: "debugger_commands");
+      ModelCommandGroup? commandGroup = vsKeyBoardCommand.getModelCommandGroup(
+          commandGroupName: Constants.firstGroupCommandName,
+          sharedPreferences: sharedPreferences);
+      assert(commandGroup != null,  "Error to get CommandGroup: ${Constants.firstGroupCommandName}");
+      
+      List<ModelCommand>? listCmd =
+          await vsKeyBoardCommand.getListCommandsByGroupName(
+              modelCommandGroup: commandGroup!,
+              sharedPreferences: sharedPreferences);
       await vsKeyBoardCommand.createDebugVsCodeKeyboard(listCmd!);
       listBtnProperties = vsKeyBoardCommand.listBtnProperties;
       keyBoard = vsKeyBoardCommand;
