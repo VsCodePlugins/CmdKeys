@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsckeyboard/common/class_functions/default_vscodekeyboard.dart';
 import 'package:vsckeyboard/common/constants.dart';
 import 'package:vsckeyboard/common/model/command_group_model.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
@@ -8,10 +9,9 @@ import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import 'package:web_socket_client/web_socket_client.dart';
-import 'command.dart';
-import '../../../common/class_functions/default_vscodekeyboard.dart';
+import 'keyboard_buttons.dart';
 
-class PanelDashBoard with ChangeNotifier, HttpRequest {
+class MainController with ChangeNotifier, HttpRequest {
   KeyBoardButtons currentKeyBoard = VsCodeKeyBoard();
   Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
@@ -19,7 +19,7 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   StreamController<Map<String, dynamic>> mainStreamStateCtrl =
       StreamController<Map<String, dynamic>>.broadcast();
   late Stream<Map<String, dynamic>> mainStreamState;
-  PanelDashBoard() {
+  MainController() {
     mainStreamState = mainStreamStateCtrl.stream;
 
     Future.sync(() => null).then((_) async {
@@ -38,13 +38,16 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
   }
 
   Future<String?> sentCommand(
-      dynamic command, KeyboardSettingController keyboardSettingCtrl) async {
+      Map<String, dynamic> command, KeyboardSettingController keyboardSettingCtrl) async {
     String routeAddress = preferencesInstance
             .getString('${currentKeyBoard.keyBoardName} routeAddress') ??
         "";
+
+    
     try {
       if (keyboardSettingCtrl.connectionState is Connected ||
           keyboardSettingCtrl.connectionState is Reconnected) {
+
         keyboardSettingCtrl.sendCommandWs(command: command);
         return null;
       }
@@ -77,8 +80,9 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
       ModelCommandGroup? commandGroup = vsKeyBoardCommand.getModelCommandGroup(
           commandGroupName: Constants.firstGroupCommandName,
           sharedPreferences: sharedPreferences);
-      assert(commandGroup != null,  "Error to get CommandGroup: ${Constants.firstGroupCommandName}");
-      
+      assert(commandGroup != null,
+          "Error to get CommandGroup: ${Constants.firstGroupCommandName}");
+
       List<ModelCommand>? listCmd =
           await vsKeyBoardCommand.getListCommandsByGroupName(
               modelCommandGroup: commandGroup!,
@@ -111,5 +115,9 @@ class PanelDashBoard with ChangeNotifier, HttpRequest {
         false;
 
     return showResponses;
+  }
+
+  updateMainInterface(){
+    notifyListeners();
   }
 }

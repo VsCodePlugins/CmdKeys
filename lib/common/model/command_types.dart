@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/common/class_functions/default_commands_debugger.dart';
+import 'package:vsckeyboard/common/class_functions/default_commands.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-enum CommandType { debugVscode, vscodeCommand, terminalCommand }
+enum CommandType {debugVscode, vscodeCommand, terminalCommand}
 
 extension ExtendedCommandType on CommandType {
   String get name {
@@ -17,20 +17,41 @@ extension ExtendedCommandType on CommandType {
     }
   }
 
-  Map<String, dynamic>? get keysArg {
+  String get label {
     switch (this) {
       case CommandType.debugVscode:
-        return null;
+        return "Debugger";
       case CommandType.vscodeCommand:
-        return {
-          "VscodeCommand": "",
-        };
+        return "Visual Command";
       case CommandType.terminalCommand:
-        return {
-          "TerminalCommand": "",
-          "terminalName": "",
-          "CommandWithReturn": ""
-        };
+        return "Terminal";
+    }
+  }
+
+  CommandType get value {
+    switch (this) {
+      case CommandType.debugVscode:
+        return CommandType.debugVscode;
+      case CommandType.vscodeCommand:
+        return CommandType.vscodeCommand;
+      case CommandType.terminalCommand:
+        return CommandType.terminalCommand;
+    }
+  }
+
+  List<String> get keyArgumentList {
+    switch (this) {
+      case CommandType.debugVscode:
+        return ["eventID", "debugCommand"];
+      case CommandType.vscodeCommand:
+        return ["eventID", "vscodeCommand"];
+      case CommandType.terminalCommand:
+        return [
+          "eventID",
+          "terminalCommand",
+          "terminalName",
+          "commandWithReturn",
+        ];
     }
   }
 
@@ -44,26 +65,43 @@ extension ExtendedCommandType on CommandType {
         List<ModelCommand> listCmd = createDefaultListDebugger([]);
         return listCmd;
       case CommandType.vscodeCommand:
-        return [];
+        List<ModelCommand> listCmd = createDefaultListVscode([]);
+        return listCmd;
       case CommandType.terminalCommand:
         return [];
     }
   }
 
-  List<PlutoColumn> getColumns(
-      {required void Function(int?)? onRunIt,
-      required void Function(int?)? selectRadio,
-      required Stream<Map<String, dynamic>> stream,
-      required int currentIndex,
-      }) {
-    switch (this) {
-      case CommandType.debugVscode:
-        List<PlutoColumn> listPC = [
+  List<PlutoColumn> getColumns({
+    required void Function(int?, BuildContext context)? onRunIt,
+    required void Function(int?)? selectRadio,
+    required Stream<Map<String, dynamic>> stream,
+    required int currentIndex,
+    required bool selectMode,
+    required double width,
+  }) {
+    int totalColumnsVisible = 5;
+    double widthColumn = width / totalColumnsVisible;
+
+    if (selectMode) {
+      totalColumnsVisible = 5;
+      widthColumn = width / totalColumnsVisible;
+    }
+
+            List<PlutoColumn> baseList = [
+          PlutoColumn(
+              title: 'Id',
+              field: 'id',
+              width: widthColumn,
+              enableEditingMode: false,
+              type: PlutoColumnType.text(),
+              hide: true),
           PlutoColumn(
               title: 'Select',
               field: 'select_command',
               type: PlutoColumnType.text(),
-              width: 100,
+              width: widthColumn,
+              hide: selectMode ? false : true,
               enableEditingMode: false,
               renderer: (rendererContext) {
                 return StreamBuilder<Map<String, dynamic>>(
@@ -71,150 +109,71 @@ extension ExtendedCommandType on CommandType {
                     builder: (context, snapshot) {
                       return Radio(
                           value: rendererContext.rowIdx,
-                          groupValue: (snapshot.data?["currentIndex"] as int?) ?? currentIndex,
+                          groupValue:
+                              (snapshot.data?["currentIndex"] as int?) ??
+                                  currentIndex,
                           onChanged: selectRadio);
                     });
               }),
           PlutoColumn(
             title: 'Label',
-            field: 'label',
-            width: 200,
+            field: 'functionLabel',
+            enableEditingMode: true,
+            width: widthColumn,
             type: PlutoColumnType.text(),
           ),
           PlutoColumn(
-            title: 'Name',
-            field: 'name',
-            type: PlutoColumnType.text(),
-          ),
+              title: 'Name',
+              field: 'name',
+              width: widthColumn,
+              type: PlutoColumnType.text(),
+              hide: selectMode ? true : false),
           PlutoColumn(
-            title: 'Command',
-            field: 'command',
-            type: PlutoColumnType.text(),
-          ),
+              title: 'Command',
+              field: 'command',
+              type: PlutoColumnType.text(),
+              width: widthColumn),
           PlutoColumn(
             title: 'Description',
             field: 'description',
+            width: widthColumn,
             type: PlutoColumnType.text(),
           ),
           PlutoColumn(
             title: 'Run',
             field: 'run_command',
+            width: widthColumn,
             type: PlutoColumnType.text(),
             enableEditingMode: false,
             renderer: (rendererContext) {
-              return TextButton(
-                onPressed: () {
-                  if (onRunIt != null) {
-                    onRunIt(rendererContext.rowIdx);
-                  }
-                },
-                child: const Text("Run"),
-              );
+              return Builder(builder: (context) {
+                return TextButton(
+                  onPressed: () {
+                    if (onRunIt != null) {
+                      onRunIt(rendererContext.rowIdx, context);
+                    }
+                  },
+                  child: const Icon(Icons.exit_to_app),
+                );
+              });
             },
           ),
+          PlutoColumn(
+            title: 'Created by user',
+            field: 'created_by_user',
+            width: widthColumn,
+            type: PlutoColumnType.text(),
+            enableEditingMode: false,
+            hide: true
+          ),
         ];
-        return listPC;
+    switch (this) {
+      case CommandType.debugVscode:
+        return baseList;
       case CommandType.vscodeCommand:
-        return [
-          PlutoColumn(
-              title: 'Select',
-              field: 'select_command',
-              type: PlutoColumnType.text(),
-              enableEditingMode: false,
-              renderer: (rendererContext) {
-                return Radio(
-                    value: rendererContext.rowIdx,
-                    groupValue: 1,
-                    onChanged: (selected) {});
-              }),
-          PlutoColumn(
-            title: 'Name',
-            field: 'name',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-            title: 'Command',
-            field: 'command',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-            title: 'Description',
-            field: 'description',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-            title: 'Run',
-            field: 'run_command',
-            type: PlutoColumnType.text(),
-            enableEditingMode: false,
-            renderer: (rendererContext) {
-              return TextButton(
-                onPressed: () {
-                  if (onRunIt != null) {
-                    onRunIt(rendererContext.rowIdx);
-                  }
-                },
-                child: const Text("Run"),
-              );
-            },
-          ),
-        ];
+        return baseList;
       case CommandType.terminalCommand:
-        return [
-          PlutoColumn(
-              title: 'Select',
-              field: 'select_command',
-              type: PlutoColumnType.text(),
-              enableEditingMode: false,
-              renderer: (rendererContext) {
-                return Radio(
-                    value: rendererContext.rowIdx,
-                    groupValue: 1,
-                    onChanged: (selected) {});
-              }),
-          PlutoColumn(
-            title: 'Name',
-            field: 'name',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-              title: 'With Return',
-              field: 'with_return',
-              type: PlutoColumnType.text(),
-              enableEditingMode: false,
-              enableRowChecked: true),
-          PlutoColumn(
-            title: 'Format',
-            field: 'format',
-            type: PlutoColumnType.select(["String", "Json"]),
-          ),
-          PlutoColumn(
-            title: 'Command',
-            field: 'command',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-            title: 'Description',
-            field: 'description',
-            type: PlutoColumnType.text(),
-          ),
-          PlutoColumn(
-            title: 'Run',
-            field: 'run_command',
-            type: PlutoColumnType.text(),
-            enableEditingMode: false,
-            renderer: (rendererContext) {
-              return TextButton(
-                onPressed: () {
-                  if (onRunIt != null) {
-                    onRunIt(rendererContext.rowIdx);
-                  }
-                },
-                child: const Text("Run"),
-              );
-            },
-          ),
-        ];
+        return [];
     }
   }
 }

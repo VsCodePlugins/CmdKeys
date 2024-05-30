@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/services/ws_connection.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 
 import 'session_debug_controller.dart';
 
@@ -10,26 +10,26 @@ class KeyboardSettingController extends ChangeNotifier
     with WsConnection, SessionDebug {
   TextEditingController ctrlVisibleAmountBtn = TextEditingController();
   TextEditingController ctrlAddress = TextEditingController();
-  final PanelDashBoard panelDashBoard;
+  final MainController mainController;
   int visibleAmountBtn = 3;
   double spaceDebugSessionSelector = 55;
-  late Size sizeIcon;
-  late String prefix;
+  Size sizeIcon = const Size(40, 40);
+  String prefix = 'http://';
   String address = "";
-  late String routeAddress;
-  late String currentSettingName;
-  bool showExceptions = false;
-  bool showResponses = false;
+  String routeAddress = "";
+  String currentSettingName = "default";
+  bool showExceptions = true;
+  bool showResponses = true;
   bool lockKeyboard = false;
-  late bool darkMode;
-  late bool osDarkMode;
+  bool darkMode = true;
+  bool osDarkMode = false;
   BtnProperty? currentBtnProperty;
   late SharedPreferences preferencesInstance;
   final BuildContext buildContext;
   double slideValue = 10;
 
   KeyboardSettingController(
-    this.panelDashBoard,
+    this.mainController,
     this.buildContext,
   ) {
     var brightness = MediaQuery.of(buildContext).platformBrightness;
@@ -38,13 +38,13 @@ class KeyboardSettingController extends ChangeNotifier
 
     SharedPreferences.getInstance().then((instance) {
       preferencesInstance = instance;
-      loadConfig(panelDashBoard.currentKeyBoard.keyBoardName);
+      loadConfig(mainController.currentKeyBoard.keyBoardName);
       tryWebsocketConnection();
     });
   }
 
   void tryWebsocketConnection() {
-        FocusManager.instance.primaryFocus?.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
 
     if (address != "" && routeAddress.contains("ws")) {
       connectToWebsocket(routeAddress, notifyListeners);
@@ -57,6 +57,7 @@ class KeyboardSettingController extends ChangeNotifier
     onMessageWebsocket(
         functionCallback: getModelSessionDebug,
         notifyListeners: notifyListeners);
+    notifyListeners();
   }
 
   void stopWebsocketConnection() {
@@ -84,8 +85,6 @@ class KeyboardSettingController extends ChangeNotifier
     preferencesInstance.setBool('$currentSettingName darkMode', darkMode);
     preferencesInstance.setBool(
         '$currentSettingName lockKeyboard', lockKeyboard);
-
-    notifyListeners();
   }
 
   loadConfig(String? settingName) {
@@ -93,26 +92,36 @@ class KeyboardSettingController extends ChangeNotifier
       currentSettingName = settingName;
     } else {
       currentSettingName =
-          preferencesInstance.getString('currentSettingName') ?? "default";
+          preferencesInstance.getString('currentSettingName') ??
+              currentSettingName;
     }
 
+    if (preferencesInstance.getString('$currentSettingName prefix') == null) {
+      saveConfig();
+    }
+    prefix =
+        preferencesInstance.getString('$currentSettingName prefix') ?? prefix;
+
     visibleAmountBtn =
-        preferencesInstance.getInt('$currentSettingName visibleAmountBtn') ?? 6;
+        preferencesInstance.getInt('$currentSettingName visibleAmountBtn') ??
+            visibleAmountBtn;
     sizeIcon = Size(
-        preferencesInstance.getDouble('$currentSettingName size.width') ?? 40,
-        preferencesInstance.getDouble('$currentSettingName size.height') ?? 40);
+        preferencesInstance.getDouble('$currentSettingName size.width') ??
+            sizeIcon.width,
+        preferencesInstance.getDouble('$currentSettingName size.height') ??
+            sizeIcon.height);
     address =
-        preferencesInstance.getString('$currentSettingName address') ?? "";
+        preferencesInstance.getString('$currentSettingName address') ?? address;
     routeAddress =
-        preferencesInstance.getString('$currentSettingName routeAddress') ?? "";
-    prefix = preferencesInstance.getString('$currentSettingName prefix') ??
-        'http://';
+        preferencesInstance.getString('$currentSettingName routeAddress') ??
+            routeAddress;
+
     showExceptions =
         preferencesInstance.getBool('$currentSettingName showExceptions') ??
-            false;
+            showResponses;
     showResponses =
         preferencesInstance.getBool('$currentSettingName showResponses') ??
-            false;
+            showResponses;
     darkMode = preferencesInstance.getBool('$currentSettingName darkMode') ??
         osDarkMode;
     lockKeyboard =
@@ -177,6 +186,7 @@ class KeyboardSettingController extends ChangeNotifier
     preferencesInstance.setDouble('$currentSettingName size.width', size);
     preferencesInstance.setDouble('$currentSettingName size.height', size);
     sizeIcon = Size(size, size);
+    notifyListeners();
   }
 
   void updateButtonsVisible(int number) {
@@ -200,31 +210,31 @@ class KeyboardSettingController extends ChangeNotifier
   }
 
   void setLastPressed(index) {
-    for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
-      panelDashBoard.listBtnProperties[i].isLastPressed = false;
-      panelDashBoard.listBtnProperties[i].save();
+    for (var i = 0; i < mainController.listBtnProperties.length; i++) {
+      mainController.listBtnProperties[i].isLastPressed = false;
+      mainController.listBtnProperties[i].save();
     }
-    panelDashBoard.listBtnProperties[index].isLastPressed = true;
-    panelDashBoard.listBtnProperties[index].save();
+    mainController.listBtnProperties[index].isLastPressed = true;
+    mainController.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void updateCounter(index) {
-    panelDashBoard.listBtnProperties[index].increaseCounter();
-    panelDashBoard.listBtnProperties[index].save();
+    mainController.listBtnProperties[index].increaseCounter();
+    mainController.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void resetCounter(index) {
-    panelDashBoard.listBtnProperties[index].clearCounter();
-    panelDashBoard.listBtnProperties[index].save();
+    mainController.listBtnProperties[index].clearCounter();
+    mainController.listBtnProperties[index].save();
     notifyListeners();
   }
 
   void resetAllCounters() {
-    for (var i = 0; i < panelDashBoard.listBtnProperties.length; i++) {
-      panelDashBoard.listBtnProperties[i].clearCounter();
-      panelDashBoard.listBtnProperties[i].save();
+    for (var i = 0; i < mainController.listBtnProperties.length; i++) {
+      mainController.listBtnProperties[i].clearCounter();
+      mainController.listBtnProperties[i].save();
     }
     notifyListeners();
   }

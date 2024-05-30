@@ -26,4 +26,9 @@ class HomeMenuController with ChangeNotifier {
   }
 }
 
+
+updateInterface(){
+notifyListeners();
+}
+
 }

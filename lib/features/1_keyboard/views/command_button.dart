@@ -4,20 +4,20 @@ import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import '../ models/button_properties.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ButtonFunction extends StatefulWidget {
   final BtnProperty btnProperty;
-  final PanelDashBoard panelDashBoard;
+  final MainController mainController;
   final KeyboardSettingController keyboardSettingCtrl;
 
   const ButtonFunction(
       {super.key,
       required this.btnProperty,
-      required this.panelDashBoard,
+      required this.mainController,
       required this.keyboardSettingCtrl});
 
   @override
@@ -74,11 +74,11 @@ class _ButtonFunctionState extends State<ButtonFunction> {
               });
               
               print("on tapDown");
-              widget.panelDashBoard
+              widget.mainController
                   .sentCommand(widget.btnProperty.commandSelector(),
                       widget.keyboardSettingCtrl)
                   .then((value) {
-                if (widget.panelDashBoard.showResponses() && value != null) {
+                if (widget.mainController.showResponses() && value != null) {
                   showToast(MessageToast(
                     message: value.toString(),
                     iconToast: const Icon(
@@ -89,7 +89,7 @@ class _ButtonFunctionState extends State<ButtonFunction> {
                   ));
                 }
               }, onError: (e) {
-                if (widget.panelDashBoard.showExceptions()) {
+                if (widget.mainController.showExceptions()) {
                   showToast(MessageToast(
                     message: e.toString(),
                     iconToast: const Icon(

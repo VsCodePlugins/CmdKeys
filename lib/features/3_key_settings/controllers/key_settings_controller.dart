@@ -2,15 +2,21 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsckeyboard/common/model/command_model.dart';
+import 'package:vsckeyboard/common/model/command_types.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 
 class KeySettingsController with ChangeNotifier {
   final textControllerNameBtn = TextEditingController();
-  final BtnProperty? currentBtnProperty;
+  final MainController mainController;
+  BtnProperty? currentBtnProperty;
   final FocusNode focusNode = FocusNode();
   final List<String> listNameIcons = MdiIcons.getNames();
   late Map<String, IconData> mapIconsName;
   late Map<int, String> mapCodePointIconsName;
+  ModelCommand? currentCommand;
 
   static const Color guidePrimary = Color(0xFF6200EE);
   static const Color guidePrimaryVariant = Color(0xFF3700B3);
@@ -31,11 +37,8 @@ class KeySettingsController with ChangeNotifier {
     return MdiIcons.fromString(nameIcon) ?? Icons.close;
   }
 
-  KeySettingsController({required this.currentBtnProperty}) {
-    
-
+  KeySettingsController({required this.mainController, required this.currentBtnProperty}) {
     textControllerNameBtn.text = currentBtnProperty!.functionLabel;
-
     mapIconsName = {
       for (var nameIcon in listNameIcons)
         nameIcon: _getIconDataWithName(nameIcon)
@@ -62,6 +65,10 @@ class KeySettingsController with ChangeNotifier {
       ColorTools.createPrimarySwatch(guideErrorDark): 'Guide Error Dark',
       ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
     };
+
+
+    getModelCommandBtnProperty();
+
   }
 
   _setNewIcon(IconData iconSelected) {
@@ -71,9 +78,50 @@ class KeySettingsController with ChangeNotifier {
     notifyListeners();
   }
 
+  assignCommand({required String idModelCommand,required  CommandType commandType}) async {
+    currentCommand = await getModelCommandById(idModelCommand);
+    if (currentBtnProperty == null) {
+      return;
+    }
+    if (commandType.value == CommandType.debugVscode) {
+      currentBtnProperty!.mapCommand = currentCommand!.mapCommand;
+      currentBtnProperty!.idCommand = currentCommand!.id;
+      currentBtnProperty!.save();
+    }
+
+    notifyListeners();
+  }
+
+  Future<ModelCommand?> getModelCommandBtnProperty(
+      {BtnProperty? btnProperty}) async {
+    if (btnProperty != null) {
+      currentBtnProperty = btnProperty;
+    }
+    if (currentBtnProperty == null) {
+      return null;
+    }
+    currentCommand = await getModelCommandById(currentBtnProperty!.idCommand);
+    notifyListeners();
+    return currentCommand;
+  }
+
+  Future<ModelCommand?> getModelCommandById(String idCommand) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    Set<String> listKeys = sharedPreferences.getKeys();
+    String keyModelCommand = listKeys.firstWhere(
+      (element) =>
+          element.contains(idCommand) && element.contains("_cmd_model_"),
+    );
+    currentCommand = await ModelCommand.loadCommand(
+        key: keyModelCommand, sharedPreferences: sharedPreferences);
+
+    return currentCommand;
+  }
+
   openIconsMenu(context) async {
     //FocusManager.instance.primaryFocus?.previousFocus();
-    //FocusManager.instance.primaryFocus?.requestFocus();
+    //FocusManager.instance.primaryFocus?invokeMethod();
     IconData? iconSelected = await showIconPicker(context,
         adaptiveDialog: true, customIconPack: mapIconsName);
 
@@ -110,6 +158,7 @@ class KeySettingsController with ChangeNotifier {
       spacing: 5,
       runSpacing: 5,
       wheelDiameter: 155,
+      
       heading: Text(
         'Select color',
         style: Theme.of(context).textTheme.titleSmall,

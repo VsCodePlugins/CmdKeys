@@ -122,7 +122,7 @@ class _SlidableCommandState extends State<SlidableCommand> {
       ),
       child: ButtonFunction(
           btnProperty: widget.listBtnProperty[widget.index],
-          panelDashBoard: widget.parentWidget.panelDashBoard,
+          mainController: widget.parentWidget.mainController,
           keyboardSettingCtrl: widget.keyboardSettingCtrl),
     );
   }

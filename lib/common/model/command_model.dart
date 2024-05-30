@@ -8,21 +8,21 @@ class ModelCommand {
   late String id;
   final int index;
   final String name;
-  final String? command;
   final Map<String, dynamic>? mapCommand;
   final String functionLabel;
   final String description;
   final CommandType type;
+  final bool deletable;
 
   ModelCommand({
     this.id = "",
     required this.index,
     required this.type,
     required this.name,
-    required this.command,
     this.mapCommand,
     required this.functionLabel,
     required this.description,
+    this.deletable =true,
   }) {
     if (id == "") {
       var uuid = const Uuid();
@@ -36,11 +36,24 @@ class ModelCommand {
       'index': index,
       'type': type.name,
       'name': name,
-      'command': command,
       'mapCommand': mapCommand,
       'functionLabel': functionLabel,
-      'description': description
+      'description': description,
+      'deletable':deletable
     });
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      'index': index,
+      'type': type.name,
+      'name': name,
+      'mapCommand': mapCommand,
+      'functionLabel': functionLabel,
+      'description': description,
+      'deletable':deletable
+    };
   }
 
   static ModelCommand fromJson(String jsonString) {
@@ -50,10 +63,10 @@ class ModelCommand {
       index: jsonMap['index'],
       type: ExtendedCommandType.getByName(jsonMap['type']),
       name: jsonMap['name'],
-      command: jsonMap['command'],
       mapCommand: jsonMap['mapCommand'],
       functionLabel: jsonMap['functionLabel'],
       description: jsonMap['description'],
+      deletable: jsonMap['deletable'],
     );
   }
 
@@ -74,8 +87,57 @@ class ModelCommand {
     return this;
   }
 
-  static Future<ModelCommand?> loadCommand({required String key}) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  static Future<ModelCommand?> update(
+      {required SharedPreferences sharedPreferences,
+      required String id,
+      required Map<String, dynamic> mapModel}) async {
+    ModelCommand? commandModel;
+    Set<String>? commandStr = sharedPreferences.getKeys();
+
+    String? key = commandStr.firstWhere(
+        (element) => element.contains(id) && element.contains("_cmd_model_"));
+    commandModel =
+        await loadCommand(key: key, sharedPreferences: sharedPreferences);
+
+    late Map<String, dynamic> commandModelToMap;
+    if (commandModel != null) {
+      commandModelToMap = commandModel.toMap();
+      mapModel.forEach((k, v) {
+        commandModelToMap[k] = v;
+      });
+    }
+    String modelJsonStr = jsonEncode(commandModelToMap);
+
+    sharedPreferences.setString(key, modelJsonStr);
+
+    return commandModel;
+  }
+
+
+    static Future<bool?> delete(
+      {required SharedPreferences sharedPreferences,
+      required String id,}) async {
+    ModelCommand? commandModel;
+    Set<String>? commandStr = sharedPreferences.getKeys();
+
+    String? key = commandStr.firstWhere(
+        (element) => element.contains(id) && element.contains("_cmd_model_"));
+    
+    
+    commandModel =
+        await loadCommand(key: key, sharedPreferences: sharedPreferences);
+
+    if (commandModel != null) {
+      sharedPreferences.remove(key);
+      return true;
+    }
+    return false;
+  
+  }
+
+  static Future<ModelCommand?> loadCommand(
+      {required String key,
+      required SharedPreferences sharedPreferences}) async {
     String? commandStr = sharedPreferences.getString(key);
     if (commandStr == null) {
       return null;

@@ -10,12 +10,18 @@ class SwitchSetting extends StatefulWidget {
     required this.isDarkMode,
     required this.state,
     required this.functionOnChange,
+    required this.notify,
     required this.label,
+    this.height =56,
+    this.edgeInsets = const EdgeInsets.only(left: 16.0, top:0, bottom: 16) ,
   });
   
   final bool isDarkMode ;
   Function(bool) functionOnChange;
+  void Function() notify;
   final String label;
+  final double height; 
+  final EdgeInsetsGeometry edgeInsets ;  
   bool state; 
   @override
   State<SwitchSetting> createState() => _SwitchSettingState();
@@ -25,12 +31,12 @@ class _SwitchSettingState extends State<SwitchSetting> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, top:0, bottom: 16),
+      padding: widget.edgeInsets,
       child: Row(
         children: [
           AnimatedToggleSwitch<int>.size(
               current: widget.state ? 1 : 0,
-              height: 56,
+              height: widget.height,
               values: const [0, 1],
     
               style: ToggleStyle(
@@ -42,6 +48,7 @@ class _SwitchSettingState extends State<SwitchSetting> {
                     () {
                       bool showExceptions = i == 0 ? false : true;
                       widget.functionOnChange(showExceptions);
+                      widget.notify();
                     },
                   ),
               iconList:  [

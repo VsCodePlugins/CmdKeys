@@ -21,7 +21,7 @@ class HomeController with ChangeNotifier {
 
   toggleHomeSettings() {
     if (currentPage == PagesApp.keyboard) {
-      changePage(PagesApp.settingsKeyboard);
+      changePage(PagesApp.allCommands);
     } else {
       changePage(PagesApp.keyboard);
     }

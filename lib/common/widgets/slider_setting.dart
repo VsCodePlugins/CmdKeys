@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class SliderSetting extends StatefulWidget {
@@ -36,12 +37,16 @@ class _SliderSettingState extends State<SliderSetting> {
             child: Text("Icons size",
                 style: TextStyle(fontSize: 16), textAlign: TextAlign.left),
           ),
-          Center(
-              child: Icon(
-            Icons.house_rounded,
-            size: iconSize,
-            color: widget.isDarkMode?  Colors.blue.withOpacity(0.5):Colors.blue,
-          )),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+                child:  SvgPicture.asset(
+                                      width: iconSize*.84,
+                                      'images/vscode_keyboard.svg',
+                                   
+              color: widget.isDarkMode?  Colors.blue.withOpacity(0.5):Colors.blue,
+            )),
+          ),
           SfSlider(
             min: 10,
             max: 100.0,

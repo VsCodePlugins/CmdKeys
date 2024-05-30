@@ -1,80 +1,18 @@
-import 'package:pluto_grid/pluto_grid.dart';
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/model/command_types.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 import '../model/command_group_model.dart';
 import 'default_command_groups.dart';
 
 mixin CommandsController {
   String keyBaseCommandGroup = "keyBaseCommandGroup";
   List<ModelCommandGroup> commandGroups = [];
-  List<PlutoRow> rowCommandsTable = [];
-  List<PlutoColumn> columnCommandsTable = [];
   List<ModelCommand>? listModelCommand;
   ModelCommandGroup? currentCommandGroup;
-
-  //ModelCommand currentCommand
-
-  Future<void> initColumnsRows(BtnProperty currentBtnProperty,
-      String commandGroupName, void Function() notify,
-      {required Stream<Map<String, dynamic>> stream,
-      required void Function(int?)? selectRadio}) async {
-    Stopwatch stopwatch = Stopwatch()..start();
-
-    SharedPreferences preferencesInstance =
-        await SharedPreferences.getInstance();
-
-    getCommandGroups(preferencesInstance).then((onValue) async {
-      commandGroups = onValue;
-      //notifyListeners();
-
-      ModelCommandGroup? modelCommandGroup = getModelCommandGroup(
-          commandGroupName: commandGroupName,
-          sharedPreferences: preferencesInstance);
-
-      if (modelCommandGroup == null) {
-        return;
-      }
-
-      listModelCommand = await getListCommandsByGroupName(
-          modelCommandGroup: modelCommandGroup,
-          sharedPreferences: preferencesInstance);
-
-      if (listModelCommand == null) {
-        return;
-      }
-
-      rowCommandsTable = getPlutoRows(listModelCommand!);
-      columnCommandsTable = getPlutoColumns(
-        modelCommandGroup: modelCommandGroup,
-        selectRadio: selectRadio,
-        stream: stream,
-        index: listModelCommand!
-            .firstWhere((element) => element.id == currentBtnProperty.idCommand)
-            .index,
-      );
-
-      print('initColumnsRows time elapsed ${stopwatch.elapsed.inMilliseconds}');
-
-      notify();
-    });
-  }
-
-  List<PlutoColumn> getPlutoColumns(
-      {required Stream<Map<String, dynamic>> stream,
-      required ModelCommandGroup modelCommandGroup,
-      required void Function(int?)? selectRadio,
-      required int index}) {
-    return modelCommandGroup.onlyType.getColumns(
-        onRunIt: (onRunIt) {
-          print(onRunIt);
-        },
-        selectRadio: selectRadio,
-        stream: stream,
-        currentIndex: index,
-        );
-  }
 
   Future<List<ModelCommandGroup>> getCommandGroups(
       SharedPreferences sharedPreferences,
@@ -178,7 +116,8 @@ mixin CommandsController {
     }
 
     for (String key in keyOfListModelCommands) {
-      ModelCommand? modelCmd = await ModelCommand.loadCommand(key: key);
+      ModelCommand? modelCmd = await ModelCommand.loadCommand(
+          key: key, sharedPreferences: sharedPreferences);
       if (modelCmd == null) {
         return null;
       }
@@ -188,21 +127,24 @@ mixin CommandsController {
     return commands;
   }
 
-  List<PlutoRow> getPlutoRows(List<ModelCommand> listModelCommand) {
-    List<PlutoRow> listPlutoRow = [];
-
-    for (ModelCommand modelCommand in listModelCommand) {
-      if (modelCommand.type == CommandType.debugVscode) {
-        listPlutoRow.add(PlutoRow(cells: {
-          'select_command': PlutoCell(value: modelCommand.index),
-          'label': PlutoCell(value: modelCommand.functionLabel),
-          'name': PlutoCell(value: modelCommand.name),
-          'command': PlutoCell(value: modelCommand.command ?? ""),
-          'description': PlutoCell(value: modelCommand.description),
-          'run_command': PlutoCell(value: modelCommand.command)
-        }));
+  Future<void> runCommand({
+    required dynamic command,
+    required MainController mainController,
+    required KeyboardSettingController keyboardSettingCtrl,
+  }) async {
+    Map<String, dynamic> decodeCommand = {};
+    try {
+      decodeCommand = json.decode(command);
+    } on Exception {
+      throw Exception(
+          "Error: Invalid format detected. Please ensure the command is in valid JSON format and try again");
+    }
+    for (String key in decodeCommand.keys) {
+      if (decodeCommand[key] == "") {
+        throw Exception(
+            "Error: Invalid format detected. Please provide a valid value for $key");
       }
     }
-    return listPlutoRow;
+    await mainController.sentCommand(decodeCommand, keyboardSettingCtrl);
   }
 }

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
-import '../controllers/dashboard.dart';
+import '../controllers/main_controller.dart';
 import 'slidable_btn_action.dart';
 
 class ListCommands extends StatefulWidget {
@@ -10,7 +10,7 @@ class ListCommands extends StatefulWidget {
     super.key,
     required this.padding,
     required this.sizeBtn,
-    required this.panelDashBoard,
+    required this.mainController,
     required this.orientation,
     required this.keyboardSettingController,
     required this.homeController,
@@ -18,7 +18,7 @@ class ListCommands extends StatefulWidget {
 
   final double padding;
   final double sizeBtn;
-  final PanelDashBoard panelDashBoard;
+  final MainController mainController;
   final Orientation orientation;
   final KeyboardSettingController keyboardSettingController;
   final HomeController homeController;
@@ -38,7 +38,7 @@ class _ListCommandsState extends State<ListCommands> {
             ? Axis.horizontal
             : Axis.vertical,
         padding: const EdgeInsets.only(left:10, right: 10, bottom: 10),
-        itemCount: widget.panelDashBoard.listBtnProperties.length,
+        itemCount: widget.mainController.listBtnProperties.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
               padding: EdgeInsets.all(widget.padding),
@@ -55,7 +55,7 @@ class _ListCommandsState extends State<ListCommands> {
                           key: GlobalKey(),
                           parentWidget: widget,
                           listBtnProperty:
-                              widget.panelDashBoard.listBtnProperties,
+                              widget.mainController.listBtnProperties,
                           index: index, 
                           keyboardSettingCtrl: widget.keyboardSettingController,
                           homeController: widget.homeController,))));

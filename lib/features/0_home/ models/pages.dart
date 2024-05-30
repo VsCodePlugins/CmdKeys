@@ -1,6 +1,6 @@
 
 
-enum PagesApp { settingsKey, keyboard, settingsKeyboard }
+enum PagesApp { settingsKey, keyboard, allCommands }
 
 extension ExtensionItemContact on PagesApp {
 
@@ -11,7 +11,7 @@ extension ExtensionItemContact on PagesApp {
           return 0;
       case PagesApp.keyboard:
         return 1;
-      case PagesApp.settingsKeyboard:
+      case PagesApp.allCommands:
         return 2;
     }
   }
@@ -22,8 +22,8 @@ extension ExtensionItemContact on PagesApp {
           return "settingsKey";
       case PagesApp.keyboard:
         return "keyboard";
-      case PagesApp.settingsKeyboard:
-        return "settingsKeyboard";
+      case PagesApp.allCommands:
+        return "allCommands";
     }
   }
 

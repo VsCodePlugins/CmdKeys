@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/command.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/keyboard_buttons.dart';
 
 class VsCodeKeyBoard extends KeyBoardButtons {
   VsCodeKeyBoard() : super("VsCode Keyboard", listBtnProperties: []);
@@ -19,9 +19,9 @@ class VsCodeKeyBoard extends KeyBoardButtons {
             .functionLabel,
         idCommand:
             listCmd.firstWhere((element) => element.name == "startDebug").id,
-        command: listCmd
+        mapCommand: listCmd
             .firstWhere((element) => element.name == "startDebug")
-            .command,
+            .mapCommand,
         color: Colors.green));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -34,8 +34,8 @@ class VsCodeKeyBoard extends KeyBoardButtons {
             .functionLabel,
         idCommand:
             listCmd.firstWhere((element) => element.name == "continue").id,
-        command:
-            listCmd.firstWhere((element) => element.name == "continue").command,
+        mapCommand:
+            listCmd.firstWhere((element) => element.name == "continue").mapCommand,
         color: Colors.blueAccent));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -49,9 +49,9 @@ class VsCodeKeyBoard extends KeyBoardButtons {
             .functionLabel,
         idCommand:
             listCmd.firstWhere((element) => element.name == "debugStepOver").id,
-        command: listCmd
+        mapCommand: listCmd
             .firstWhere((element) => element.name == "debugStepOver")
-            .command,
+            .mapCommand,
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -65,9 +65,9 @@ class VsCodeKeyBoard extends KeyBoardButtons {
             .functionLabel,
         idCommand:
             listCmd.firstWhere((element) => element.name == "debugStepInto").id,
-        command: listCmd
+        mapCommand: listCmd
             .firstWhere((element) => element.name == "debugStepInto")
-            .command,
+            .mapCommand,
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -81,9 +81,9 @@ class VsCodeKeyBoard extends KeyBoardButtons {
             .functionLabel,
         idCommand:
             listCmd.firstWhere((element) => element.name == "debugStepOut").id,
-        command: listCmd
+        mapCommand: listCmd
             .firstWhere((element) => element.name == "debugStepOut")
-            .command,
+            .mapCommand,
         color: Colors.blue));
     listBtnProperties.add(BtnProperty(
         sizeIcon: const Size(50, 50),
@@ -94,8 +94,8 @@ class VsCodeKeyBoard extends KeyBoardButtons {
         functionLabel: listCmd
             .firstWhere((element) => element.name == "restart")
             .functionLabel,
-        command:
-            listCmd.firstWhere((element) => element.name == "restart").command,
+        mapCommand:
+            listCmd.firstWhere((element) => element.name == "restart").mapCommand,
         idCommand:
             listCmd.firstWhere((element) => element.name == "restart").id,
         color: Colors.green));
@@ -108,8 +108,8 @@ class VsCodeKeyBoard extends KeyBoardButtons {
         functionLabel: listCmd
             .firstWhere((element) => element.name == "stop")
             .functionLabel,
-        command:
-            listCmd.firstWhere((element) => element.name == "stop").command,
+        mapCommand:
+            listCmd.firstWhere((element) => element.name == "stop").mapCommand,
          idCommand:
             listCmd.firstWhere((element) => element.name == "stop").id,
         color: Colors.red));

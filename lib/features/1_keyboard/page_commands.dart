@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
-import 'controllers/dashboard.dart';
+import 'controllers/main_controller.dart';
 import 'views/list_commands.dart';
 
 int visibleAmountBtn = 8;
@@ -38,13 +38,13 @@ class ConsumerListCommand extends StatelessWidget {
       lengthScreen = lengthScreen - spaceCompensation;
       double sizeBtn = lengthScreen / visibleAmountBtn;
 
-      return Consumer<PanelDashBoard>(
-          builder: (context, panelDashBoard, child) {
+      return Consumer<MainController>(
+          builder: (context, mainController, child) {
         return ListCommands(
           homeController: homeController,
             padding: padding,
             sizeBtn: sizeBtn,
-            panelDashBoard: panelDashBoard,
+            mainController: mainController,
             orientation: orientation,
             keyboardSettingController: keyboardSettingController
             

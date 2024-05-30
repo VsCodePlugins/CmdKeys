@@ -12,7 +12,6 @@ class BtnProperty {
   String functionLabel;
   String idCommand;
   Map<String, dynamic>? mapCommand;
-  String? command;
   Color color;
   bool isLastPressed;
   int counter;
@@ -27,7 +26,6 @@ class BtnProperty {
     required this.functionLabel,
     required this.idCommand,
     this.mapCommand,
-    required this.command,
     required this.color,
     this.isLastPressed = false,
     this.counter = 0,
@@ -49,7 +47,6 @@ class BtnProperty {
       'functionLabel': functionLabel,
       'idCommand': idCommand,
       'mapCommand': mapCommand,
-      'command': command,
       'color': color.value,
       'isLastPressed': isLastPressed,
       'counter': counter,
@@ -66,15 +63,9 @@ class BtnProperty {
   }
 
   dynamic commandSelector() {
-    if (command != null) {
-      return command;
-    } else {
-      if (mapCommand == null) {
-        throw Exception("This button has no command assigned");
-      }
       return mapCommand;
     }
-  }
+  
 
   void saveAs({required String groupName}) async {
     final SharedPreferences preferencesInstance =
@@ -125,8 +116,7 @@ class BtnProperty {
           functionName: mapBtnProperty['functionName'],
           functionLabel: mapBtnProperty['functionLabel'],
           idCommand: mapBtnProperty['idCommand'],
-          mapCommand: mapBtnProperty['functionCommand'],
-          command: mapBtnProperty['command'],
+          mapCommand: mapBtnProperty['mapCommand'],
           color: Color(mapBtnProperty['color']),
           isLastPressed: mapBtnProperty['isLastPressed'],
           counter: mapBtnProperty['counter'],
@@ -140,7 +130,6 @@ class BtnProperty {
           functionLabel: "Default",
           idCommand: "default_command",
           mapCommand: {"showMessage": "Hello Word"},
-          command: null,
           color: Colors.grey,
           isLastPressed: false,
           counter: 0,

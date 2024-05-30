@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vsckeyboard/common/class_functions/dropdown_controllers.dart';
@@ -8,17 +9,17 @@ import 'package:vsckeyboard/common/widgets/number_picker.dart';
 import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
 import 'package:vsckeyboard/common/widgets/slider_setting.dart';
 import 'package:vsckeyboard/common/widgets/switch_setting.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/dashboard.dart';
+import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
 class KeyboardSettings extends StatefulWidget {
   final String keyBoardName;
-  final FocusNode focusNode;
+  final void Function() notify;
 
   const KeyboardSettings({
     super.key,
     required this.keyBoardName,
-    required this.focusNode,
+    required this.notify,
   });
 
   @override
@@ -27,6 +28,7 @@ class KeyboardSettings extends StatefulWidget {
 
 class _KeyboardSettingsState extends State<KeyboardSettings> {
   String address = '';
+          FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +36,14 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
         providers: [
           ChangeNotifierProvider<DropDownPrefixCtrl>(
             create: (_) => DropDownPrefixCtrl(
-              widget.focusNode,
+              focusNode,
               "TYPE",
               ['ws://', 'wss://', 'http://', 'https://'],
             ),
           ),
           ChangeNotifierProvider<DropDownSuffixCtrl>(
             create: (_) => DropDownSuffixCtrl(
-              widget.focusNode,
+              focusNode,
               "CONNECT_TO",
               ['IP:PORT', 'URL'],
             ),
@@ -53,9 +55,9 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
           DropDownPrefixCtrl dropdownCtrlP =
               Provider.of<DropDownPrefixCtrl>(context);
           KeyboardSettingController settingController =
-              Provider.of<KeyboardSettingController>(context);
+              Provider.of<KeyboardSettingController>(context, listen: false);
 
-          PanelDashBoard panelDashBoard = Provider.of<PanelDashBoard>(context);
+          MainController mainController = Provider.of<MainController>(context);
 
           if (dropdownCtrlS.changeValue) {
             settingController.ctrlAddress.clear();
@@ -71,19 +73,19 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Center(
-                  child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-                      child: Text(
-                        widget.keyBoardName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: settingController.darkMode
-                                ? Colors.white
-                                : Colors.black,
-                            fontSize: 24),
-                      )),
-                ),
+                // Center(
+                //   child: Padding(
+                //       padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                //       child: Text(
+                //         widget.keyBoardName,
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(
+                //             color: settingController.darkMode
+                //                 ? Colors.white
+                //                 : Colors.black,
+                //             fontSize: 24),
+                //       )),
+                // ),
                 Theme(
                   data: ThemeData(
                     textSelectionTheme: TextSelectionThemeData(
@@ -138,10 +140,12 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                           settingController
                               .saveAddress(dropdownCtrlP.selectedValue);
                           settingController.stopWebsocketConnection();
+                            widget.notify();
+                          
                         },
                         key: const Key('host_text_field'),
                         controller: settingController.ctrlAddress,
-                        focusNode: widget.focusNode,
+                        focusNode: focusNode,
                         autofocus: false,
                         inputFormatters: [
                           if (dropdownCtrlS.selectedValue == 'IP')
@@ -196,8 +200,9 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                   value: settingController.visibleAmountBtn,
                   minValue: 1,
                   maxValue:
-                      panelDashBoard.currentKeyBoard.listBtnProperties.length,
+                      mainController.currentKeyBoard.listBtnProperties.length,
                   onChangedCallback: settingController.updateButtonsVisible,
+                  keyboardSettingController: settingController,
                 ),
                 SliderSetting(
                   isDarkMode: settingController.darkMode,
@@ -209,17 +214,22 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                   functionOnChange: settingController.updateThemeMode,
                   isDarkMode: settingController.darkMode,
                   label: "Dark Mode",
+                  notify: widget.notify,
                 ),
                 SwitchSetting(
-                    state: settingController.showExceptions,
-                    functionOnChange: settingController.updateShowExceptions,
-                    isDarkMode: settingController.darkMode,
-                    label: "Show Exceptions"),
+                  state: settingController.showExceptions,
+                  functionOnChange: settingController.updateShowExceptions,
+                  isDarkMode: settingController.darkMode,
+                  label: "Show Exceptions",
+                  notify: widget.notify,
+                ),
                 SwitchSetting(
-                    state: settingController.showResponses,
-                    functionOnChange: settingController.updateShowResponses,
-                    isDarkMode: settingController.darkMode,
-                    label: "Show Responses"),
+                  state: settingController.showResponses,
+                  functionOnChange: settingController.updateShowResponses,
+                  isDarkMode: settingController.darkMode,
+                  label: "Show Responses",
+                  notify: widget.notify,
+                ),
               ],
             ),
           );
