@@ -93,8 +93,9 @@ class Keyboard extends StatelessWidget {
                           Map<String, dynamic> command = {
                             "debugSessionNameSelector": newValue
                           };
+
                           mainController.sentCommand(
-                              command, keyboardSettingController);
+                              command, keyboardSettingController, "debugSessionNameSelector");
                         },
                         items: keyboardSettingController.listSessionName
                             .map<DropdownMenuItem<String>>((String value) {

@@ -100,3 +100,29 @@ List<ModelCommand> createDefaultListVscode(List<ModelCommand> commands) {
   ]);
   return commands;
 }
+
+
+List<ModelCommand> createDefaultListTerminalCommand(List<ModelCommand> commands) {
+  commands.addAll([
+    ModelCommand(
+        index: 0,
+        type: CommandType.vscodeCommand,
+        name: 'linux_ls_a_in_current_path',
+        mapCommand: {"commandWithReturn":"ls -a"},
+        functionLabel: 'list_file_in_path',
+        description:'get the list of files in current directory',
+        deletable: false),
+         ModelCommand(
+        index: 1,
+        type: CommandType.vscodeCommand,
+        name: '',
+        mapCommand: {"terminalName": "Git Status",  "terminalCommand":"git status"},
+        functionLabel: 'git_status',
+        description:'Show in terminal git status',
+        deletable: false)
+   
+
+   
+  ]);
+  return commands;
+}

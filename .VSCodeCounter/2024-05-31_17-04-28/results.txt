@@ -1,0 +1,100 @@
+Date : 2024-05-31 17:04:28
+Directory : /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib
+Total : 50 files,  4722 codes, 65 comments, 480 blanks, all 5267 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         50 |      4,722 |         65 |        480 |      5,267 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                              | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                 |         50 |      4,722 |         65 |        480 |      5,267 |
+| . (Files)                                                                                                                         |          1 |        144 |          2 |         12 |        158 |
+| common                                                                                                                            |         27 |      2,157 |         28 |        234 |      2,419 |
+| common (Files)                                                                                                                    |          2 |          3 |          0 |          3 |          6 |
+| common/class_functions                                                                                                            |          7 |        795 |          7 |         97 |        899 |
+| common/model                                                                                                                      |          4 |        386 |          0 |         44 |        430 |
+| common/services                                                                                                                   |          2 |        123 |          3 |         14 |        140 |
+| common/widgets                                                                                                                    |         12 |        850 |         18 |         76 |        944 |
+| features                                                                                                                          |         22 |      2,421 |         35 |        234 |      2,690 |
+| features/0_home                                                                                                                   |          5 |        378 |          3 |         37 |        418 |
+| features/0_home/ models                                                                                                           |          1 |         23 |          0 |          7 |         30 |
+| features/0_home/controllers                                                                                                       |          2 |         49 |          0 |         16 |         65 |
+| features/0_home/views                                                                                                             |          2 |        306 |          3 |         14 |        323 |
+| features/1_keyboard                                                                                                               |          8 |        869 |          2 |         92 |        963 |
+| features/1_keyboard (Files)                                                                                                       |          1 |         47 |          0 |          8 |         55 |
+| features/1_keyboard/ models                                                                                                       |          1 |        125 |          1 |         14 |        140 |
+| features/1_keyboard/controllers                                                                                                   |          2 |        126 |          0 |         24 |        150 |
+| features/1_keyboard/views                                                                                                         |          4 |        571 |          1 |         46 |        618 |
+| features/2_keyboard_setting                                                                                                       |          4 |        502 |         21 |         63 |        586 |
+| features/2_keyboard_setting/controllers                                                                                           |          2 |        249 |          8 |         47 |        304 |
+| features/2_keyboard_setting/models                                                                                                |          1 |         37 |          0 |          6 |         43 |
+| features/2_keyboard_setting/views                                                                                                 |          1 |        216 |         13 |         10 |        239 |
+| features/3_key_settings                                                                                                           |          4 |        540 |          9 |         39 |        588 |
+| features/3_key_settings/controllers                                                                                               |          1 |        180 |          9 |         26 |        215 |
+| features/3_key_settings/views                                                                                                     |          3 |        360 |          0 |         13 |        373 |
+| features/4_all_commands                                                                                                           |          1 |        132 |          0 |          3 |        135 |
+| features/4_all_commands/views                                                                                                     |          1 |        132 |          0 |          3 |        135 |
++-----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                          | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/command_controller.dart                        | Dart     |        134 |          0 |         17 |        151 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/default_command_groups.dart                    | Dart     |         38 |          0 |          4 |         42 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/default_commands.dart                          | Dart     |         93 |          0 |         10 |        103 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/default_vscodekeyboard.dart                    | Dart     |        116 |          0 |          4 |        120 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/dropdown_controllers.dart                      | Dart     |         53 |          0 |         11 |         64 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/grid_controller.dart                           | Dart     |        279 |          7 |         34 |        320 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/class_functions/ip_address_input.dart                          | Dart     |         82 |          0 |         17 |         99 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/constants.dart                                                 | Dart     |          3 |          0 |          2 |          5 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/model/command_group_model.dart                                 | Dart     |         74 |          0 |          9 |         83 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/model/command_model.dart                                       | Dart     |        127 |          0 |         22 |        149 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/model/command_types.dart                                       | Dart     |        169 |          0 |         11 |        180 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/model/grid_model.dart                                          | Dart     |         16 |          0 |          2 |         18 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/services/http_request.dart                                     | Dart     |         33 |          0 |          3 |         36 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/services/ws_connection.dart                                    | Dart     |         90 |          3 |         11 |        104 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/utils.dart                                                     | Dart     |          0 |          0 |          1 |          1 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/button_ws.dart                                         | Dart     |         85 |          0 |          4 |         89 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/grid_commands.dart                                     | Dart     |         77 |          1 |          6 |         84 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/icon_command.dart                                      | Dart     |         29 |          0 |          4 |         33 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/json_widget.dart                                       | Dart     |         60 |          0 |          5 |         65 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/number_picker.dart                                     | Dart     |         62 |          0 |          7 |         69 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/simple_dropdown.dart                                   | Dart     |         76 |          0 |         10 |         86 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/slider_setting.dart                                    | Dart     |         62 |         16 |         11 |         89 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/standard_button.dart                                   | Dart     |         51 |          0 |          4 |         55 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/switch_setting.dart                                    | Dart     |         74 |          1 |          7 |         82 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/tab_command_group.dart                                 | Dart     |         48 |          0 |          4 |         52 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/tab_container.dart                                     | Dart     |        180 |          0 |         11 |        191 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/common/widgets/toast.dart                                             | Dart     |         46 |          0 |          3 |         49 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/0_home/ models/pages.dart                                    | Dart     |         23 |          0 |          7 |         30 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/0_home/controllers/home_controller.dart                      | Dart     |         25 |          0 |          6 |         31 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/0_home/controllers/menu_controller.dart                      | Dart     |         24 |          0 |         10 |         34 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/0_home/views/menu.dart                                       | Dart     |        253 |          3 |          9 |        265 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/0_home/views/page_panel.dart                                 | Dart     |         53 |          0 |          5 |         58 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/ models/button_properties.dart                    | Dart     |        125 |          1 |         14 |        140 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/controllers/keyboard_buttons.dart                 | Dart     |         18 |          0 |          8 |         26 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/controllers/main_controller.dart                  | Dart     |        108 |          0 |         16 |        124 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/page_commands.dart                                | Dart     |         47 |          0 |          8 |         55 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/views/command_button.dart                         | Dart     |        259 |          0 |         21 |        280 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/views/keyboard_view.dart                          | Dart     |        131 |          1 |         10 |        142 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/views/list_commands.dart                          | Dart     |         59 |          0 |          7 |         66 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/1_keyboard/views/slidable_btn_action.dart                    | Dart     |        122 |          0 |          8 |        130 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/2_keyboard_setting/controllers/keyboard_settings.dart        | Dart     |        200 |          7 |         35 |        242 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/2_keyboard_setting/controllers/session_debug_controller.dart | Dart     |         49 |          1 |         12 |         62 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/2_keyboard_setting/models/session_debug_model.dart           | Dart     |         37 |          0 |          6 |         43 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/2_keyboard_setting/views/page_keyboard_settings.dart         | Dart     |        216 |         13 |         10 |        239 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/3_key_settings/controllers/key_settings_controller.dart      | Dart     |        180 |          9 |         26 |        215 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/3_key_settings/views/footer_assign_cmd.dart                  | Dart     |         54 |          0 |          3 |         57 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/3_key_settings/views/key_settings_page.dart                  | Dart     |        217 |          0 |          6 |        223 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/3_key_settings/views/name_text_field.dart                    | Dart     |         89 |          0 |          4 |         93 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/features/4_all_commands/views/page_all_commands.dart                  | Dart     |        132 |          0 |          3 |        135 |
+| /home/denisbueltan/Documents/VsCodeKeyboard/vsckeyboard/lib/main.dart                                                             | Dart     |        144 |          2 |         12 |        158 |
+| Total                                                                                                                             |          |      4,722 |         65 |        480 |      5,267 |
++-----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

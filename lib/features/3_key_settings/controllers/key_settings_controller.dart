@@ -83,11 +83,10 @@ class KeySettingsController with ChangeNotifier {
     if (currentBtnProperty == null) {
       return;
     }
-    if (commandType.value == CommandType.debugVscode) {
       currentBtnProperty!.mapCommand = currentCommand!.mapCommand;
       currentBtnProperty!.idCommand = currentCommand!.id;
       currentBtnProperty!.save();
-    }
+    
 
     notifyListeners();
   }

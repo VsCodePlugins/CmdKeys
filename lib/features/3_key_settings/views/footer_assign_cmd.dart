@@ -28,21 +28,21 @@ class GridFooterKeySettings extends StatelessWidget {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (snapshot.data != null)StandardButton(
-                  text: "Assign Command",
-                  functionOnPress: () {
-                          keySettingsCtrl.assignCommand(
-                              idModelCommand:
-                                  snapshot.data?['currentItem']['id'].value,
-                              commandType:
-                                  keySettingsCtrl.currentCommand!.type);
-                        },
-                  height: 20,
-                  width: 150,
-                  backgroundColor: keyboardSettingController.darkMode
-                      ? Colors.white
-                      : Colors.black,
-                ),
+                if (snapshot.data != null && snapshot.data?["MapRow"] != null)
+                  StandardButton(
+                    text: "Assign Command",
+                    functionOnPress: () {
+                      keySettingsCtrl.assignCommand(
+                          idModelCommand:
+                              snapshot.data?['currentItem']['id'].value,
+                          commandType: keySettingsCtrl.currentCommand!.type);
+                    },
+                    height: 20,
+                    width: 150,
+                    backgroundColor: keyboardSettingController.darkMode
+                        ? Colors.white
+                        : Colors.black,
+                  ),
                 StreamBuilder<Map<String, dynamic>>(
                     stream: gridController.gridStreamState,
                     builder: (context, snapshot) {

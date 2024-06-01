@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/class_functions/default_vscodekeyboard.dart';
@@ -36,9 +37,17 @@ class MainController with ChangeNotifier, HttpRequest {
       notifyListeners();
     });
   }
+    String generateRandomString(int len) {
+    var r = Random();
+    String randomString =String.fromCharCodes(List.generate(len, (index)=> r.nextInt(33) + 89));
+      return randomString;
+    }
+
 
   Future<String?> sentCommand(
-      Map<String, dynamic> command, KeyboardSettingController keyboardSettingCtrl) async {
+      Map<String, dynamic> command, KeyboardSettingController keyboardSettingCtrl, String idCommand) async {
+    
+    command["eventID"] = "event_${idCommand}_${generateRandomString(4)}";
     String routeAddress = preferencesInstance
             .getString('${currentKeyBoard.keyBoardName} routeAddress') ??
         "";

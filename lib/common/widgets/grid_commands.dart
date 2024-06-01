@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
@@ -8,7 +6,7 @@ import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_set
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
 
 class CommandsGrid extends StatelessWidget {
-   CommandsGrid({
+   const CommandsGrid({
     super.key,
     required this.mainController,
     required this.gridController,
@@ -28,9 +26,7 @@ class CommandsGrid extends StatelessWidget {
         return Container();
       }
       return PlutoGrid(
-        
         configuration: const PlutoGridConfiguration.dark(
-            
               style: PlutoGridStyleConfig.dark(
                 gridBackgroundColor: Colors.black54,
                 rowColor: Colors.transparent,
@@ -40,20 +36,23 @@ class CommandsGrid extends StatelessWidget {
                 gridBorderRadius: BorderRadius.all(Radius.circular(16)),
                 gridPopupBorderRadius: BorderRadius.all(Radius.circular(16)),
                 borderColor: Colors.blueGrey)),
-        columns: gridController.columnCommandsTable,
-        rows: gridController.rowCommandsTable,
+        columns: gridController.currentGridModel.columnCommandsTable,
+        rows: gridController.currentGridModel.rowCommandsTable,
         mode: gridController.gridSelectMode
             ? PlutoGridMode.normal
             : gridController.editMode
                 ? PlutoGridMode.normal
                 : PlutoGridMode.selectWithOneTap,
         onChanged: (PlutoGridOnChangedEvent event) {
+
           Map<String, dynamic> data = {event.column.field: event.value};
           String idCmd = event.row.cells["id"]!.value;
           ModelCommand.update(
               sharedPreferences: mainController.preferencesInstance,
               id: idCmd,
               mapModel: data);
+        
+        
         },
         onLoaded: (PlutoGridOnLoadedEvent event) {
           event.stateManager.setSelectingMode(PlutoGridSelectingMode.cell);

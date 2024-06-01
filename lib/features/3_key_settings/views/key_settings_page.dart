@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vsckeyboard/common/constants.dart';
 import 'package:vsckeyboard/common/model/command_types.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
@@ -39,7 +40,7 @@ class KeySettings extends StatelessWidget {
             smallestReftDistance = MediaQuery.of(context).size.height;
           }
           double width = MediaQuery.of(context).size.width;
-            double height = MediaQuery.of(context).size.height;
+          double height = MediaQuery.of(context).size.height;
 
           return RawScrollbar(
             thumbColor: Colors.white,
@@ -187,8 +188,9 @@ class KeySettings extends StatelessWidget {
                             mainController,
                             keyboardSettingController,
                             gridSelectMode: true,
-                            widthTabContainer: width -42
-                            ),
+                            widthTabContainer: width - 42,
+                            currentCommandGroupName:
+                                Constants.firstGroupCommandName),
                         builder: (context, child) {
                           GridController gridController =
                               context.watch<GridController>();
@@ -199,7 +201,7 @@ class KeySettings extends StatelessWidget {
                                 keyboardSettingController,
                             mainController: mainController,
                             width: width,
-                            height: height ,
+                            height: height,
                             widgetFooter: GridFooterKeySettings(
                               gridController: gridController,
                               keyboardSettingController:

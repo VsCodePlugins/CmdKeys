@@ -14,7 +14,7 @@ class TabCommands extends StatelessWidget {
     required this.keyboardSettingCtrl,
     required this.mainController,
     required this.widgetFooter,
-    required  this.widgetHeader,
+    required this.widgetHeader,
   });
   final MainController mainController;
   final GridController gridController;
@@ -23,10 +23,62 @@ class TabCommands extends StatelessWidget {
   final KeyboardSettingController keyboardSettingCtrl;
   final Widget widgetFooter;
   final Widget? widgetHeader;
+  @override
+  Widget build(BuildContext context) {
+    return TabWindows(
+        gridController: gridController,
+        keyboardSettingCtrl: keyboardSettingCtrl,
+        mainController: mainController,
+        widgetFooter: widgetFooter,
+        widgetHeader: widgetHeader);
+  }
+}
+
+class TabWindows extends StatefulWidget {
+  const TabWindows({
+    super.key,
+    required this.gridController,
+    required this.keyboardSettingCtrl,
+    required this.mainController,
+    required this.widgetFooter,
+    required this.widgetHeader,
+  });
+
+  final GridController gridController;
+  final KeyboardSettingController keyboardSettingCtrl;
+  final MainController mainController;
+  final Widget widgetFooter;
+  final Widget? widgetHeader;
+
+  @override
+  State<TabWindows> createState() => _TabWindowsState();
+}
+
+class _TabWindowsState extends State<TabWindows>
+    with SingleTickerProviderStateMixin {
+  late final TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TabController(vsync: this, length: widget.gridController.commandGroups.length);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TabContainer(
+      controller: _controller,
       tabEdge: TabEdge.top,
       tabsStart: 0.1,
       tabsEnd: 0.9,
@@ -34,28 +86,12 @@ class TabCommands extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       tabBorderRadius: BorderRadius.circular(12),
       childPadding: const EdgeInsets.all(4.0),
-      selectedTextStyle: const TextStyle(
-        color: Colors.blueAccent,
-        fontSize: 15.0,
-      ),
-      unselectedTextStyle: const TextStyle(
-        color: Colors.grey,
-        fontSize: 14.0,
-      ),
-      colors: [
-        Colors.blueAccent.withOpacity(.1),
-        Colors.blueAccent.withOpacity(.1),
-        Colors.blueAccent.withOpacity(.1),
-
-      ],
-      tabs: List.generate(gridController.commandGroups.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Text(gridController.commandGroups[index].label),
-        );
-      }),
-      children: [
-        (gridController.columnCommandsTable.isNotEmpty)
+      transitionBuilder: (a, b) {
+        widget.gridController.initTabCommand(
+            commandGroupName: widget.gridController.commandGroups[_controller.index].name);
+            
+        return (widget
+                .gridController.currentGridModel.columnCommandsTable.isNotEmpty)
             ? Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Theme(
@@ -88,17 +124,17 @@ class TabCommands extends StatelessWidget {
                             ),
                           ),
                           labelStyle: TextStyle(
-                              color: keyboardSettingCtrl.darkMode
+                              color: widget.keyboardSettingCtrl.darkMode
                                   ? Colors.white
                                   : Colors.black),
                           prefixStyle: TextStyle(
-                              color: keyboardSettingCtrl.darkMode
+                              color: widget.keyboardSettingCtrl.darkMode
                                   ? Colors.white
                                   : Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.normal),
                           hintStyle: TextStyle(
-                              color: keyboardSettingCtrl.darkMode
+                              color: widget.keyboardSettingCtrl.darkMode
                                   ? const Color.fromARGB(255, 66, 66, 66)
                                   : const Color.fromARGB(255, 201, 201, 201)),
                         ),
@@ -117,21 +153,38 @@ class TabCommands extends StatelessWidget {
                           return Colors.blueAccent;
                         }))),
                     child: CommandsGrid(
-                      mainController: mainController,
-                      gridController: gridController,
-                      keyboardSettingController: keyboardSettingCtrl,
-                      widgetFooter: widgetFooter,
-                      widgetHeader: widgetHeader,
+                      mainController: widget.mainController,
+                      gridController: widget.gridController,
+                      keyboardSettingController: widget.keyboardSettingCtrl,
+                      widgetFooter: widget.widgetFooter,
+                      widgetHeader: widget.widgetHeader,
                     )))
-            : const SizedBox.shrink(),
-       
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: height,
-          child: const Text("2"),
-        ),
-         
-      ],
+            : const SizedBox.shrink();
+      },
+      selectedTextStyle: const TextStyle(
+        color: Colors.blueAccent,
+        fontSize: 15.0,
+      ),
+      unselectedTextStyle: const TextStyle(
+        color: Colors.grey,
+        fontSize: 14.0,
+      ),
+      colors: List.generate(
+        widget.gridController.commandGroups.length,
+        (index) {
+          return Colors.blueAccent.withOpacity(.1);
+        },
+      ),
+      tabs: List.generate(widget.gridController.commandGroups.length, (index) {
+        return Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: Text(widget.gridController.commandGroups[index].label),
+        );
+      }),
+      children:
+          List.generate(widget.gridController.commandGroups.length, (index) {
+        return const SizedBox();
+      }),
     );
   }
 }

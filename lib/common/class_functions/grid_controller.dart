@@ -5,76 +5,149 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/class_functions/command_controller.dart';
-import 'package:vsckeyboard/common/constants.dart';
 import 'package:vsckeyboard/common/model/command_group_model.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:vsckeyboard/common/model/command_types.dart';
+import 'package:vsckeyboard/common/model/grid_model.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
 
 class GridController with ChangeNotifier, CommandsController {
-  int currentIndex = 0;
   BtnProperty? currentBtnProperty;
   MainController mainController;
   KeyboardSettingController keyboardSettingCtrl;
   StreamController<Map<String, dynamic>> gridStateCtrl =
       StreamController<Map<String, dynamic>>.broadcast();
-  bool gridSelectMode = false;
-  bool editMode = false;
-  List<PlutoRow> rowCommandsTable = [];
-  List<PlutoColumn> columnCommandsTable = [];
-  final double widthTabContainer;
   late Stream<Map<String, dynamic>> gridStreamState;
-  PlutoGridStateManager ?stateManager;
-  Map<String, dynamic> selectedRow = {};
+
+  final double widthTabContainer;
+  PlutoGridStateManager? stateManager;
+  String currentCommandGroupName;
+  Map<String, GridModel> mapGridModel = {};
+  late GridModel currentGridModel;
+  bool gridSelectMode = false;
+  int currentIndex = 0;
+  late bool editMode = false;
+  // Map<String, dynamic> selectedRow = {};
+  // List<PlutoRow>currentGridModel.rowCommandsTable = [];
+  // List<PlutoColumn> columnCommandsTable = [];
+
+  GridController(
+      this.currentBtnProperty, this.mainController, this.keyboardSettingCtrl,
+      {this.gridSelectMode = false,
+      required this.widthTabContainer,
+      required this.currentCommandGroupName}) {
+    gridStreamState = gridStateCtrl.stream;
+    initTabCommand();
+  }
+
+  void initTabCommand({String? commandGroupName}) {
+    bool forceReload = false;
+    if (commandGroupName != null) {
+      if (commandGroupName == currentCommandGroupName) {
+        return;
+      }
+      currentCommandGroupName = commandGroupName;
+      forceReload = true;
+    }
+
+    currentGridModel =
+        buildMapGridModel(currentCommandGroupName)[currentCommandGroupName]!;
+    initColumnsRows(
+            forceReload: forceReload,
+            stream: gridStreamState,
+            currentBtnProperty,
+            currentCommandGroupName,
+            notifyListeners,
+            selectRadio: updateCurrentIndex,
+            onRunIt: runCmd,
+            selectMode: gridSelectMode,
+            widthTabContainer: widthTabContainer)
+        .then((onValue) {
+      currentIndex = (currentBtnProperty != null)
+          ? currentListModelCommand!
+              .firstWhere(
+                  (element) => element.id == currentBtnProperty!.idCommand,
+                  orElse: () => currentListModelCommand![0])
+              .index
+          : 0;
+      setEditMode(currentGridModel.editMode, notify: true);
+    });
+  }
+
+  Map<String, GridModel> buildMapGridModel(String commandGroupName,
+      {bool force = false}) {
+    //bool editMode = false;
+    Map<String, dynamic> selectedRow = {};
+    List<PlutoRow> rowCommandsTable = [];
+    List<PlutoColumn> columnCommandsTable = [];
+    if (mapGridModel[commandGroupName] == null || force == true) {
+      GridModel gridModel = GridModel(
+          rowCommandsTable: rowCommandsTable,
+          columnCommandsTable: columnCommandsTable,
+          selectedRow: selectedRow,
+          gridSelectMode: gridSelectMode,
+          editMode: false,
+          currentIndex: currentIndex);
+
+      mapGridModel[commandGroupName] = gridModel;
+    }
+
+    return mapGridModel;
+  }
 
   void updateCurrentIndex(int? index) {
     if (index == null) {
       return;
     }
-    selectedRow = {};
-
+    currentGridModel.selectedRow = {};
     currentIndex = index;
-
-    for (String ptoRow in rowCommandsTable[currentIndex].cells.keys) {
-      selectedRow[ptoRow] = rowCommandsTable[currentIndex].cells[ptoRow]!.value;
+    for (String ptoRow
+        in currentGridModel.rowCommandsTable[currentIndex].cells.keys) {
+      currentGridModel.selectedRow[ptoRow] =
+          currentGridModel.rowCommandsTable[currentIndex].cells[ptoRow]!.value;
     }
     try {
-      selectedRow["command"] = json.decode(selectedRow["command"]);
+      currentGridModel.selectedRow["command"] =
+          json.decode(currentGridModel.selectedRow["command"]);
       // ignore: empty_catches
     } catch (e) {}
     gridStateCtrl.sink.add({
-      "MapRow": selectedRow,
+      "MapRow": currentGridModel.selectedRow,
       "currentIndex": currentIndex,
-      "currentItem": rowCommandsTable[currentIndex].cells
+      "currentItem": currentGridModel.rowCommandsTable[currentIndex].cells
     });
-
     notifyListeners();
   }
 
-  void setEditMode(bool isEditMode) {
+  void setEditMode(bool isEditMode, {bool notify = true}) {
+    currentGridModel.editMode = isEditMode;
+    mapGridModel[currentCommandGroupName]!.editMode = isEditMode;
     editMode = isEditMode;
     gridStateCtrl.sink.add({
       "editMode": isEditMode,
     });
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void selectCommand(PlutoGridOnSelectedEvent event) {
-    selectedRow = {};
+    currentGridModel.selectedRow = {};
 
     for (String ptoRow in event.row!.cells.keys) {
-      selectedRow[ptoRow] = event.row!.cells[ptoRow]!.value;
+      currentGridModel.selectedRow[ptoRow] = event.row!.cells[ptoRow]!.value;
     }
     try {
-      selectedRow["command"] = json.decode(selectedRow["command"]);
+      currentGridModel.selectedRow["command"] =
+          json.decode(currentGridModel.selectedRow["command"]);
       // ignore: empty_catches
     } catch (e) {}
 
     gridStateCtrl.sink.add({
-      "MapRow": selectedRow,
+      "MapRow": currentGridModel.selectedRow,
     });
   }
 
@@ -92,10 +165,12 @@ class GridController with ChangeNotifier, CommandsController {
     FToast fToast = FToast();
 
     runCommand(
-            command: rowCommandsTable[index!].cells["command"]!.value,
-            mainController: mainController,
-            keyboardSettingCtrl: keyboardSettingCtrl)
-        .then((onValue) {}, onError: (e) {
+      command:
+          currentGridModel.rowCommandsTable[index!].cells["command"]!.value,
+      mainController: mainController,
+      keyboardSettingCtrl: keyboardSettingCtrl,
+      idCommand: currentGridModel.rowCommandsTable[index].cells["id"]!.value,
+    ).then((onValue) {}, onError: (e) {
       if (mainController.showExceptions()) {
         showToast(
             MessageToast(
@@ -113,31 +188,6 @@ class GridController with ChangeNotifier, CommandsController {
     notifyListeners();
   }
 
-  GridController(
-      this.currentBtnProperty, this.mainController, this.keyboardSettingCtrl,
-      {this.gridSelectMode = false, required this.widthTabContainer}) {
-    gridStreamState = gridStateCtrl.stream;
-
-
-    initColumnsRows(
-            stream: gridStreamState,
-            currentBtnProperty,
-            Constants.firstGroupCommandName,
-            notifyListeners,
-            selectRadio: updateCurrentIndex,
-            onRunIt: runCmd,
-            selectMode: gridSelectMode,
-            widthTabContainer: widthTabContainer)
-        .then((onValue) {
-      currentIndex = (currentBtnProperty != null)
-          ? listModelCommand!
-              .firstWhere(
-                  (element) => element.id == currentBtnProperty!.idCommand)
-              .index
-          : 0;
-    });
-  }
-
   Future<void> initColumnsRows(
     BtnProperty? currentBtnProperty,
     String commandGroupName,
@@ -147,12 +197,14 @@ class GridController with ChangeNotifier, CommandsController {
     required void Function(int?, BuildContext context)? onRunIt,
     required bool selectMode,
     required double widthTabContainer,
+    required bool forceReload,
   }) async {
     Stopwatch stopwatch = Stopwatch()..start();
     SharedPreferences preferencesInstance =
         await SharedPreferences.getInstance();
 
-    await getCommandGroups(preferencesInstance).then((onValue) async {
+    await getCommandGroups(preferencesInstance, forceReload: forceReload)
+        .then((onValue) async {
       commandGroups = onValue;
       //notifyListeners();
 
@@ -164,32 +216,34 @@ class GridController with ChangeNotifier, CommandsController {
         return;
       }
 
-      listModelCommand = await getListCommandsByGroupName(
+      currentListModelCommand = await getListCommandsByGroupName(
           modelCommandGroup: modelCommandGroup,
           sharedPreferences: preferencesInstance);
 
-      if (listModelCommand == null) {
+      if (currentListModelCommand == null) {
         return;
       }
 
-      rowCommandsTable = getPlutoRows(listModelCommand!);
+      currentGridModel.rowCommandsTable =
+          getPlutoRows(currentListModelCommand!);
 
-      columnCommandsTable = getPlutoColumns(
+      currentGridModel.columnCommandsTable = getPlutoColumns(
         modelCommandGroup: modelCommandGroup,
         selectRadio: selectRadio,
         stream: stream,
         onRunIt: onRunIt,
         index: (currentBtnProperty != null)
-            ? listModelCommand!
+            ? currentListModelCommand!
                 .firstWhere(
-                    (element) => element.id == currentBtnProperty.idCommand)
+                  (element) => element.id == currentBtnProperty.idCommand,
+                  orElse: () => currentListModelCommand![0],
+                )
                 .index
             : 0,
         selectMode: selectMode,
         width: widthTabContainer,
       );
       print('initColumnsRows time elapsed ${stopwatch.elapsed.inMilliseconds}');
-      notify();
     });
   }
 
@@ -215,27 +269,24 @@ class GridController with ChangeNotifier, CommandsController {
     List<PlutoRow> listPlutoRow = [];
 
     for (ModelCommand modelCommand in listModelCommand) {
-      if (modelCommand.type == CommandType.debugVscode) {
-        listPlutoRow.add(PlutoRow(cells: {
-          'id': PlutoCell(
-            value: modelCommand.id,
-          ),
-          'select_command': PlutoCell(value: modelCommand.index),
-          'functionLabel': PlutoCell(value: modelCommand.functionLabel),
-          'name': PlutoCell(value: modelCommand.name),
-          'command':
-              PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
-          'description': PlutoCell(value: modelCommand.description),
-          'run_command': PlutoCell(value: json.encode(modelCommand.mapCommand)),
-          'created_by_user': PlutoCell(value: modelCommand.deletable.toString())
-        }));
-      }
+      listPlutoRow.add(PlutoRow(cells: {
+        'id': PlutoCell(
+          value: modelCommand.id,
+        ),
+        'select_command': PlutoCell(value: modelCommand.index),
+        'functionLabel': PlutoCell(value: modelCommand.functionLabel),
+        'name': PlutoCell(value: modelCommand.name),
+        'command': PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
+        'description': PlutoCell(value: modelCommand.description),
+        'run_command': PlutoCell(value: json.encode(modelCommand.mapCommand)),
+        'created_by_user': PlutoCell(value: modelCommand.deletable.toString())
+      }));
     }
     return listPlutoRow;
   }
 
   Future<void> addNewDebugRow() async {
-    int lengthRowsCommandsTable = rowCommandsTable.length;
+    int lengthRowsCommandsTable = currentGridModel.rowCommandsTable.length;
     ModelCommand modelCommand = ModelCommand(
         index: lengthRowsCommandsTable,
         type: CommandType.debugVscode,
@@ -265,18 +316,14 @@ class GridController with ChangeNotifier, CommandsController {
 
   Future<void> removeDebugRow() async {
     int currentIndex = stateManager!.currentRowIdx!;
-    stateManager!.removeRows([rowCommandsTable[currentIndex]]);
+    stateManager!.removeRows([currentGridModel.rowCommandsTable[currentIndex]]);
     ModelCommand.delete(
         sharedPreferences: keyboardSettingCtrl.preferencesInstance,
-        id: selectedRow["id"]);
-    selectedRow = {};
+        id: currentGridModel.selectedRow["id"]);
+    currentGridModel.selectedRow = {};
 
     gridStateCtrl.sink.add({
       "MapRow": null,
     });
-  }
-
-  showCommandsOfGroup(){
-    
   }
 }

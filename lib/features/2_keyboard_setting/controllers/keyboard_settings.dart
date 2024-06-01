@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/common/services/ws_connection.dart';
@@ -28,10 +31,16 @@ class KeyboardSettingController extends ChangeNotifier
   final BuildContext buildContext;
   double slideValue = 10;
 
+  StreamController<Map<String, dynamic>> keyboardSettingStateCtrl =
+      StreamController<Map<String, dynamic>>.broadcast();
+  late Stream<Map<String, dynamic>> keyboardSettingStreamState;
+
   KeyboardSettingController(
     this.mainController,
     this.buildContext,
   ) {
+    keyboardSettingStreamState = keyboardSettingStateCtrl.stream;
+
     var brightness = MediaQuery.of(buildContext).platformBrightness;
     osDarkMode = brightness == Brightness.dark;
     darkMode = osDarkMode;
@@ -55,9 +64,21 @@ class KeyboardSettingController extends ChangeNotifier
 
   void startOnMessageWs() {
     onMessageWebsocket(
-        functionCallback: getModelSessionDebug,
+        functionCallback: proccesIncomingMessage,
         notifyListeners: notifyListeners);
     notifyListeners();
+  }
+
+  void proccesIncomingMessage(String message) {
+    getModelSessionDebug(message);
+    updateStreamIncomingMessage(message);
+  }
+
+  void updateStreamIncomingMessage(String data) {
+    try {
+      Map<String, dynamic> jsonData = json.decode(data);
+      keyboardSettingStateCtrl.sink.add({"incomingMessage":jsonData});
+    } catch (e) {}
   }
 
   void stopWebsocketConnection() {

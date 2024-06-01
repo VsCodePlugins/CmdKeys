@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
+import 'package:vsckeyboard/common/constants.dart';
 import 'package:vsckeyboard/common/widgets/json_widget.dart';
 import 'package:vsckeyboard/common/widgets/standard_button.dart';
 import 'package:vsckeyboard/common/widgets/switch_setting.dart';
@@ -27,6 +28,7 @@ class AllCommands extends StatelessWidget {
               mainController,
               keyboardSettingController,
               widthTabContainer: widthTabContainer,
+              currentCommandGroupName: Constants.firstGroupCommandName,
             ),
         builder: (context, child) {
           GridController gridController = context.watch<GridController>();
@@ -68,48 +70,92 @@ class AllCommands extends StatelessWidget {
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.decelerate,
                                   height: (!gridController.editMode) ? 50 : 0,
-                                  child: (!gridController.editMode)? Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      StandardButton(
-                                        functionOnPress: gridController.addNewDebugRow,
-                                        childWidget: const Icon(
-                                          Icons.add_sharp,
-                                          color: Colors.blueAccent,
-                                        ),
-                                        backgroundColor:
-                                            Colors.blue.withOpacity(.5),
-                                        width: 70,
-                                        height: 30,
-                                        text: null,
-                                      ),
-                                      if (gridController.selectedRow["created_by_user"] == "true")
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 16.0),
-                                          child: StandardButton(
-                                            functionOnPress: gridController.removeDebugRow,
-                                          childWidget: const Icon(
-                                            Icons.remove_circle_outline_rounded,
-                                            color: Colors.red,
-                                          ),
-                                          backgroundColor:
-                                              Colors.blue.withOpacity(.5),
-                                          width: 70,
-                                          height: 30,
-                                          text: null,
-                                                                                ),
-                                        ),
-                                    ],
-                                  ):const SizedBox.shrink(),
+                                  child: (!gridController.editMode)
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            StandardButton(
+                                              functionOnPress:
+                                                  gridController.addNewDebugRow,
+                                              childWidget: const Icon(
+                                                Icons.add_sharp,
+                                                color: Colors.blueAccent,
+                                              ),
+                                              backgroundColor:
+                                                  Colors.blue.withOpacity(.5),
+                                              width: 70,
+                                              height: 30,
+                                              text: null,
+                                            ),
+                                            if (gridController.currentGridModel
+                                                        .selectedRow[
+                                                    "created_by_user"] ==
+                                                "true")
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 16.0),
+                                                child: StandardButton(
+                                                  functionOnPress:
+                                                      gridController
+                                                          .removeDebugRow,
+                                                  childWidget: const Icon(
+                                                    Icons
+                                                        .remove_circle_outline_rounded,
+                                                    color: Colors.red,
+                                                  ),
+                                                  backgroundColor: Colors.blue
+                                                      .withOpacity(.5),
+                                                  width: 70,
+                                                  height: 30,
+                                                  text: null,
+                                                ),
+                                              ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
                                 )
                               ],
                             );
                           })),
-                  widgetFooter: StreamBuilder<Map<String, dynamic>>(
-                      stream: gridController.gridStreamState,
-                      builder: (context, snapshot) {
-                        return JsonWidget(dataMap: snapshot.data?["MapRow"]);
-                      })),
+                  widgetFooter: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      StreamBuilder<Map<String, dynamic>>(
+                          stream: gridController.gridStreamState,
+                          builder: (context, snapshot) {
+                            return JsonWidget(
+                                dataMap: snapshot.data?["MapRow"]);
+                          }),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: StreamBuilder<Map<String, dynamic>>(
+                            stream: gridController
+                                .keyboardSettingCtrl.keyboardSettingStreamState,
+                            builder: (context, snapshot) {
+                              String commandId = gridController
+                                  .currentListModelCommand![
+                                      gridController.currentIndex]
+                                  .id;
+                              return (snapshot.data?["incomingMessage"] !=
+                                          null &&
+                                      snapshot.data?["incomingMessage"]
+                                              ["eventID"]
+                                          .contains(commandId))
+                                  ? SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .2,
+                                      child: JsonWidget(
+                                          dataMap: snapshot
+                                              .data?["incomingMessage"]),
+                                    )
+                                  : const SizedBox.shrink();
+                            }),
+                      ),
+                    ],
+                  )),
             );
           });
         });

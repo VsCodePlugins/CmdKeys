@@ -11,7 +11,7 @@ import 'default_command_groups.dart';
 mixin CommandsController {
   String keyBaseCommandGroup = "keyBaseCommandGroup";
   List<ModelCommandGroup> commandGroups = [];
-  List<ModelCommand>? listModelCommand;
+  List<ModelCommand>? currentListModelCommand;
   ModelCommandGroup? currentCommandGroup;
 
   Future<List<ModelCommandGroup>> getCommandGroups(
@@ -40,7 +40,9 @@ mixin CommandsController {
           .where((key) =>
               key.contains(keyBaseCommandGroup) && key.contains("_cmd_group_"))
           .toSet();
+    
     }
+
 
     for (String key in keysCommandsGroups) {
       ModelCommandGroup? commandGroup = ModelCommandGroup.loadCommandGroup(
@@ -131,6 +133,7 @@ mixin CommandsController {
     required dynamic command,
     required MainController mainController,
     required KeyboardSettingController keyboardSettingCtrl,
+    required String idCommand,
   }) async {
     Map<String, dynamic> decodeCommand = {};
     try {
@@ -145,6 +148,6 @@ mixin CommandsController {
             "Error: Invalid format detected. Please provide a valid value for $key");
       }
     }
-    await mainController.sentCommand(decodeCommand, keyboardSettingCtrl);
+    await mainController.sentCommand(decodeCommand, keyboardSettingCtrl, idCommand);
   }
 }

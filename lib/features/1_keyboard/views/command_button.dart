@@ -76,7 +76,7 @@ class _ButtonFunctionState extends State<ButtonFunction> {
               print("on tapDown");
               widget.mainController
                   .sentCommand(widget.btnProperty.commandSelector(),
-                      widget.keyboardSettingCtrl)
+                      widget.keyboardSettingCtrl, widget.btnProperty.idCommand)
                   .then((value) {
                 if (widget.mainController.showResponses() && value != null) {
                   showToast(MessageToast(
