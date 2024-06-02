@@ -126,7 +126,9 @@ class _ListCommandsState extends State<ListCommands> {
     nextBtnProperty.save();
     btnProperty = listBtnProperties.removeAt(oldIndex);
     listBtnProperties.insert(newIndex, btnProperty);
-
+    listBtnProperties.sort(
+      (a, b) => a.index.compareTo(b.index),
+    );
     if (Platform.isAndroid || Platform.isIOS) {
       Vibration.vibrate(duration: 100, amplitude: 255);
     }
@@ -151,10 +153,10 @@ class ItemCommand extends StatelessWidget {
         child: Stack(
           children: [
             SizedBox(
-                height: widget.orientation == Orientation.landscape 
+                height: widget.orientation == Orientation.landscape
                     ? null
                     : widget.sizeBtn,
-                width: widget.orientation == Orientation.landscape 
+                width: widget.orientation == Orientation.landscape
                     ? widget.sizeBtn
                     : null,
                 child: Padding(

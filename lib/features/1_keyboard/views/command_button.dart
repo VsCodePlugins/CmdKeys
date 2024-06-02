@@ -199,8 +199,8 @@ class CommandButtonContent extends StatelessWidget {
   final HomeController homeController;
   @override
   Widget build(BuildContext context) {
-    return (orientation == Orientation.portrait ||
-            !widget.keyboardSettingCtrl.listMode)
+    return (orientation == Orientation.portrait &&
+            widget.keyboardSettingCtrl.listMode)
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -262,11 +262,10 @@ List<Widget> buildButton(
                 : widget.btnProperty.color,
             iconName: widget.btnProperty.iconName,
           ),
-          
         ],
       ),
     ),
-    if (boxConstraintsParent.maxWidth > 200)
+    if (boxConstraintsParent.maxWidth > 140)
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
@@ -279,11 +278,14 @@ List<Widget> buildButton(
           overflow: TextOverflow.fade,
         ),
       ),
-    if (boxConstraintsParent.maxWidth > 200)
-      Counter(
-          counter: counter,
-          isLastPressed: isLastPressed,
-          isDarkMode: widget.keyboardSettingCtrl.darkMode),
+    if (boxConstraintsParent.maxWidth > 120)
+      (!widget.keyboardSettingCtrl.listMode && counter > 0)
+          ? Counter(
+              counter: counter,
+              isLastPressed: isLastPressed,
+              isDarkMode: widget.keyboardSettingCtrl.darkMode,
+              colorText: widget.btnProperty.color,)
+          : const SizedBox.shrink(),
   ];
 }
 
@@ -293,11 +295,13 @@ class Counter extends StatelessWidget {
     required this.counter,
     required this.isLastPressed,
     required this.isDarkMode,
+    required this.colorText,
   });
 
   final int counter;
   final bool isLastPressed;
   final bool isDarkMode;
+  final Color colorText;
 
   @override
   Widget build(BuildContext context) {
@@ -305,14 +309,13 @@ class Counter extends StatelessWidget {
 
     if (isDarkMode) {
       styleText = TextStyle(
-          color: isLastPressed
-              ? Colors.blueAccent
-              : const Color.fromARGB(255, 63, 63, 63),
+          color:
+              isLastPressed ? colorText : const Color.fromARGB(255, 63, 63, 63),
           fontSize: 20);
     } else {
       styleText = TextStyle(
           color: isLastPressed
-              ? const Color.fromARGB(255, 0, 0, 0)
+              ? colorText
               : const Color.fromARGB(255, 172, 172, 172),
           fontSize: 20);
     }

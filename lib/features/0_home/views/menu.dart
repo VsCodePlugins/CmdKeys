@@ -94,19 +94,16 @@ class MenuFunctions extends StatelessWidget {
                       // shape: const CircleBorder(),
                       backgroundColor: Colors.black54,
                       foregroundColor: Colors.blueAccent,
-                      child: Icon(MdiIcons.counter),
+                      child: Icon(MdiIcons.plusBox),
                       onPressed: () {
                         final state = keyHomeMenu.currentState;
         
                         if (state != null) {
-                          if (Platform.isAndroid || Platform.isIOS) {
-                            Vibration.vibrate(duration: 200);
-                          }
-                          keyboardSettings.resetAllCounters();
+                        
                           state.toggle();
                           const SnackBar snackBar = SnackBar(
                             content:
-                                Text("Reset all counters in the current keyboard"),
+                                Text(""),
                           );
                           scaffoldKey.currentState?.showSnackBar(snackBar);
                         }
@@ -137,6 +134,7 @@ class MenuFunctions extends StatelessWidget {
                       },
                     ),
                   ),
+                  
                 if (homeController.currentPage == PagesApp.settingsKey)
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),

@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
 import 'package:vsckeyboard/common/class_functions/dropdown_controllers.dart';
 import 'package:vsckeyboard/common/class_functions/ip_address_input.dart';
 import 'package:vsckeyboard/common/widgets/button_ws.dart';
 import 'package:vsckeyboard/common/widgets/number_picker.dart';
 import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
 import 'package:vsckeyboard/common/widgets/slider_setting.dart';
+import 'package:vsckeyboard/common/widgets/standard_button.dart';
 import 'package:vsckeyboard/common/widgets/switch_setting.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
@@ -203,6 +206,35 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                   size: settingController.sizeIcon.width,
                   onChange: settingController.updateSizeIcon,
                 ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  child: StandardButton(
+                    functionOnPress: (){
+                        if (Platform.isAndroid || Platform.isIOS) {
+                            Vibration.vibrate(duration: 200);
+                          }
+                          settingController.resetAllCounters();
+                    },
+                      childWidget: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(
+                              MdiIcons.counter,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          const Text(
+                            "Reset counters",
+                            style: TextStyle(color: Colors.blue),
+                          )
+                        ],
+                      ),
+                      text: null,
+                      backgroundColor: Colors.blue.withOpacity(.2)),
+                ),
                 SwitchSetting(
                   state: settingController.darkMode,
                   functionOnChange: settingController.updateThemeMode,
@@ -244,15 +276,18 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                     keyboardSettingController: settingController,
                   ),
 
-                  if (!settingController.listMode)
+                if (!settingController.listMode)
                   PickerNumber(
                     key: const ValueKey("gridMode"),
                     text: 'Grid Set Number',
                     value: settingController.gridColumnNumber,
                     minValue: 2,
-                    maxValue:(Platform.isAndroid|| Platform.isIOS)?3:
-                        mainController.currentKeyBoard.listBtnProperties.length,
-                    onChangedCallback: settingController.updateGridColumnCounter,
+                    maxValue: (Platform.isAndroid || Platform.isIOS)
+                        ? 3
+                        : mainController
+                            .currentKeyBoard.listBtnProperties.length,
+                    onChangedCallback:
+                        settingController.updateGridColumnCounter,
                     keyboardSettingController: settingController,
                   ),
               ],
