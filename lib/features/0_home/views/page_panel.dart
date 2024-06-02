@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/views/keyboard_view.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:vsckeyboard/features/3_key_settings/views/key_settings_page.dart';
 import 'package:vsckeyboard/features/4_all_commands/views/page_all_commands.dart';
 

@@ -6,7 +6,6 @@ class HomeController with ChangeNotifier {
   bool isHome = true;
   PagesApp currentPage = PagesApp.keyboard;
 
-
   changePage(PagesApp page) async {
     await pageController.animateToPage(page.numberPage,
         duration: const Duration(milliseconds: 500), curve: Easing.standard);

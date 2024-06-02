@@ -1,8 +1,15 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
+import 'package:vsckeyboard/common/class_functions/scroll_physics.dart';
+import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../controllers/main_controller.dart';
+import 'package:animated_reorderable_list/animated_reorderable_list.dart';
+
 import 'slidable_btn_action.dart';
 
 class ListCommands extends StatefulWidget {
@@ -32,34 +39,159 @@ class _ListCommandsState extends State<ListCommands> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: widget.orientation == Orientation.landscape
-            ? Axis.horizontal
-            : Axis.vertical,
-        padding: const EdgeInsets.only(left:10, right: 10, bottom: 10),
-        itemCount: widget.mainController.listBtnProperties.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-              padding: EdgeInsets.all(widget.padding),
-              child: SizedBox(
-                  height: widget.orientation == Orientation.landscape
-                      ? null
-                      : widget.sizeBtn,
-                  width: widget.orientation == Orientation.landscape
-                      ? widget.sizeBtn
-                      : null,
-                  child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: SlidableCommand(
-                          key: GlobalKey(),
-                          parentWidget: widget,
-                          listBtnProperty:
-                              widget.mainController.listBtnProperties,
-                          index: index, 
-                          keyboardSettingCtrl: widget.keyboardSettingController,
-                          homeController: widget.homeController,))));
-        });
+    return (widget.mainController.listBtnProperties.isNotEmpty)
+        ? widget.keyboardSettingController.listMode
+            ? AnimatedReorderableListView(
+                key: widget.mainController.keyCommandBtnScroll,
+                physics: const PositionRetainedScrollPhysics(),
+                controller: widget.mainController.listCommandBtnScroll,
+                items: widget.mainController.listBtnProperties,
+                scrollDirection: widget.orientation == Orientation.landscape
+                    ? Axis.horizontal
+                    : Axis.vertical,
+                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                itemBuilder: (BuildContext context, int index) {
+                  return ItemCommand(
+                    key: ValueKey("${index}_ItemCommand"),
+                    widget: widget,
+                    index: index,
+                  );
+                },
+                enterTransition: [FlipInX(), ScaleIn()],
+                exitTransition: [SlideInLeft()],
+                insertDuration: const Duration(milliseconds: 300),
+                removeDuration: const Duration(milliseconds: 300),
+                onReorderStart: (a) {
+                  print(a);
+
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    Vibration.vibrate(duration: 100, amplitude: 255);
+                  }
+                },
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    onReorderStartEvent(oldIndex, newIndex,
+                        widget.mainController.listBtnProperties);
+                  });
+                },
+              )
+            : AnimatedReorderableGridView(
+                key: widget.mainController.keyCommandBtnScroll,
+                physics: const PositionRetainedScrollPhysics(),
+                controller: widget.mainController.listCommandBtnScroll,
+                items: widget.mainController.listBtnProperties,
+                scrollDirection: widget.orientation == Orientation.landscape
+                    ? Axis.horizontal
+                    : Axis.vertical,
+                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                itemBuilder: (BuildContext context, int index) {
+                  return ItemCommand(
+                    key: ValueKey("${index}_ItemCommand"),
+                    widget: widget,
+                    index: index,
+                  );
+                },
+                enterTransition: [FlipInX(), ScaleIn()],
+                exitTransition: [SlideInLeft()],
+                insertDuration: const Duration(milliseconds: 300),
+                removeDuration: const Duration(milliseconds: 300),
+                onReorderStart: (a) {
+                  print(a);
+
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    Vibration.vibrate(duration: 100, amplitude: 255);
+                  }
+                },
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    onReorderStartEvent(oldIndex, newIndex,
+                        widget.mainController.listBtnProperties);
+                  });
+                },
+                sliverGridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount:
+                        widget.keyboardSettingController.gridColumnNumber),
+              )
+        : const SizedBox.shrink();
+  }
+
+  void onReorderStartEvent(
+      int oldIndex, int newIndex, List<BtnProperty> listBtnProperties) {
+    BtnProperty btnProperty = listBtnProperties[oldIndex];
+    btnProperty.index = newIndex;
+    btnProperty.save();
+
+    BtnProperty nextBtnProperty = listBtnProperties[newIndex];
+    nextBtnProperty.index = oldIndex;
+    nextBtnProperty.save();
+    btnProperty = listBtnProperties.removeAt(oldIndex);
+    listBtnProperties.insert(newIndex, btnProperty);
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      Vibration.vibrate(duration: 100, amplitude: 255);
+    }
   }
 }
 
+class ItemCommand extends StatelessWidget {
+  const ItemCommand({
+    super.key,
+    required this.widget,
+    required this.index,
+  });
+
+  final ListCommands widget;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        key: ValueKey("${index}_container"),
+        padding: EdgeInsets.all(widget.padding),
+        child: Stack(
+          children: [
+            SizedBox(
+                height: widget.orientation == Orientation.landscape 
+                    ? null
+                    : widget.sizeBtn,
+                width: widget.orientation == Orientation.landscape 
+                    ? widget.sizeBtn
+                    : null,
+                child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SlidableCommand(
+                      parentWidget: widget,
+                      listBtnProperty: widget.mainController.listBtnProperties,
+                      index: index,
+                      keyboardSettingCtrl: widget.keyboardSettingController,
+                      homeController: widget.homeController,
+                      key: ValueKey("${index}_btn"),
+                    ))),
+            if (widget.keyboardSettingController.lockKeyboard)
+              const Positioned(
+                  top: 0,
+                  child: Icon(
+                    Icons.lock_outline_rounded,
+                    color: Colors.white54,
+                  )),
+            if (!widget.keyboardSettingController.listMode &&
+                widget.keyboardSettingController.lockKeyboard)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: IconButton(
+                    onPressed: () {
+                      widget.keyboardSettingController.currentBtnProperty =
+                          widget.mainController.listBtnProperties[index];
+                      widget.homeController.changePage(PagesApp.settingsKey);
+                    },
+                    icon: Icon(
+                      Icons.more_horiz,
+                      color:
+                          widget.mainController.listBtnProperties[index].color,
+                    )),
+              )
+          ],
+        ));
+  }
+}

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/0_home/views/menu.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'features/0_home/views/page_panel.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -79,6 +79,7 @@ class AppKeyboard extends StatelessWidget {
         color: const Color.fromRGBO(33, 150, 243, 1),
         themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
+        
         darkTheme:
             keyboardSettings.darkMode ? ThemeData.dark() : ThemeData.light(),
         theme: ThemeData(

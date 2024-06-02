@@ -12,7 +12,7 @@ import 'package:vsckeyboard/common/model/grid_model.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 class GridController with ChangeNotifier, CommandsController {
   BtnProperty? currentBtnProperty;

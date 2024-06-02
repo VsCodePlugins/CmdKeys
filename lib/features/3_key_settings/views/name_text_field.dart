@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
 
 class InputTextLabelName extends StatelessWidget {

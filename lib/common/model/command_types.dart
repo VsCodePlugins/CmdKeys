@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/common/class_functions/default_commands.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
@@ -81,16 +83,25 @@ extension ExtendedCommandType on CommandType {
     required int currentIndex,
     required bool selectMode,
     required double width,
+    int totalColumnsVisible = 1,
   }) {
-    int totalColumnsVisible = 5;
     double widthColumn = width / totalColumnsVisible;
+    double columnSelectWidth = 60;
+    double columnRunWidth = 70;
+
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      totalColumnsVisible = 3;
+    }
 
     if (selectMode) {
-      totalColumnsVisible = 5;
-      widthColumn = width / totalColumnsVisible;
+      widthColumn =
+          (width - (columnRunWidth + columnSelectWidth)) / totalColumnsVisible;
+    } else {
+      widthColumn = (width - columnRunWidth) / totalColumnsVisible;
     }
 
     List<PlutoColumn> baseList = [
+
       PlutoColumn(
           title: 'Id',
           field: 'id',
@@ -98,11 +109,12 @@ extension ExtendedCommandType on CommandType {
           enableEditingMode: false,
           type: PlutoColumnType.text(),
           hide: true),
+
       PlutoColumn(
           title: 'Select',
           field: 'select_command',
           type: PlutoColumnType.text(),
-          width: widthColumn,
+          width: columnSelectWidth,
           hide: selectMode ? false : true,
           enableEditingMode: false,
           renderer: (rendererContext) {
@@ -117,33 +129,33 @@ extension ExtendedCommandType on CommandType {
                 });
           }),
       PlutoColumn(
-        title: 'Label',
-        field: 'functionLabel',
-        enableEditingMode: true,
-        width: widthColumn,
-        type: PlutoColumnType.text(),
-      ),
+          title: 'Label',
+          field: 'functionLabel',
+          enableEditingMode: true,
+          width: 100,
+          type: PlutoColumnType.text(),
+          hide: (Platform.isAndroid || Platform.isIOS && selectMode == false) ? true : false),
       PlutoColumn(
           title: 'Name',
           field: 'name',
           width: widthColumn,
           type: PlutoColumnType.text(),
-          hide: selectMode ? true : false),
+          hide: (Platform.isAndroid || Platform.isIOS) ? true : false),
       PlutoColumn(
           title: 'Command',
           field: 'command',
           type: PlutoColumnType.text(),
           width: widthColumn),
       PlutoColumn(
-        title: 'Description',
-        field: 'description',
-        width: widthColumn,
-        type: PlutoColumnType.text(),
-      ),
+          title: 'Description',
+          field: 'description',
+          width: widthColumn,
+          type: PlutoColumnType.text(),
+          hide: (Platform.isAndroid || Platform.isIOS) ? true : false),
       PlutoColumn(
         title: 'Run',
         field: 'run_command',
-        width: widthColumn,
+        width: columnRunWidth,
         type: PlutoColumnType.text(),
         enableEditingMode: false,
         renderer: (rendererContext) {

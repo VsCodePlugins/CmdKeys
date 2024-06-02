@@ -8,7 +8,7 @@ import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/standard_button.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
 import 'footer_assign_cmd.dart';
 import 'name_text_field.dart';
@@ -70,6 +70,8 @@ class KeySettings extends StatelessWidget {
                                 keySettingsCrl.openIconsMenu(context);
                               },
                               child: Container(
+                                constraints: const BoxConstraints(minWidth: 150, minHeight: 150),
+                                
                                 width: (Platform.isAndroid || Platform.isIOS)
                                     ? smallestReftDistance * .35
                                     : smallestReftDistance * .20,
@@ -103,13 +105,15 @@ class KeySettings extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
-                          child: SizedBox(
+                          child: Container(
                             width: smallestReftDistance * .50,
+                            constraints: const BoxConstraints(minWidth: 150),
                             child: Wrap(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(right: 16),
                                   child: StandardButton(
+                                    
                                     text: "Change icon",
                                     functionOnPress: () {
                                       keySettingsCrl.openIconsMenu(context);

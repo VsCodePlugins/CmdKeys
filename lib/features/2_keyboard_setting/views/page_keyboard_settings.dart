@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +12,7 @@ import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
 import 'package:vsckeyboard/common/widgets/slider_setting.dart';
 import 'package:vsckeyboard/common/widgets/switch_setting.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 class KeyboardSettings extends StatefulWidget {
   final String keyBoardName;
@@ -28,7 +30,7 @@ class KeyboardSettings extends StatefulWidget {
 
 class _KeyboardSettingsState extends State<KeyboardSettings> {
   String address = '';
-          FocusNode focusNode = FocusNode();
+  FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -140,8 +142,7 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                           settingController
                               .saveAddress(dropdownCtrlP.selectedValue);
                           settingController.stopWebsocketConnection();
-                            widget.notify();
-                          
+                          widget.notify();
                         },
                         key: const Key('host_text_field'),
                         controller: settingController.ctrlAddress,
@@ -196,14 +197,7 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                             settingController: settingController),
                       )
                     : const SizedBox.shrink(),
-                PickerNumber(
-                  value: settingController.visibleAmountBtn,
-                  minValue: 1,
-                  maxValue:
-                      mainController.currentKeyBoard.listBtnProperties.length,
-                  onChangedCallback: settingController.updateButtonsVisible,
-                  keyboardSettingController: settingController,
-                ),
+
                 SliderSetting(
                   isDarkMode: settingController.darkMode,
                   size: settingController.sizeIcon.width,
@@ -230,6 +224,37 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                   label: "Show Responses",
                   notify: widget.notify,
                 ),
+                SwitchSetting(
+                  state: settingController.listMode,
+                  functionOnChange: settingController.updateListMode,
+                  isDarkMode: settingController.darkMode,
+                  label: "List Mode",
+                  notify: widget.notify,
+                ),
+
+                if (settingController.listMode)
+                  PickerNumber(
+                    key: const ValueKey("listMode"),
+                    text: 'Buttons visible on screen',
+                    value: settingController.visibleAmountBtn,
+                    minValue: 1,
+                    maxValue:
+                        mainController.currentKeyBoard.listBtnProperties.length,
+                    onChangedCallback: settingController.updateButtonsVisible,
+                    keyboardSettingController: settingController,
+                  ),
+
+                  if (!settingController.listMode)
+                  PickerNumber(
+                    key: const ValueKey("gridMode"),
+                    text: 'Grid Set Number',
+                    value: settingController.gridColumnNumber,
+                    minValue: 2,
+                    maxValue:(Platform.isAndroid|| Platform.isIOS)?3:
+                        mainController.currentKeyBoard.listBtnProperties.length,
+                    onChangedCallback: settingController.updateGridColumnCounter,
+                    keyboardSettingController: settingController,
+                  ),
               ],
             ),
           );

@@ -26,6 +26,8 @@ class KeyboardSettingController extends ChangeNotifier
   bool lockKeyboard = false;
   bool darkMode = true;
   bool osDarkMode = false;
+  bool listMode = false;
+  int gridColumnNumber = 3;
   BtnProperty? currentBtnProperty;
   late SharedPreferences preferencesInstance;
   final BuildContext buildContext;
@@ -106,6 +108,10 @@ class KeyboardSettingController extends ChangeNotifier
     preferencesInstance.setBool('$currentSettingName darkMode', darkMode);
     preferencesInstance.setBool(
         '$currentSettingName lockKeyboard', lockKeyboard);
+     preferencesInstance.setBool(
+        '$currentSettingName listMode', listMode);
+             preferencesInstance.setInt(
+        '$currentSettingName gridColumnNumber', gridColumnNumber);
   }
 
   loadConfig(String? settingName) {
@@ -148,6 +154,11 @@ class KeyboardSettingController extends ChangeNotifier
     lockKeyboard =
         preferencesInstance.getBool('$currentSettingName lockKeyboard') ??
             lockKeyboard;
+    
+    listMode = preferencesInstance.getBool('$currentSettingName listMode') ??
+            listMode;
+    gridColumnNumber = preferencesInstance.getInt('$currentSettingName gridColumnNumber') ??
+            gridColumnNumber;
 
     setTextInputAddress();
     notifyListeners();
@@ -243,6 +254,17 @@ class KeyboardSettingController extends ChangeNotifier
   void updateCounter(index) {
     mainController.listBtnProperties[index].increaseCounter();
     mainController.listBtnProperties[index].save();
+    notifyListeners();
+  }
+  bool updateListMode(bool value) {
+    listMode = value;
+    preferencesInstance.setBool('$currentSettingName listMode', listMode);
+    notifyListeners();
+    return value;
+  }
+  void updateGridColumnCounter(int value){
+    gridColumnNumber = value;
+    preferencesInstance.setInt('$currentSettingName gridColumnNumber', gridColumnNumber);
     notifyListeners();
   }
 

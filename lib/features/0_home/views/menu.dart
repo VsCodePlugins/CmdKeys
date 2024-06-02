@@ -9,7 +9,7 @@ import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/0_home/controllers/menu_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/views/page_keyboard_settings.dart';
 
 class MenuFunctions extends StatelessWidget {
@@ -171,7 +171,7 @@ class MenuFunctions extends StatelessWidget {
                             'images/vscode_keyboard.svg',
                             color: Colors.blueAccent,
                           )
-                        : const Icon(Icons.keyboard),
+                        : const Icon(Icons.grid_view_rounded),
                     onPressed: () {
                       final state = keyHomeMenu.currentState;
                       if (state != null) {

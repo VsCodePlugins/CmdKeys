@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -8,7 +9,7 @@ import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
 import 'package:vsckeyboard/features/1_keyboard/views/command_button.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 import 'list_commands.dart';
 
@@ -44,11 +45,14 @@ class _SlidableCommandState extends State<SlidableCommand> {
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
+     return 
+    Slidable(
       key: ValueKey("${widget.index}_slidable"),
+      enabled: widget.keyboardSettingCtrl.listMode,
       direction: widget.parentWidget.orientation == Orientation.landscape
           ? Axis.vertical
           : Axis.horizontal,
+      dragStartBehavior: DragStartBehavior.start,
       startActionPane: ActionPane(
         key: ValueKey("${widget.index}_start"),
         motion: const ScrollMotion(),
@@ -120,10 +124,14 @@ class _SlidableCommandState extends State<SlidableCommand> {
               )),
         ],
       ),
-      child: ButtonFunction(
+      child:
+       ButtonFunction(
+          key:  widget.key,
           btnProperty: widget.listBtnProperty[widget.index],
           mainController: widget.parentWidget.mainController,
-          keyboardSettingCtrl: widget.keyboardSettingCtrl),
+          keyboardSettingCtrl: widget.keyboardSettingCtrl,
+          homeCtrl: widget.homeController,),
+     
     );
   }
 }

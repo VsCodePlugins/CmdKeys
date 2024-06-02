@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tab_container/tab_container.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'grid_commands.dart';
 
 class TabCommands extends StatelessWidget {

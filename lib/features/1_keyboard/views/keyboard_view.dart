@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'list_commands.dart';
 
 class Keyboard extends StatelessWidget {
@@ -42,20 +42,20 @@ class Keyboard extends StatelessWidget {
       if (orientation == Orientation.landscape) {
         spaceCompensation = spaceCompensation + 15;
       } else {
-      if (Platform.isAndroid || Platform.isIOS) {
-
-        spaceCompensation = spaceCompensation +
-            35 +
-            keyboardSettingController.spaceDebugSessionSelector;
-      }else{
-        spaceCompensation = spaceCompensation +
-            keyboardSettingController.spaceDebugSessionSelector;
-      }
-        
+        if (Platform.isAndroid || Platform.isIOS) {
+          spaceCompensation = spaceCompensation +
+              35 +
+              keyboardSettingController.spaceDebugSessionSelector;
+        } else {
+          spaceCompensation = spaceCompensation +
+              keyboardSettingController.spaceDebugSessionSelector;
+        }
       }
       lengthScreen = lengthScreen - spaceCompensation;
-      double sizeBtn =
-          lengthScreen / keyboardSettingController.visibleAmountBtn;
+
+      double sizeBtn = (keyboardSettingController.listMode)
+          ? lengthScreen / keyboardSettingController.visibleAmountBtn
+          : lengthScreen / keyboardSettingController.gridColumnNumber;
 
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -95,7 +95,9 @@ class Keyboard extends StatelessWidget {
                           };
 
                           mainController.sentCommand(
-                              command, keyboardSettingController, "debugSessionNameSelector");
+                              command,
+                              keyboardSettingController,
+                              "debugSessionNameSelector");
                         },
                         items: keyboardSettingController.listSessionName
                             .map<DropdownMenuItem<String>>((String value) {

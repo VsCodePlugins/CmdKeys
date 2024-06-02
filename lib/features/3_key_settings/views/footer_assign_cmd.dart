@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
+import 'package:vsckeyboard/common/widgets/footer_command_table.dart';
 import 'package:vsckeyboard/common/widgets/json_widget.dart';
 import 'package:vsckeyboard/common/widgets/standard_button.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
 
 class GridFooterKeySettings extends StatelessWidget {
@@ -43,11 +44,12 @@ class GridFooterKeySettings extends StatelessWidget {
                         ? Colors.white
                         : Colors.black,
                   ),
-                StreamBuilder<Map<String, dynamic>>(
-                    stream: gridController.gridStreamState,
-                    builder: (context, snapshot) {
-                      return JsonWidget(dataMap: snapshot.data?["MapRow"]);
-                    }),
+                // StreamBuilder<Map<String, dynamic>>(
+                //     stream: gridController.gridStreamState,
+                //     builder: (context, snapshot) {
+                //       return JsonWidget(dataMap: snapshot.data?["MapRow"]);
+                //     })
+                FooterCommandTable(gridController: gridController)
               ],
             ),
           );

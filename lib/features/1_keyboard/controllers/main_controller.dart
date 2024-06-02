@@ -8,12 +8,15 @@ import 'package:vsckeyboard/common/model/command_group_model.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
 import 'package:vsckeyboard/common/services/http_request.dart';
 import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 import 'keyboard_buttons.dart';
 
 class MainController with ChangeNotifier, HttpRequest {
   KeyBoardButtons currentKeyBoard = VsCodeKeyBoard();
+    ScrollController listCommandBtnScroll = ScrollController();
+   GlobalKey keyCommandBtnScroll =  GlobalKey();
+
   Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
@@ -108,6 +111,7 @@ class MainController with ChangeNotifier, HttpRequest {
       }
     }
     currentKeyBoard = keyBoard;
+    notifyListeners();
     return listBtnProperties;
   }
 

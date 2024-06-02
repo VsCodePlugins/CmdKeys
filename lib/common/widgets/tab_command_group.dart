@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
 import 'package:vsckeyboard/common/widgets/tab_container.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings.dart';
+import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 class TabCommandGroup extends StatelessWidget {
   const TabCommandGroup({
@@ -34,8 +34,8 @@ class TabCommandGroup extends StatelessWidget {
             ),
             width: width,
             height: (Platform.isAndroid || Platform.isIOS)
-                ? height * .6
-                : height * .6,
+                ? height * .55
+                : height * .60,
             child: TabCommands(
               mainController: mainController,
               gridController: gridController,
