@@ -143,7 +143,7 @@ extension ExtendedCommandType on CommandType {
           hide: (Platform.isAndroid || Platform.isIOS) ? true : false),
       PlutoColumn(
           title: 'Command',
-          field: 'command',
+          field: 'mapCommand',
           type: PlutoColumnType.text(),
           width: widthColumn),
       PlutoColumn(

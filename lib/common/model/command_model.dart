@@ -22,7 +22,7 @@ class ModelCommand {
     this.mapCommand,
     required this.functionLabel,
     required this.description,
-    this.deletable =true,
+    this.deletable = true,
   }) {
     if (id == "") {
       var uuid = const Uuid();
@@ -39,7 +39,7 @@ class ModelCommand {
       'mapCommand': mapCommand,
       'functionLabel': functionLabel,
       'description': description,
-      'deletable':deletable
+      'deletable': deletable
     });
   }
 
@@ -52,7 +52,7 @@ class ModelCommand {
       'mapCommand': mapCommand,
       'functionLabel': functionLabel,
       'description': description,
-      'deletable':deletable
+      'deletable': deletable
     };
   }
 
@@ -63,7 +63,9 @@ class ModelCommand {
       index: jsonMap['index'],
       type: ExtendedCommandType.getByName(jsonMap['type']),
       name: jsonMap['name'],
-      mapCommand: jsonMap['mapCommand'],
+      mapCommand: (jsonMap['mapCommand'].runtimeType == String)
+          ? json.decode(jsonMap['mapCommand'])
+          : jsonMap['mapCommand'],
       functionLabel: jsonMap['functionLabel'],
       description: jsonMap['description'],
       deletable: jsonMap['deletable'],
@@ -113,17 +115,16 @@ class ModelCommand {
     return commandModel;
   }
 
-
-    static Future<bool?> delete(
-      {required SharedPreferences sharedPreferences,
-      required String id,}) async {
+  static Future<bool?> delete({
+    required SharedPreferences sharedPreferences,
+    required String id,
+  }) async {
     ModelCommand? commandModel;
     Set<String>? commandStr = sharedPreferences.getKeys();
 
     String? key = commandStr.firstWhere(
         (element) => element.contains(id) && element.contains("_cmd_model_"));
-    
-    
+
     commandModel =
         await loadCommand(key: key, sharedPreferences: sharedPreferences);
 
@@ -132,7 +133,6 @@ class ModelCommand {
       return true;
     }
     return false;
-  
   }
 
   static Future<ModelCommand?> loadCommand(

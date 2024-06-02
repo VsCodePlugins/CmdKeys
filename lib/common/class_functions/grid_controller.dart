@@ -110,8 +110,8 @@ class GridController with ChangeNotifier, CommandsController {
           currentGridModel.rowCommandsTable[currentIndex].cells[ptoRow]!.value;
     }
     try {
-      currentGridModel.selectedRow["command"] =
-          json.decode(currentGridModel.selectedRow["command"]);
+      currentGridModel.selectedRow["mapCommand"] =
+          json.decode(currentGridModel.selectedRow["mapCommand"]);
       // ignore: empty_catches
     } catch (e) {}
     gridStateCtrl.sink.add({
@@ -141,8 +141,8 @@ class GridController with ChangeNotifier, CommandsController {
       currentGridModel.selectedRow[ptoRow] = event.row!.cells[ptoRow]!.value;
     }
     try {
-      currentGridModel.selectedRow["command"] =
-          json.decode(currentGridModel.selectedRow["command"]);
+      currentGridModel.selectedRow["mapCommand"] =
+          json.decode(currentGridModel.selectedRow["mapCommand"]);
       // ignore: empty_catches
     } catch (e) {}
 
@@ -166,7 +166,7 @@ class GridController with ChangeNotifier, CommandsController {
 
     runCommand(
       command:
-          currentGridModel.rowCommandsTable[index!].cells["command"]!.value,
+          currentGridModel.rowCommandsTable[index!].cells["mapCommand"]!.value,
       mainController: mainController,
       keyboardSettingCtrl: keyboardSettingCtrl,
       idCommand: currentGridModel.rowCommandsTable[index].cells["id"]!.value,
@@ -276,7 +276,7 @@ class GridController with ChangeNotifier, CommandsController {
         'select_command': PlutoCell(value: modelCommand.index),
         'functionLabel': PlutoCell(value: modelCommand.functionLabel),
         'name': PlutoCell(value: modelCommand.name),
-        'command': PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
+        'mapCommand': PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
         'description': PlutoCell(value: modelCommand.description),
         'run_command': PlutoCell(value: json.encode(modelCommand.mapCommand)),
         'created_by_user': PlutoCell(value: modelCommand.deletable.toString())
@@ -305,7 +305,7 @@ class GridController with ChangeNotifier, CommandsController {
         'select_command': PlutoCell(value: modelCommand.index),
         'functionLabel': PlutoCell(value: modelCommand.functionLabel),
         'name': PlutoCell(value: modelCommand.name),
-        'command': PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
+        'mapCommand': PlutoCell(value: json.encode(modelCommand.mapCommand ?? {})),
         'description': PlutoCell(value: modelCommand.description),
         'run_command': PlutoCell(value: json.encode(modelCommand.mapCommand)),
         'created_by_user': PlutoCell(value: true.toString())
