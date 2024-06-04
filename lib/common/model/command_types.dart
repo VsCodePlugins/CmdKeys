@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:vsckeyboard/common/class_functions/default_commands.dart';
 import 'package:vsckeyboard/common/model/command_model.dart';
@@ -88,8 +88,14 @@ extension ExtendedCommandType on CommandType {
     double widthColumn = width / totalColumnsVisible;
     double columnSelectWidth = 60;
     double columnRunWidth = 70;
+    bool isSmallScreen = false;
 
-    if (!Platform.isAndroid && !Platform.isIOS) {
+    if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isSmallScreen = true;
+      }
+    }
+    if (isSmallScreen) {
       totalColumnsVisible = 3;
     }
 
@@ -101,7 +107,6 @@ extension ExtendedCommandType on CommandType {
     }
 
     List<PlutoColumn> baseList = [
-
       PlutoColumn(
           title: 'Id',
           field: 'id',
@@ -109,7 +114,6 @@ extension ExtendedCommandType on CommandType {
           enableEditingMode: false,
           type: PlutoColumnType.text(),
           hide: true),
-
       PlutoColumn(
           title: 'Select',
           field: 'select_command',
@@ -134,13 +138,15 @@ extension ExtendedCommandType on CommandType {
           enableEditingMode: true,
           width: 100,
           type: PlutoColumnType.text(),
-          hide: (Platform.isAndroid || Platform.isIOS && selectMode == false) ? true : false),
+          hide: (isSmallScreen && selectMode == false)
+              ? true
+              : false),
       PlutoColumn(
           title: 'Name',
           field: 'name',
           width: widthColumn,
           type: PlutoColumnType.text(),
-          hide: (Platform.isAndroid || Platform.isIOS) ? true : false),
+          hide: (isSmallScreen) ? true : false),
       PlutoColumn(
           title: 'Command',
           field: 'mapCommand',
@@ -151,7 +157,7 @@ extension ExtendedCommandType on CommandType {
           field: 'description',
           width: widthColumn,
           type: PlutoColumnType.text(),
-          hide: (Platform.isAndroid || Platform.isIOS) ? true : false),
+          hide: (isSmallScreen) ? true : false),
       PlutoColumn(
         title: 'Run',
         field: 'run_command',

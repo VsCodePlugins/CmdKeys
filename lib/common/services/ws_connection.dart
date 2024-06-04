@@ -26,38 +26,40 @@ mixin class WsConnection {
         state is! websocket_client.Reconnected) {
       return;
     }
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceName = "Android ${androidInfo.model}";
-    }
-    if (Platform.isIOS) {
-      // iOS-specific code
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      deviceName = iosInfo.utsname.machine;
-      deviceName = "Ios $deviceName";
-    }
+
     if (kIsWeb) {
       WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
       deviceName = webBrowserInfo.userAgent ?? "NA";
       deviceName = "WebBrowser $deviceName";
-    }
-    if (Platform.isLinux) {
-      LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
-      deviceName = linuxInfo.prettyName;
-      deviceName = "Linux $deviceName";
-    }
+    } else {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        deviceName = "Android ${androidInfo.model}";
+      }
+      if (Platform.isIOS) {
+        // iOS-specific code
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        deviceName = iosInfo.utsname.machine;
+        deviceName = "Ios $deviceName";
+      }
 
-    if (Platform.isWindows) {
-      WindowsDeviceInfo windowsInfo = await deviceInfo.windowsInfo;
-      deviceName = windowsInfo.userName;
-      deviceName = "Windows $deviceName";
-    }
-    if (Platform.isMacOS) {
-      MacOsDeviceInfo macInfo = await deviceInfo.macOsInfo;
-      deviceName = macInfo.computerName;
-      deviceName = "MacOs $deviceName";
-    }
+      if (Platform.isLinux) {
+        LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
+        deviceName = linuxInfo.prettyName;
+        deviceName = "Linux $deviceName";
+      }
 
+      if (Platform.isWindows) {
+        WindowsDeviceInfo windowsInfo = await deviceInfo.windowsInfo;
+        deviceName = windowsInfo.userName;
+        deviceName = "Windows $deviceName";
+      }
+      if (Platform.isMacOS) {
+        MacOsDeviceInfo macInfo = await deviceInfo.macOsInfo;
+        deviceName = macInfo.computerName;
+        deviceName = "MacOs $deviceName";
+      }
+    }
     Map<String, dynamic> data = {
       'clientDevice': deviceName,
       'startConnection': true
@@ -65,11 +67,15 @@ mixin class WsConnection {
     sendCommandWs(command: data);
   }
 
-  void onMessageWebsocket({required Function(String) functionCallback,required Function() notifyListeners})async {
-    wsSocket?.messages.listen((message) async {
-              functionCallback(message.toString());
-              notifyListeners();
-     },);
+  void onMessageWebsocket(
+      {required Function(String) functionCallback,
+      required Function() notifyListeners}) async {
+    wsSocket?.messages.listen(
+      (message) async {
+        functionCallback(message.toString());
+        notifyListeners();
+      },
+    );
   }
 
   void startListenerStateWs(Function notifyListeners) {
@@ -87,13 +93,13 @@ mixin class WsConnection {
     connectionState = null;
   }
 
-  sendCommandWs({ required dynamic command}) {
+  sendCommandWs({required dynamic command}) {
     if (command.runtimeType == String) {
       wsSocket!.send(command);
     } else {
       late String commandStr;
       try {
-         commandStr = jsonEncode(command);
+        commandStr = jsonEncode(command);
       } catch (e) {
         rethrow;
       }

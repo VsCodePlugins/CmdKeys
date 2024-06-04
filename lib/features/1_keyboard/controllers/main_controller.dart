@@ -14,8 +14,8 @@ import 'keyboard_buttons.dart';
 
 class MainController with ChangeNotifier, HttpRequest {
   KeyBoardButtons currentKeyBoard = VsCodeKeyBoard();
-    ScrollController listCommandBtnScroll = ScrollController();
-   GlobalKey keyCommandBtnScroll =  GlobalKey();
+  ScrollController listCommandBtnScroll = ScrollController();
+  GlobalKey keyCommandBtnScroll = GlobalKey();
 
   Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
@@ -34,32 +34,30 @@ class MainController with ChangeNotifier, HttpRequest {
         await currentKeyBoard.getCommandGroups(preferencesInstance);
         listBtnProperties = await _loadListBtnProperties(
             sharedPreferences: preferencesInstance);
+
         mapBtnProperties[currentKeyBoard.keyBoardName] = currentKeyBoard;
         currentKeyBoard.saveListBtnProperties();
       }
       notifyListeners();
     });
   }
-    String generateRandomString(int len) {
+  String generateRandomString(int len) {
     var r = Random();
-    String randomString =String.fromCharCodes(List.generate(len, (index)=> r.nextInt(33) + 89));
-      return randomString;
-    }
+    String randomString =
+        String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
+    return randomString;
+  }
 
-
-  Future<String?> sentCommand(
-      Map<String, dynamic> command, KeyboardSettingController keyboardSettingCtrl, String idCommand) async {
-    
+  Future<String?> sentCommand(Map<String, dynamic> command,
+      KeyboardSettingController keyboardSettingCtrl, String idCommand) async {
     command["eventID"] = "event_${idCommand}_${generateRandomString(4)}";
     String routeAddress = preferencesInstance
             .getString('${currentKeyBoard.keyBoardName} routeAddress') ??
         "";
 
-    
     try {
       if (keyboardSettingCtrl.connectionState is Connected ||
           keyboardSettingCtrl.connectionState is Reconnected) {
-
         keyboardSettingCtrl.sendCommandWs(command: command);
         return null;
       }
@@ -85,24 +83,33 @@ class MainController with ChangeNotifier, HttpRequest {
   }
 
   Future<List<BtnProperty>> _loadListBtnProperties(
-      {KeyBoardButtons? keyBoard,
+      {KeyBoardButtons? keyBoard ,
       required SharedPreferences sharedPreferences}) async {
+
     if (keyBoard == null) {
       VsCodeKeyBoard vsKeyBoardCommand = VsCodeKeyBoard();
+      keyBoard = vsKeyBoardCommand;
+      
+      listBtnProperties = loadBtnPropertyFromStorage(keyBoardName: keyBoard.keyBoardName,
+      sharedPreferences: sharedPreferences);
+      if (listBtnProperties.isNotEmpty){
+        return listBtnProperties;
+      }
+      
       ModelCommandGroup? commandGroup = vsKeyBoardCommand.getModelCommandGroup(
           commandGroupName: Constants.firstGroupCommandName,
           sharedPreferences: sharedPreferences);
+      
       assert(commandGroup != null,
           "Error to get CommandGroup: ${Constants.firstGroupCommandName}");
-
       List<ModelCommand>? listCmd =
           await vsKeyBoardCommand.getListCommandsByGroupName(
               modelCommandGroup: commandGroup!,
               sharedPreferences: sharedPreferences);
       await vsKeyBoardCommand.createDebugVsCodeKeyboard(listCmd!);
       listBtnProperties = vsKeyBoardCommand.listBtnProperties;
-      keyBoard = vsKeyBoardCommand;
     }
+
     for (var i = 0; i < keyBoard.listBtnProperties.length; i++) {
       BtnProperty btnProperty = await BtnProperty.getBtProperty(
           groupName: keyBoard.keyBoardName, index: i);
@@ -113,6 +120,44 @@ class MainController with ChangeNotifier, HttpRequest {
     currentKeyBoard = keyBoard;
     notifyListeners();
     return listBtnProperties;
+  }
+
+
+  List<BtnProperty> loadBtnPropertyFromStorage( {required String keyBoardName ,
+      required SharedPreferences sharedPreferences}){
+      Set<String> setLeys = preferencesInstance.getKeys();
+  List<BtnProperty>  storageListBtnProperties  = [];
+    List<String> listBtnKeys = setLeys
+          .where((keyName) =>
+              keyName.contains(keyBoardName) && keyName.contains("_btn_"))
+          .toList();
+
+      List<String?> listDataStr =
+          listBtnKeys.map((e) => preferencesInstance.getString(e)).toList();
+    storageListBtnProperties = listDataStr.map((e)=> BtnProperty.fromJson(dataJson: e!)).toList();
+    return storageListBtnProperties;
+  }
+  BtnProperty addNewBtnProperty(
+      { required String groupName,
+        required Size sizeIcon,
+       String iconName = "newBox",
+       String functionName = "new_function",
+       String functionLabel = "New Function",
+      String idCommand = "",
+      Color color = Colors.blueAccent}) {
+        BtnProperty btnProperty = BtnProperty(
+        sizeIcon: sizeIcon,
+        index: listBtnProperties.length,
+        iconName: iconName,
+        functionName: functionName,
+        functionLabel: functionLabel,
+        idCommand: idCommand,
+        color: color);
+    btnProperty.saveAs(groupName: groupName);
+    listBtnProperties.add(btnProperty);
+    notifyListeners();
+      return btnProperty;
+
   }
 
   bool showExceptions() {
@@ -130,7 +175,7 @@ class MainController with ChangeNotifier, HttpRequest {
     return showResponses;
   }
 
-  updateMainInterface(){
+  updateMainInterface() {
     notifyListeners();
   }
 }

@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ignore: unused_local_variable
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //await sharedPreferences.clear();
+  await sharedPreferences.clear();
   WakelockPlus.enable();
   return runApp(const VscodeKeyboard());
 }

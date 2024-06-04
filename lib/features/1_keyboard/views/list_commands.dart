@@ -9,7 +9,7 @@ import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../controllers/main_controller.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'slidable_btn_action.dart';
 
 class ListCommands extends StatefulWidget {
@@ -36,9 +36,15 @@ class ListCommands extends StatefulWidget {
 class _ListCommandsState extends State<ListCommands> {
   Offset distance = const Offset(6, 6);
   double blur = 16.0;
+  bool isMobile = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isMobile = true;
+      }
+    }
     return (widget.mainController.listBtnProperties.isNotEmpty)
         ? widget.keyboardSettingController.listMode
             ? AnimatedReorderableListView(
@@ -64,14 +70,14 @@ class _ListCommandsState extends State<ListCommands> {
                 onReorderStart: (a) {
                   print(a);
 
-                  if (Platform.isAndroid || Platform.isIOS) {
+                  if (isMobile) {
                     Vibration.vibrate(duration: 100, amplitude: 255);
                   }
                 },
                 onReorder: (int oldIndex, int newIndex) {
                   setState(() {
                     onReorderStartEvent(oldIndex, newIndex,
-                        widget.mainController.listBtnProperties);
+                        widget.mainController.listBtnProperties, isMobile);
                   });
                 },
               )
@@ -98,14 +104,14 @@ class _ListCommandsState extends State<ListCommands> {
                 onReorderStart: (a) {
                   print(a);
 
-                  if (Platform.isAndroid || Platform.isIOS) {
+                  if (isMobile) {
                     Vibration.vibrate(duration: 100, amplitude: 255);
                   }
                 },
                 onReorder: (int oldIndex, int newIndex) {
                   setState(() {
                     onReorderStartEvent(oldIndex, newIndex,
-                        widget.mainController.listBtnProperties);
+                        widget.mainController.listBtnProperties, isMobile);
                   });
                 },
                 sliverGridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -115,8 +121,8 @@ class _ListCommandsState extends State<ListCommands> {
         : const SizedBox.shrink();
   }
 
-  void onReorderStartEvent(
-      int oldIndex, int newIndex, List<BtnProperty> listBtnProperties) {
+  void onReorderStartEvent(int oldIndex, int newIndex,
+      List<BtnProperty> listBtnProperties, bool isMobile) {
     BtnProperty btnProperty = listBtnProperties[oldIndex];
     btnProperty.index = newIndex;
     btnProperty.save();
@@ -129,7 +135,7 @@ class _ListCommandsState extends State<ListCommands> {
     listBtnProperties.sort(
       (a, b) => a.index.compareTo(b.index),
     );
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (isMobile) {
       Vibration.vibrate(duration: 100, amplitude: 255);
     }
   }

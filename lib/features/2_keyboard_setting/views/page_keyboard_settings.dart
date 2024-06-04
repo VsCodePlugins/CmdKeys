@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +15,7 @@ import 'package:vsckeyboard/common/widgets/standard_button.dart';
 import 'package:vsckeyboard/common/widgets/switch_setting.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class KeyboardSettings extends StatefulWidget {
   final String keyBoardName;
@@ -37,6 +37,14 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = false;
+
+    if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isMobile = true;
+      }
+    }
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<DropDownPrefixCtrl>(
@@ -210,12 +218,12 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                   padding:
                       const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   child: StandardButton(
-                    functionOnPress: (){
-                        if (Platform.isAndroid || Platform.isIOS) {
-                            Vibration.vibrate(duration: 200);
-                          }
-                          settingController.resetAllCounters();
-                    },
+                      functionOnPress: () {
+                        if (isMobile) {
+                          Vibration.vibrate(duration: 200);
+                        }
+                        settingController.resetAllCounters();
+                      },
                       childWidget: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -282,7 +290,7 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                     text: 'Grid Set Number',
                     value: settingController.gridColumnNumber,
                     minValue: 2,
-                    maxValue: (Platform.isAndroid || Platform.isIOS)
+                    maxValue: isMobile
                         ? 3
                         : mainController
                             .currentKeyBoard.listBtnProperties.length,

@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
@@ -20,6 +20,14 @@ class Keyboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late double lengthScreen;
+    bool isMobile = false;
+
+
+     if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isMobile = true;
+      }
+    }
 
     return OrientationBuilder(builder: (context, orientation) {
       if (orientation == Orientation.portrait) {
@@ -42,7 +50,7 @@ class Keyboard extends StatelessWidget {
       if (orientation == Orientation.landscape) {
         spaceCompensation = spaceCompensation + 15;
       } else {
-        if (Platform.isAndroid || Platform.isIOS) {
+        if (isMobile) {
           spaceCompensation = spaceCompensation +
               35 +
               keyboardSettingController.spaceDebugSessionSelector;

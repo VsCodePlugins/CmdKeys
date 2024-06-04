@@ -4,12 +4,12 @@ import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vsckeyboard/common/widgets/icon_command.dart';
 import 'package:vsckeyboard/common/widgets/toast.dart';
-import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
 import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
 import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
 import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../ models/button_properties.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ButtonFunction extends StatefulWidget {
   final BtnProperty btnProperty;
@@ -41,6 +41,13 @@ class _ButtonFunctionState extends State<ButtonFunction> {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = false;
+
+     if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isMobile = true;
+      }
+    }
     fToast.init(context);
 
     showToast(Widget toast) {
@@ -106,7 +113,7 @@ class _ButtonFunctionState extends State<ButtonFunction> {
                 }
               });
 
-              if (Platform.isAndroid || Platform.isIOS) {
+              if (isMobile) {
                 Vibration.vibrate(duration: 200);
               }
 

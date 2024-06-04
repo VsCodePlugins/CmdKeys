@@ -42,7 +42,7 @@ class BtnProperty {
       'id': id,
       'sizeIcon': sizeIcon.width,
       'index': index,
-      'icon': iconName,
+      'iconName': iconName,
       'functionName': functionName,
       'functionLabel': functionLabel,
       'idCommand': idCommand,
@@ -54,6 +54,25 @@ class BtnProperty {
     });
   }
 
+
+  static BtnProperty fromJson({required String dataJson}){
+    Map<String, dynamic> data = jsonDecode(dataJson);
+    return BtnProperty(
+      id: data['id'],
+      sizeIcon: Size(data['sizeIcon'], data['sizeIcon']),
+      index: data['index'],
+      iconName: data['iconName'],
+      functionName: data['functionName'],
+      functionLabel: data['functionLabel'],
+      idCommand: data['idCommand'],
+      mapCommand: data['mapCommand'],
+      color: Color(data['color']),
+      isLastPressed: data['isLastPressed'],
+      counter: data['counter'],
+      isEnable: data['isEnable'],
+      );
+
+  }
   void increaseCounter() {
     counter++;
   }
@@ -63,7 +82,11 @@ class BtnProperty {
   }
 
   dynamic commandSelector() {
+    if (mapCommand != null) {
       return mapCommand;
+    }else{
+      return {"showMessage": "Please specify the action you would like this button to perform."};
+    }
     }
   
 
@@ -112,7 +135,7 @@ class BtnProperty {
           sizeIcon:
               Size(mapBtnProperty['sizeIcon'], mapBtnProperty['sizeIcon']),
           index: mapBtnProperty['index'],
-          iconName: mapBtnProperty['icon'],
+          iconName: mapBtnProperty['iconName'],
           functionName: mapBtnProperty['functionName'],
           functionLabel: mapBtnProperty['functionLabel'],
           idCommand: mapBtnProperty['idCommand'],

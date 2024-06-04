@@ -13,6 +13,7 @@ import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_con
 import 'footer_assign_cmd.dart';
 import 'name_text_field.dart';
 import '../../../common/widgets/tab_command_group.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class KeySettings extends StatelessWidget {
   final KeyboardSettingController keyboardSettingController;
@@ -25,6 +26,13 @@ class KeySettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = false;
+
+     if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        isMobile = true;
+      }
+    }
     return ChangeNotifierProvider(
       create: (context) => KeySettingsController(
           currentBtnProperty: keyboardSettingController.currentBtnProperty,
@@ -72,10 +80,10 @@ class KeySettings extends StatelessWidget {
                               child: Container(
                                 constraints: const BoxConstraints(minWidth: 150, minHeight: 150),
                                 
-                                width: (Platform.isAndroid || Platform.isIOS)
+                                width: (isMobile)
                                     ? smallestReftDistance * .35
                                     : smallestReftDistance * .20,
-                                height: (Platform.isAndroid || Platform.isIOS)
+                                height: (isMobile)
                                     ? smallestReftDistance * .35
                                     : smallestReftDistance * .20,
                                 decoration: BoxDecoration(
