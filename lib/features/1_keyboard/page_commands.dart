@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/features/0_home/controllers/home_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 import 'controllers/main_controller.dart';
 import 'views/list_commands.dart';
 
 int visibleAmountBtn = 8;
 double lengthScreen = 1;
-
 
 
 class ConsumerListCommand extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:vsckeyboard/common/model/command_types.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
+import 'package:fkeys/common/model/command_types.dart';
+import 'package:fkeys/common/model/command_model.dart';
 
 List<ModelCommand> createDefaultListDebugger(List<ModelCommand> commands) {
   commands.addAll([

@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/model/command_group_model.dart';
-import 'package:vsckeyboard/common/model/command_types.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
+import 'package:fkeys/common/model/command_group_model.dart';
+import 'package:fkeys/common/model/command_types.dart';
+import 'package:fkeys/common/model/command_model.dart';
 
 Future<List<ModelCommandGroup>> createDefaultCommandGroups(
     {required String keyBaseCommandGroup,
@@ -9,20 +9,20 @@ Future<List<ModelCommandGroup>> createDefaultCommandGroups(
   List<ModelCommandGroup> commandsGroup = [];
   commandsGroup.addAll([
     ModelCommandGroup(
-        name: "debugger_commands",
+        name: "terminal_commands",
         description: "",
-        label: "Debugger",
-        onlyType: CommandType.debugVscode),
+        label: "Terminal",
+        onlyType: CommandType.terminalCommand),
     ModelCommandGroup(
         name: "vscode_commands",
         description: "",
         label: "Visual Code",
         onlyType: CommandType.vscodeCommand),
     ModelCommandGroup(
-        name: "terminal_commands",
+        name: "debugger_commands",
         description: "",
-        label: "Terminal",
-        onlyType: CommandType.terminalCommand)
+        label: "Debugger",
+        onlyType: CommandType.debugVscode),
   ]);
 
   for (var cmdGroupModel in commandsGroup) {

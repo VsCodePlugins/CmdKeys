@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

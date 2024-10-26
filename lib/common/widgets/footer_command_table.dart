@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
+import 'package:fkeys/common/class_functions/grid_controller.dart';
 import 'json_widget.dart';
 
 class FooterCommandTable extends StatelessWidget {
@@ -37,23 +37,14 @@ class FooterCommandTable extends StatelessWidget {
             child: StreamBuilder<Map<String, dynamic>>(
                 stream: gridController.keyboardSettingCtrl
                     .keyboardSettingStreamState,
-                builder: (context, snapshot) {
-                  String commandId = gridController
-                      .currentListModelCommand![
-                          gridController.currentIndex]
-                      .id;
-                  return (snapshot.data?["incomingMessage"] !=
-                              null &&
-                          snapshot.data?["incomingMessage"]
-                                  ["eventID"]
-                              .contains(commandId))
-                      ? Column(
+                builder: (context, snapshot) { return
+                  Column(
                           mainAxisAlignment:
                               MainAxisAlignment.start,
                           children: [
                             const Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Text("Last event"),
+                              child: Text("Last incoming event"),
                             ),
                             SizedBox(
                               // height: MediaQuery.of(context)
@@ -65,8 +56,8 @@ class FooterCommandTable extends StatelessWidget {
                                       .data?["incomingMessage"]),
                             ),
                           ],
-                        )
-                      : const SizedBox.shrink();
+                        );
+        
                 }),
           ),
         ],

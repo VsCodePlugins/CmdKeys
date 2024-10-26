@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/common/class_functions/default_commands.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
+import 'package:fkeys/common/class_functions/default_commands.dart';
+import 'package:fkeys/common/model/command_model.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 enum CommandType { debugVscode, vscodeCommand, terminalCommand }
@@ -95,7 +95,7 @@ extension ExtendedCommandType on CommandType {
         isSmallScreen = true;
       }
     }
-    if (isSmallScreen) {
+    if (!isSmallScreen) {
       totalColumnsVisible = 3;
     }
 
@@ -138,7 +138,7 @@ extension ExtendedCommandType on CommandType {
           enableEditingMode: true,
           width: 100,
           type: PlutoColumnType.text(),
-          hide: (isSmallScreen && selectMode == false)
+          hide: (!isSmallScreen && selectMode == false)
               ? true
               : false),
       PlutoColumn(

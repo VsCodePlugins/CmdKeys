@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
-import 'package:vsckeyboard/common/class_functions/scroll_physics.dart';
-import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
-import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/class_functions/scroll_physics.dart';
+import 'package:fkeys/features/0_home/%20models/pages.dart';
+import 'package:fkeys/features/0_home/controllers/home_controller.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../controllers/main_controller.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -82,6 +82,14 @@ class _ListCommandsState extends State<ListCommands> {
                 },
               )
             : AnimatedReorderableGridView(
+                enterTransition: [
+     FadeIn(
+        duration: const Duration(milliseconds: 300),
+        delay: const Duration(milliseconds: 100)),
+     ScaleIn(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.bounceInOut)
+    ],
                 key: widget.mainController.keyCommandBtnScroll,
                 physics: const PositionRetainedScrollPhysics(),
                 controller: widget.mainController.listCommandBtnScroll,
@@ -97,10 +105,11 @@ class _ListCommandsState extends State<ListCommands> {
                     index: index,
                   );
                 },
-                enterTransition: [FlipInX(), ScaleIn()],
+                //enterTransition: [FlipInX(), ScaleIn()],
                 exitTransition: [SlideInLeft()],
                 insertDuration: const Duration(milliseconds: 300),
                 removeDuration: const Duration(milliseconds: 300),
+                
                 onReorderStart: (a) {
                   print(a);
 

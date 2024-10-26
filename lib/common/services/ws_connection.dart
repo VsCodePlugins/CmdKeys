@@ -97,13 +97,13 @@ mixin class WsConnection {
     if (command.runtimeType == String) {
       wsSocket!.send(command);
     } else {
-      late String commandStr;
       try {
+        String commandStr;
         commandStr = jsonEncode(command);
+        wsSocket!.send(commandStr);
       } catch (e) {
         rethrow;
       }
-      wsSocket!.send(commandStr);
     }
   }
 }

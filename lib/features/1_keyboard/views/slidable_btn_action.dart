@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vibration/vibration.dart';
-import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
-import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/views/command_button.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/features/0_home/%20models/pages.dart';
+import 'package:fkeys/features/0_home/controllers/home_controller.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/1_keyboard/views/command_button.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 import 'list_commands.dart';
 

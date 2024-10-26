@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/class_functions/command_controller.dart';
-import 'package:vsckeyboard/common/model/command_group_model.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/common/model/command_types.dart';
-import 'package:vsckeyboard/common/model/grid_model.dart';
-import 'package:vsckeyboard/common/widgets/toast.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/class_functions/command_controller.dart';
+import 'package:fkeys/common/model/command_group_model.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/common/model/command_types.dart';
+import 'package:fkeys/common/model/grid_model.dart';
+import 'package:fkeys/common/widgets/toast.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 
 class GridController with ChangeNotifier, CommandsController {
   BtnProperty? currentBtnProperty;

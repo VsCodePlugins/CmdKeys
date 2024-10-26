@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/features/0_home/%20models/pages.dart';
+import 'package:fkeys/features/0_home/%20models/pages.dart';
 
 class HomeController with ChangeNotifier {
   final pageController = PageController(initialPage: PagesApp.keyboard.numberPage);

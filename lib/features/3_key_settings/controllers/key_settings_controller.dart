@@ -1,12 +1,13 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/common/model/command_types.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/common/model/command_types.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
 
 class KeySettingsController with ChangeNotifier {
   final textControllerNameBtn = TextEditingController();
@@ -14,7 +15,7 @@ class KeySettingsController with ChangeNotifier {
   BtnProperty? currentBtnProperty;
   final FocusNode focusNode = FocusNode();
   final List<String> listNameIcons = MdiIcons.getNames();
-  late Map<String, IconData> mapIconsName;
+  late Map<String, IconPickerIcon> mapIconsName;
   late Map<int, String> mapCodePointIconsName;
   ModelCommand? currentCommand;
 
@@ -33,8 +34,9 @@ class KeySettingsController with ChangeNotifier {
   late Color dialogSelectColor;
   late final Map<ColorSwatch<Object>, String> colorsNameMap;
 
-  IconData _getIconDataWithName(String nameIcon) {
-    return MdiIcons.fromString(nameIcon) ?? Icons.close;
+  IconPickerIcon _getIconDataWithName(String nameIcon) {
+    return IconPickerIcon( name: nameIcon ,
+      data: MdiIcons.fromString(nameIcon) ?? Icons.close, pack: IconPack.material) ;
   }
 
   KeySettingsController({required this.mainController, required this.currentBtnProperty}) {
@@ -46,7 +48,7 @@ class KeySettingsController with ChangeNotifier {
 
     mapCodePointIconsName = {
       for (var nameIcon in listNameIcons)
-        _getIconDataWithName(nameIcon).codePoint: nameIcon
+        _getIconDataWithName(nameIcon).data.codePoint: nameIcon
     };
 
     screenPickerColor = Colors.blue; // Material blue.
@@ -121,11 +123,12 @@ class KeySettingsController with ChangeNotifier {
   openIconsMenu(context) async {
     //FocusManager.instance.primaryFocus?.previousFocus();
     //FocusManager.instance.primaryFocus?invokeMethod();
-    IconData? iconSelected = await showIconPicker(context,
-        adaptiveDialog: true, customIconPack: mapIconsName);
+    SinglePickerConfiguration singlePickerConfiguration = SinglePickerConfiguration(adaptiveDialog: true, customIconPack: mapIconsName);
+    IconPickerIcon? iconSelected = await showIconPicker(context,configuration: singlePickerConfiguration
+        );
 
     if (iconSelected != null) {
-      _setNewIcon(iconSelected);
+      _setNewIcon(iconSelected.data);
     }
   }
 

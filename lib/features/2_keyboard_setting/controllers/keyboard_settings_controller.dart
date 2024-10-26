@@ -3,9 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/services/ws_connection.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/common/services/ws_connection.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
 
 import 'session_debug_controller.dart';
 
@@ -19,7 +19,7 @@ class KeyboardSettingController extends ChangeNotifier
   Size sizeIcon = const Size(40, 40);
   String prefix = 'http://';
   String address = "";
-  String routeAddress = "";
+  String routeAddress = "localhost:5813";
   String currentSettingName = "default";
   bool showExceptions = true;
   bool showResponses = true;

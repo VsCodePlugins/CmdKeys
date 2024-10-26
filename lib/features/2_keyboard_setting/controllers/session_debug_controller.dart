@@ -1,4 +1,4 @@
-import 'package:vsckeyboard/features/2_keyboard_setting/models/session_debug_model.dart';
+import 'package:fkeys/features/2_keyboard_setting/models/session_debug_model.dart';
 
 mixin class SessionDebug {
 

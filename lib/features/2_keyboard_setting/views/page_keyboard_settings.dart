@@ -5,16 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-import 'package:vsckeyboard/common/class_functions/dropdown_controllers.dart';
-import 'package:vsckeyboard/common/class_functions/ip_address_input.dart';
-import 'package:vsckeyboard/common/widgets/button_ws.dart';
-import 'package:vsckeyboard/common/widgets/number_picker.dart';
-import 'package:vsckeyboard/common/widgets/simple_dropdown.dart';
-import 'package:vsckeyboard/common/widgets/slider_setting.dart';
-import 'package:vsckeyboard/common/widgets/standard_button.dart';
-import 'package:vsckeyboard/common/widgets/switch_setting.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/class_functions/dropdown_controllers.dart';
+import 'package:fkeys/common/class_functions/ip_address_input.dart';
+import 'package:fkeys/common/widgets/button_ws.dart';
+import 'package:fkeys/common/widgets/number_picker.dart';
+import 'package:fkeys/common/widgets/simple_dropdown.dart';
+import 'package:fkeys/common/widgets/slider_setting.dart';
+import 'package:fkeys/common/widgets/standard_button.dart';
+import 'package:fkeys/common/widgets/switch_setting.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class KeyboardSettings extends StatefulWidget {
@@ -181,9 +181,9 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                             filled: true,
                             fillColor: Colors.blue.withOpacity(.1),
                             hintText: (dropdownCtrlS.selectedValue == 'IP')
-                                ? '192.168.1.1'
+                                ? '127.0.0.1'
                                 : (dropdownCtrlS.selectedValue == 'IP:PORT')
-                                    ? '192.168.1.1:3333'
+                                    ? '127.0.0.1:5813'
                                     : 'www.host.com',
                             labelText: 'HOST',
                             prefix: DropDownPrefix(
@@ -279,9 +279,10 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                     value: settingController.visibleAmountBtn,
                     minValue: 1,
                     maxValue:
-                        mainController.currentKeyBoard.listBtnProperties.length,
+                        mainController.listBtnProperties.length,
                     onChangedCallback: settingController.updateButtonsVisible,
                     keyboardSettingController: settingController,
+                    showCtrlBtn: kIsWeb,
                   ),
 
                 if (!settingController.listMode)
@@ -293,10 +294,11 @@ class _KeyboardSettingsState extends State<KeyboardSettings> {
                     maxValue: isMobile
                         ? 3
                         : mainController
-                            .currentKeyBoard.listBtnProperties.length,
+                            .listBtnProperties.length,
                     onChangedCallback:
                         settingController.updateGridColumnCounter,
                     keyboardSettingController: settingController,
+                    showCtrlBtn: kIsWeb,
                   ),
               ],
             ),

@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vibration/vibration.dart';
-import 'package:vsckeyboard/common/widgets/icon_command.dart';
-import 'package:vsckeyboard/common/widgets/toast.dart';
-import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/widgets/icon_command.dart';
+import 'package:fkeys/common/widgets/toast.dart';
+import 'package:fkeys/features/0_home/controllers/home_controller.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../ models/button_properties.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -249,7 +249,8 @@ List<Widget> buildButton(
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Icon(
-          Icons.lock_outline,
+          Icons.drag_indicator,
+          size: widget.keyboardSettingCtrl.sizeIcon.width ,
           color: (widget.keyboardSettingCtrl.darkMode)
               ? Colors.grey[800]
               : Colors.black26,

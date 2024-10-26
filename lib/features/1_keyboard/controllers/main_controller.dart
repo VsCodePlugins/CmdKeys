@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/class_functions/default_vscodekeyboard.dart';
-import 'package:vsckeyboard/common/constants.dart';
-import 'package:vsckeyboard/common/model/command_group_model.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/common/services/http_request.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/class_functions/default_vscodekeyboard.dart';
+import 'package:fkeys/common/constants.dart';
+import 'package:fkeys/common/model/command_group_model.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/common/services/http_request.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 import 'keyboard_buttons.dart';
 
@@ -20,8 +21,10 @@ class MainController with ChangeNotifier, HttpRequest {
   Map<String, KeyBoardButtons> mapBtnProperties = {};
   List<BtnProperty> listBtnProperties = [];
   late SharedPreferences preferencesInstance;
+  
   StreamController<Map<String, dynamic>> mainStreamStateCtrl =
       StreamController<Map<String, dynamic>>.broadcast();
+
   late Stream<Map<String, dynamic>> mainStreamState;
   MainController() {
     mainStreamState = mainStreamStateCtrl.stream;
@@ -41,6 +44,7 @@ class MainController with ChangeNotifier, HttpRequest {
       notifyListeners();
     });
   }
+
   String generateRandomString(int len) {
     var r = Random();
     String randomString =

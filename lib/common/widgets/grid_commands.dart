@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
-import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/class_functions/grid_controller.dart';
 
 class CommandsGrid extends StatelessWidget {
    const CommandsGrid({

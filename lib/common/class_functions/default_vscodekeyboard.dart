@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/features/1_keyboard/%20models/button_properties.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/keyboard_buttons.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/features/1_keyboard/%20models/button_properties.dart';
+import 'package:fkeys/features/1_keyboard/controllers/keyboard_buttons.dart';
 
 class VsCodeKeyBoard extends KeyBoardButtons {
   VsCodeKeyBoard() : super("VsCode Keyboard", listBtnProperties: []);

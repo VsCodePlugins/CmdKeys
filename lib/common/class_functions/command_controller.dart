@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsckeyboard/common/model/command_types.dart';
-import 'package:vsckeyboard/common/model/command_model.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/common/model/command_types.dart';
+import 'package:fkeys/common/model/command_model.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import '../model/command_group_model.dart';
 import 'default_command_groups.dart';
 

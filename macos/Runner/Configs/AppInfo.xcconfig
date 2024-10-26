@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = vsckeyboard
+PRODUCT_NAME = fkeys
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.vsckeyboard.vsckeyboard
+PRODUCT_BUNDLE_IDENTIFIER = com.fkeys.fkeys
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.vsckeyboard. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2024 com.fkeys. All rights reserved.

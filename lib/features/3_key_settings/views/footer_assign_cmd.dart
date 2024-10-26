@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vsckeyboard/common/class_functions/grid_controller.dart';
-import 'package:vsckeyboard/common/widgets/footer_command_table.dart';
-import 'package:vsckeyboard/common/widgets/json_widget.dart';
-import 'package:vsckeyboard/common/widgets/standard_button.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
-import 'package:vsckeyboard/features/3_key_settings/controllers/key_settings_controller.dart';
+import 'package:fkeys/common/class_functions/grid_controller.dart';
+import 'package:fkeys/common/widgets/footer_command_table.dart';
+import 'package:fkeys/common/widgets/json_widget.dart';
+import 'package:fkeys/common/widgets/standard_button.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/features/3_key_settings/controllers/key_settings_controller.dart';
 
 class GridFooterKeySettings extends StatelessWidget {
   const GridFooterKeySettings({

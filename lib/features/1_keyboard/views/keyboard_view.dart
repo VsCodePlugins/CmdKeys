@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vsckeyboard/features/0_home/controllers/home_controller.dart';
-import 'package:vsckeyboard/features/1_keyboard/controllers/main_controller.dart';
-import 'package:vsckeyboard/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
+import 'package:fkeys/features/0_home/controllers/home_controller.dart';
+import 'package:fkeys/features/1_keyboard/controllers/main_controller.dart';
+import 'package:fkeys/features/2_keyboard_setting/controllers/keyboard_settings_controller.dart';
 import 'list_commands.dart';
 
 class Keyboard extends StatelessWidget {
@@ -127,7 +127,7 @@ class Keyboard extends StatelessWidget {
                         }).toList(),
                         isExpanded: false,
                       )
-                    : Text("VsCode Keyboard",
+                    : Text("F-Keys",
                         style: TextStyle(
                             color: keyboardSettingController.darkMode
                                 ? Colors.white70
